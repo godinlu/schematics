@@ -11,7 +11,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
+      with:
+        fetch-depth: 0  # Important pour obtenir l'historique complet
+        
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.9.0
       with:
@@ -24,6 +26,7 @@ jobs:
 
     - name: Verify branches
       run: |
+        git checkout -b main
         git branch -a
         
     - name: Deploy to www.solisart.fr
