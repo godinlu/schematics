@@ -26,10 +26,10 @@ jobs:
 
     - name: Verify branches
       run: |
-        git checkout -b main
         git branch -a
         
     - name: Deploy to www.solisart.fr
       run: |
+         git checkout -b main
         git push production main
         ssh 2609665@git.sd5.gpaas.net deploy www.solisart.fr.git main
