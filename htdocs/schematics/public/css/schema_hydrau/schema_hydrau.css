@@ -1,0 +1,21 @@
+body{
+  font-family: 'Comfortaa';
+  color: #CFDBD5;
+}
+.flex{
+  display: flex;
+}
+.hidden{
+  display: none;
+}
+
+#canvas_container{
+  width: 1170px;
+}
+
+
+
+
+
+
+

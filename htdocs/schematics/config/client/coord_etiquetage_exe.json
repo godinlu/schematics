@@ -1,0 +1,443 @@
+{
+    "default":{
+        "base":[
+            {
+                "arrow":{
+                    "coord_a":[534,112],
+                    "coord_b":[534,80],
+                    "color":"ff0000"
+                    },
+                "label": {
+                    "coord":[520,72],
+                    "text":"Raccordement chaud capteur"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[575,262],
+                    "coord_b":[612,262],
+                    "color":"ff0000"
+                },
+                "label":{
+                    "coord":[620,268],
+                    "text":"Raccordement chaud appoint 1 / bypass"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[475,30],
+                    "coord_b":[475,146],
+                    "color":"0000ff"},
+                "label":{
+                    "coord":[463,23],
+                    "text":"Raccordement froid appoint 1 / bypass"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[612,173],
+                    "coord_b":[586,173],
+                    "color":"0000ff"},
+                "label":{
+                    "coord":[620,177],
+                    "text":"Raccordement froid capteur"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[488,56],
+                    "coord_b":[488,163],
+                    "color":"000000"},
+                "label":{
+                    "coord":[486,48],
+                    "text":"V3V Solaire/appoint"
+                }
+            }
+    
+        ],
+        "adaptative":{
+            "SC2":[
+                {
+                    "arrow":{
+                        "coord_a":[575,224],
+                        "coord_b":[612,224],
+                        "color":"ff0000"
+                        },
+                    "label": {
+                        "coord":[620,230],
+                        "text":"Raccordement chaud ballon tampon"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[612,404],
+                        "coord_b":[579,404],
+                        "color":"0000ff"},
+                    "label":{
+                        "coord":[620,409],
+                        "text":"Raccordement froid ballon tampon"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[612,111],
+                        "coord_b":[562,165],
+                        "color":"000000"},
+                    "label":{
+                        "coord":[620,112],
+                        "text":"V3V Solaire/Tampon"
+                    }
+                }
+            ],
+            "zones":[
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[575,455],
+                            "coord_b":[612,455],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[620,461],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[612,442],
+                            "coord_b":[579,442],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[620,447],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                ],
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[575,387],
+                            "coord_b":[612,387],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[620,393],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[612,374],
+                            "coord_b":[579,374],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[620,379],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                ],
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[575,356],
+                            "coord_b":[612,356],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[620,362],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[612,343],
+                            "coord_b":[579,343],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[620,348],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                    
+                ],
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[575,325],
+                            "coord_b":[612,325],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[620,330],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[612,312],
+                            "coord_b":[579,312],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[620,317],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                   
+                ]
+            ],
+            "plancher chauffant":{
+                    "arrow":{
+                        "coord_a":[575,387],
+                        "coord_b":[612,387],
+                        "color":"ffa500"
+                    },
+                    "label":{
+                        "coord":[620,393],
+                        "text":"Raccordement chaud zone "
+                    }
+            },
+            "Appoint2":[
+                {
+                    "arrow":{
+                        "coord_a":[575,325],
+                        "coord_b":[612,325],
+                        "color":"ffa500"
+                    },
+                    "label":{
+                        "coord":[620,331],
+                        "text":"Raccordement froid appoint 2"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[612,312],
+                        "coord_b":[579,312],
+                        "color":"ff0000"},
+                    "label":{
+                        "coord":[620,317],
+                        "text":"Raccordement chaud appoint 2"
+                    }
+                }
+               
+            ],
+            "ballon ecs":[
+                {
+                    "arrow":{
+                        "coord_a":[575,243],
+                        "coord_b":[612,243],
+                        "color":"ff0000"
+                        },
+                    "label":{
+                        "coord":[620,249],
+                        "text":"Raccordement chaud ballon solaire"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[612,420],
+                        "coord_b":[579,420],
+                        "color":"0000ff"},
+                    "label":{
+                        "coord":[620,425],
+                        "text":"Raccordement froid ballon solaire"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[612,281],
+                        "coord_b":[579,281],
+                        "color":"0000ff"},
+                    "label":{
+                        "coord":[620,286],
+                        "text":"Raccordement froid ballon appoint"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[575,295],
+                        "coord_b":[612,295],
+                        "color":"ff0000"
+                    },
+                    "label":{
+                        "coord":[620,301],
+                        "text":"Raccordement chaud ballon appoint"
+                    }
+                }
+
+            ]
+        }
+    },
+    "SC1Z":{
+        "base":[
+            {
+                "arrow":{
+                    "coord_a":[577,34],
+                    "coord_b":[577,154],
+                    "color":"ff0000"
+                    },
+                "label": {
+                    "coord":[567,32],
+                    "text":"Raccordement chaud capteur"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[593,295],
+                    "coord_b":[661,295],
+                    "color":"ff0000"
+                },
+                "label":{
+                    "coord":[670,299],
+                    "text":"Raccordement chaud appoint 1 / bypass"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[661,224],
+                    "coord_b":[484,224],
+                    "color":"0000ff"},
+                "label":{
+                    "coord":[670,228],
+                    "text":"Raccordement froid appoint 1 / bypass"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[504,5],
+                    "coord_b":[504,210],
+                    "color":"0000ff"},
+                "label":{
+                    "coord":[496,-2],
+                    "text":"Raccordement froid capteur"
+                }
+            },
+            {
+                "arrow":{
+                    "coord_a":[661,248],
+                    "coord_b":[488,248],
+                    "color":"000000"},
+                "label":{
+                    "coord":[670,252],
+                    "text":"V3V Solaire/appoint"
+                }
+            }
+    
+        ],
+        "adaptative":{
+            "zones":[
+                [
+                ],
+                [     
+                    {
+                        "arrow":{
+                            "coord_a":[593,387],
+                            "coord_b":[661,387],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[670,393],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[661,374],
+                            "coord_b":[579,374],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[670,379],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+
+                ],
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[593,356],
+                            "coord_b":[661,356],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[670,362],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[661,343],
+                            "coord_b":[579,343],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[670,348],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                ],
+                [
+                    {
+                        "arrow":{
+                            "coord_a":[593,325],
+                            "coord_b":[661,325],
+                            "color":"ff0000"
+                        },
+                        "label":{
+                            "coord":[670,331],
+                            "text":"Raccordement chaud zone X"
+                        }
+                    },
+                    {
+                        "arrow":{
+                            "coord_a":[661,312],
+                            "coord_b":[579,312],
+                            "color":"0000ff"},
+                        "label":{
+                            "coord":[670,317],
+                            "text":"Raccordement froid zone X"
+                        }
+                    }
+                ]
+            ],
+            "plancher chauffant":{
+                "arrow":{
+                    "coord_a":[593,356],
+                    "coord_b":[661,356],
+                    "color":"ffa500"
+                },
+                "label":{
+                    "coord":[670,362],
+                    "text":"Raccordement chaud zone "
+                }
+            },
+            "Appoint2":[
+                {
+                    "arrow":{
+                        "coord_a":[593,325],
+                        "coord_b":[661,325],
+                        "color":"ffa500"
+                    },
+                    "label":{
+                        "coord":[670,331],
+                        "text":"Raccordement froid appoint 2"
+                    }
+                },
+                {
+                    "arrow":{
+                        "coord_a":[661,312],
+                        "coord_b":[579,312],
+                        "color":"ff0000"},
+                    "label":{
+                        "coord":[670,317],
+                        "text":"Raccordement chaud appoint 2"
+                    }
+                }
+            
+            ]
+            
+        }
+    },
+    "legend":{
+        "title":[490,-10]
+    }
+    
+}

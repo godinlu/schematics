@@ -1,0 +1,27 @@
+html{
+    font-family: 'Comfortaa';
+    color: #CFDBD5;
+  }
+
+main{
+    font-family: 'Comfortaa';
+    color: #CFDBD5;
+    background-color: #10B9B7;
+    padding: 0.5em;
+}
+
+main h2 span{
+    color: green;
+    border: 1px solid green;
+    border-radius: 0.7em;
+    padding: 0.3em;
+    font-size: small;
+}
+  
+article{
+    background-color: #000000;
+    border-radius: 0.5em;
+    margin: 0.5em;
+    padding: 0.5em;
+}
+

@@ -1,0 +1,360 @@
+{
+    "option": {
+        "V3V bypass appoint 1": {
+            "coordImg": [
+                145,
+                70
+            ],
+            "coordLabel": [
+                364,
+                174
+            ]
+        },
+        "CESI déportée sur T15": {
+            "coordImg": [
+                521,
+                11
+            ],
+            "coordLabel": [
+                765,
+                89
+            ]
+        },
+        "CESI déportée sur T16": {
+            "coordImg": [
+                521,
+                11
+            ],
+            "coordLabel": [
+                681,
+                110
+            ]
+        },
+        "Piscine déportée T15": {
+            "coordImg": [
+                521,
+                11
+            ],
+            "coordLabel": [
+                765,
+                89
+            ]
+        },
+        "Piscine déportée T6": {
+            "coordImg": [
+                521,
+                11
+            ],
+            "coordLabel": [
+                765,
+                89
+            ]
+        },
+        "V3V retour bouclage sanitaire solaire": {
+            "coordImg": [
+                560,
+                133
+            ]
+        },
+        "charge BTC si excédent APP1 sur T16 & T6 x T5": {
+            "coordImg": [
+                190,
+                99
+            ],
+            "coordLabel": [
+                238,
+                142
+            ]
+        },
+        "Aquastat différentiel ON si T15 x T5": {
+            "coordImg": [
+                190,
+                99
+            ],
+            "coordLabel": [
+                296,
+                164
+            ]
+        },
+        "Free Cooling Zone 1": {
+            "coordImg": [
+                581,
+                510
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Free Cooling Zone 2": {
+            "coordImg": [
+                614,
+                468
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Free Cooling Zone 3": {
+            "coordImg": [
+                646,
+                342
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Free Cooling Zone 4": {
+            "coordImg": [
+                622,
+                312
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Free Cooling Zone 2 SC1Z": {
+            "coordImg": [
+                611,
+                450
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Free Cooling Zone 3 SC1Z": {
+            "coordImg": [
+                652,
+                362
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "V3V décharge zone 1": {
+            "coordImg": [
+                601,
+                519
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "V3V décharge zone 2": {
+            "coordImg": [
+                638,
+                456
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "V3V décharge zone 2 SC1Z": {
+            "coordImg": [
+                638,
+                456
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "V3V décharge zone 3 SC1Z": {
+            "coordImg": [
+                672,
+                386
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Décharge sur zone 1": {
+            "coordImg": [
+                349,
+                343
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "Décharge sur zone 1 SC1Z": {
+            "coordImg": [
+                349,
+                273
+            ],
+            "coordLabel": [
+                0,
+                0
+            ]
+        },
+        "recharge nappes goethermiques sur T15 sur échangeur BTC": {
+            "coordImg": [
+                239,
+                309
+            ],
+            "coordLabel": [
+                242,
+                516
+            ],
+            "coordLabel2": [
+                242,
+                569
+            ]
+        },
+        "recharge nappes goethermiques sur T15 sur serpentin BTC": {
+            "coordImg": [
+                269,
+                435
+            ],
+            "coordLabel": [
+                262,
+                532
+            ]
+        },
+        "Electrovanne Appoint 1 ou Flow Switch": {
+            "coordImg": [
+                303,
+                84
+            ],
+            "coordLabel": [
+                305,
+                107
+            ],
+            "coordLabel2": [
+                305,
+                143
+            ]
+        },
+        "ON en mode excédent d'énergie l'été": {
+            "coordImg": [
+                521,
+                11
+            ],
+            "coordLabel": [
+                765,
+                89
+            ],
+            "coordLabel2": [
+                681,
+                110
+            ]
+        }
+    },
+    "champCapteur": [
+        477,
+        11
+    ],
+    "circulateurs": {
+        "raccordement": [
+            [
+                563,
+                376
+            ],
+            [
+                570,
+                358
+            ],
+            [
+                571,
+                334
+            ],
+            [
+                564,
+                290
+            ]
+        ],
+        "images": [
+            [
+                599,
+                523
+            ],
+            [
+                636,
+                460
+            ],
+            [
+                666,
+                390
+            ],
+            [
+                681,
+                326
+            ]
+        ],
+        "gap": [
+            11,
+            -19
+        ]
+    },
+    "ballonECS": [
+        560,
+        133
+    ],
+    "appoint":[145,70],
+    "ballonTampon":[290,201],
+    "divers": {
+        "pompe double droite": {
+            "coordImg": [
+                288,
+                22
+            ]
+        },
+        "pompe double gauche": {
+            "coordImg": [
+                193,
+                22
+            ]
+        },
+        "comptage energétique utile solaire D3": {
+            "coordImg": [
+                714,
+                130
+            ]
+        },
+        "comptage energétique utile appoint D5": {
+            "coordImg": [
+                417,
+                128
+            ]
+        },
+        "deshu sur appoint 1": {
+            "coordImg": [
+                288,
+                22
+            ]
+        },
+        "appoint inde": {
+            "coordImg": [
+                145,
+                70
+            ]
+        }
+    },
+    "legend": {
+        "title": [
+            350,
+            30
+        ],
+        "img_desc_affaire": [
+            500,
+            585
+        ],
+        "label_optionS10": [
+            100,
+            605
+        ],
+        "label_optionS11": [
+            100,
+            615
+        ]
+    }
+}

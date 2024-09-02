@@ -1,0 +1,28 @@
+footer{
+    color: #ababab;
+    background-color: black;
+    padding: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+footer h3{
+    color: white;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+}
+
+footer h3 i{
+    margin-left: 1em;
+}
+footer div + div{
+    border-left: 1px solid #ababab;
+    
+}
+footer div{
+    padding: 1em;
+    width: 15em;
+    text-align: center;
+}

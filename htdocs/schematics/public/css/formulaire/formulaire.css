@@ -1,0 +1,38 @@
+#PartieBallon{
+    display: flex;
+    justify-content: space-between;
+}
+
+#partieDescription{
+    background-color: #E8EDDF;
+    border-radius: 1em;
+    color: #222222;
+    padding: 1em;
+}
+
+#form_installateur input:invalid{
+  box-shadow: 0 0 5px 1px red;
+    background-color: #FDD;
+}
+#form_installateur input:valid{
+  box-shadow: 0 0 5px 1px lime;
+    background-color: #d9fbd6;
+}
+  
+  .blink {
+    
+    animation: colorblink 0.6s infinite;
+  }
+  @keyframes colorblink { 
+  50% { box-shadow: 0 0 5px 5px red;} 
+  }
+  
+  
+  input:valid {
+    border: 2px solid black;
+  }
+  
+  
+  #appoint_cascade{
+    display: none;
+  }

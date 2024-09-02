@@ -1,0 +1,40 @@
+#ficheProgrammation{
+    border-collapse: collapse;
+    max-width: 750px;
+    max-height: 150em;
+    margin: 1em;
+    color: black;
+    background-color: white;
+}
+
+#ficheProgrammation td{
+  padding: 0.1em 0.1em 0.1em 0.1em;
+}
+
+#ficheProgrammation tbody#border td{
+    border: 1px solid black;
+}
+
+#ficheProgrammation tbody#border td[colspan="2"]{
+  background-color: lightblue;
+}
+
+#ficheProgrammation tbody#border tr>td:nth-child(2){
+  text-align: center;
+  min-width: 27em;
+}
+#ficheProgrammation td[colspan="2"],#ficheProgrammation #title{
+
+    text-align: center;
+    font-weight: bolder;
+    
+}
+
+#ficheProgrammation #bigCol{
+  height: 20em;
+}
+
+#ficheProgrammation textarea{
+  resize: none;
+}
+

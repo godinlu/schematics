@@ -1,0 +1,81 @@
+{
+    "module":{
+        "$SC1Z": "SC1ZBMOD500",
+        "$SC1": "SC1BMOD",
+        "$SC2": "SC2BMOD"
+    },
+    "vaseExpension":{
+        "$SC1Z": {
+            "gamme_kit": "SC1ZKIT50"
+        },
+        "$SC1": {
+            "gamme_kit": "SC1KIT50"
+        },
+        "$SC2": {
+            "gamme_kit": "SC2KIT5050"
+        },
+        "$SC1K":{
+            "gamme_kit" : "SC1K1KIT5"
+        },
+        "$SC2K":{
+            "gamme_kit" : "SC2K1KIT5"
+        },
+        "$HydrauBox_1":{
+            "gamme_kit" : "HYBXKIT"
+        },
+        "$HydrauBox_2":{
+            "gamme_kit" : "HYBXKIT"
+        }
+    },
+    "ballonECS":{
+        "!$SC1Z": {
+            "ballon_ecs": "BAL0145"
+        }
+    },
+    "ballonTampon":{
+        "$ballon_tampon && $avec_echangeur": {
+            "ballon_tampon": "BAL0085"
+        },
+        "$ballon_tampon && !$avec_echangeur": {
+            "ballon_tampon": "BAL0031"
+        }
+    },
+    "capteur":{
+        "$SC1Z": {
+            "type_capteur": "S7 2,5",
+            "nb_capteur": "4",
+            "nb_range": "1",
+            "type_pose": "CS",
+            "type_toiture": "Aucun"
+        },
+        "$SC1 || $SC1K": {
+            "type_capteur": "S7 2,5",
+            "nb_capteur": "4",
+            "nb_range": "1",
+            "type_pose": "CS",
+            "type_toiture": "Aucun"
+        },
+        "$SC2 || $SC2K": {
+            "type_capteur": "S7 2,5",
+            "nb_capteur": "6",
+            "nb_range": "1",
+            "type_pose": "CS",
+            "type_toiture": "Aucun"
+        }
+    },
+    "flexible_inox":{
+        "true": {
+            "type_flexible": "bitube",
+            "Dimension_flexible": "DN20",
+            "flexible_inox": "MOD0757"
+        }
+    },
+    "accessoire":{
+        "true": {
+            "accessoire": "MOD0307"
+        } 
+    },
+    "S_Transport2":{
+        "true":"TRANS003"
+    }
+}

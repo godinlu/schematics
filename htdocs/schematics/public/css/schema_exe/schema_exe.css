@@ -1,0 +1,17 @@
+body{
+    font-family: 'Comfortaa';
+    color: #CFDBD5;
+  }
+
+.flex{
+  display: flex;
+}
+#img_container{
+  width: 891px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hidden{
+  display: none;
+}

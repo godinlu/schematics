@@ -1,0 +1,38 @@
+#container_devis{
+    height: 30em !important;
+}
+#container_devis tbody tr:hover{
+    cursor: pointer;
+    color: #f6c437;
+}
+
+#main{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 1em;
+    align-items: flex-start;
+}
+
+#main > div{
+    background-color: black;
+    border-radius: 1em;
+    padding: 0.5em;
+    flex: 0 0 48%;
+}
+
+fieldset{
+    border-radius: 0.5em;
+    background-color: #222222;
+}
+
+
+#client_installateur{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#client_installateur th{
+    text-align: start;
+}
+
+

@@ -1,0 +1,260 @@
+{
+    "option": {
+        "V3V décharge zone 1": {
+            "pos": [
+                757,
+                358
+            ],
+            "posLabel": [
+                859,
+                398
+            ]
+        },
+        "V3V bypass appoint 1": {
+            "pos": [
+                542,
+                132
+            ],
+            "posLabel": [
+                544,
+                196
+            ]
+        },
+        "déporté": {
+            "pos": [
+                40,
+                138
+            ],
+            "posLabel": [
+                42,
+                226
+            ]
+        },
+        "optionBT": {
+            "pos": [
+                171,
+                177
+            ],
+            "posLabel": {
+                "Aquastat différentiel ON si T15 x T5 droite": [
+                    450,
+                    175
+                ],
+                "Aquastat différentiel ON si T15 x T5 gauche": [
+                    310,
+                    175
+                ],
+                "charge BTC si excédent APP1 sur T16 & T6 x T5": [
+                    316,
+                    195
+                ]
+            }
+        },
+        "Electrovanne Appoint 1 ou Flow Switch": {
+            "pos": [
+                441,
+                74
+            ],
+            "posLabel": [
+                445,
+                195
+            ]
+        },
+        "Free Cooling Zone 1": {
+            "pos": [
+                756,
+                369
+            ],
+            "posLabel": [
+                803,
+                482
+            ]
+        },
+        "Free Cooling Zone 2": {
+            "pos": [
+                725,
+                233
+            ],
+            "posLabel": [
+                807,
+                325
+            ]
+        },
+        "Free Cooling Zone 3": {
+            "pos": [
+                730,
+                138
+            ],
+            "posLabel": [
+                803,
+                233
+            ]
+        },
+        "Free Cooling Zone 4": {
+            "pos": [
+                654,
+                118
+            ],
+            "posLabel": [
+                644,
+                228
+            ]
+        },
+        "V3V retour bouclage sanitaire solaire": {
+            "pos": [
+                377,
+                237
+            ],
+            "posLabel": [
+                0,
+                -50
+            ]
+        },
+        "Décharge sur zone 1": {
+            "pos": [
+                757,
+                331
+            ],
+            "posLabel": [
+                865,
+                430
+            ]
+        },
+        "recharge nappes goethermiques sur T15 sur serpentin BTC": {
+            "pos": [
+                191,
+                279
+            ],
+            "posLabel": [
+                324,
+                449
+            ]
+        },
+        "recharge nappes goethermiques sur T15 sur échangeur BTC": {
+            "pos": [
+                195,
+                218
+            ],
+            "posLabel": [
+                327,
+                418
+            ]
+        }
+    },
+    "divers": {
+        "comptage energétique utile solaire D3": [
+            53,
+            485
+        ],
+        "comptage energétique utile appoint D5": [
+            497,
+            204
+        ],
+        "pompe double droite": [
+            438,
+            64
+        ],
+        "pompe double gauche": [
+            237,
+            64
+        ],
+        "deshu sur appoint 1": [
+            438,
+            64
+        ],
+        "appoint inde": [
+            187,
+            64
+        ]
+    },
+    "circulateurs": {
+        "circulateurC1": {
+            "pos": [
+                739,
+                317
+            ],
+            "posLabel": [
+                806,
+                385
+            ]
+        },
+        "circulateurC2": {
+            "pos": [
+                705,
+                214
+            ],
+            "posLabel": [
+                805,
+                285
+            ]
+        },
+        "circulateurC3": {
+            "pos": [
+                671,
+                102
+            ],
+            "posLabel": [
+                805,
+                185
+            ]
+        },
+        "circulateurC7": {
+            "pos": [
+                590,
+                51
+            ],
+            "posLabel": [
+                648,
+                190
+            ]
+        }
+    },
+    "base_schema": [
+        0,
+        40
+    ],
+    "raccord": {
+        "capteur": [
+            96,
+            57
+        ],
+        "circulateurs": [
+            0,
+            40
+        ],
+        "sonde T9": [
+            760,
+            40
+        ],
+        "ballonECS": [
+            529,
+            52
+        ]
+    },
+    "ballonECS": [
+        307,
+        64
+    ],
+    "champCapteur": [
+        4,
+        41
+    ],
+    "appoint": {
+        "base": [
+            187,
+            64
+        ],
+        "raccord": [
+            543,
+            201
+        ]
+    },
+    "ballonTampon":[
+        62,
+        223
+    ],
+    "resistanceBT":[180,361],
+    "resistanceECS":[440,327],
+    "circulateurC5":[523,438]
+    
+}

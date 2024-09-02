@@ -1,0 +1,28 @@
+html{
+    font-family: 'Comfortaa';
+    color: #CFDBD5;
+}
+body{
+    background-color: #10B9B7;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+
+}
+
+form{
+    margin: auto;
+    padding: 2em;
+    background-color: black;
+    border-radius: 1em;
+}
+form input[type=submit]{
+    width: 100%;
+}
+form table{
+    border-collapse: separate;
+    border-spacing: 1em;
+}
+p.errorMsg{
+    color: red;
+}

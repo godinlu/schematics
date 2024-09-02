@@ -1,0 +1,106 @@
+{
+    "css": {
+        "client":{
+            "Formulaire": [
+                "formulaire/autocomplete.css",
+                "formulaire/formulaire.css",
+                "public/menuDeroulant.css",
+                "public/form.css"
+            ],
+            "Schema_hydrau": [
+                "schema_hydrau/schema_hydrau.css",
+                "public/sideBar.css"
+            ],
+            "Schema_exe": [
+                "schema_exe/schema_exe.css",
+                "public/sideBar.css"
+            ],
+            "Fiche_prog": [
+                "public/sideBar.css",
+                "fiche_prog/fiche_prog.css"
+            ],
+            "Devis": [
+                "devis/devis.css",
+                "public/form.css",
+                "public/menuDeroulant.css",
+                "public/scrollTable.css"
+            ],
+            "Version": [
+                "version/version.css"
+            ],
+            "public":[
+                "public/footer.css",
+                "public/header.css",
+                "public/popup.css",
+                "fiche_prog/tableau.css"
+                
+            ]
+        },
+        "admin":{
+            "Login": [
+                "admin/login.css"
+            ],
+            "Devis":[
+                "public/scrollTable.css",
+                "admin/devis.css"
+            ],
+            "public":[
+                "admin/public.css"
+            ]
+        }
+    },
+    "js": {
+        "client":{
+            "Formulaire": [
+                "formulaire/autocomplete.js",
+                "formulaire/forbidList.class.js",
+                "formulaire/Sonde.class.js",
+                "formulaire/List.class.js",
+                "formulaire/gestionErreur.js",
+                "public/menuDeroulant.js"
+            ],
+            "Schema_hydrau": [
+                "client/schema_hydrau.js"
+            ],
+            "Schema_exe": [
+                "client/schema_exe.js"
+            ],
+            "Fiche_prog": [
+                "client/fiche_prog.js"
+            ],
+            "Devis": [
+                "devis/Devis.class.js",
+                "public/menuDeroulant.js",
+                "devis/utils.class.js",
+                "devis/VisualDevis.class.js",
+                "devis/SC_part.js",
+                "devis/ballon_part.js",
+                "devis/capteur.class.js",
+                "devis/tubeInox_part.js",
+                "devis/elecAnode_part.js",
+                "devis/service_part.js",
+                "devis/articles_commentaires.js",
+                "devis/devis.js"
+            ],
+            "public":[
+                "public/header.js",
+                "public/utils.js"
+            ]
+        },
+        "admin":{
+            "Devis":[
+                "admin/devis.js"
+            ]
+        }
+        
+    },
+    "cdn": {
+        "Devis": [
+            "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+            "https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+
+        ]
+    }
+}

@@ -1,0 +1,316 @@
+{
+    "2.0.19":{
+        "date":"02/05/2024",
+        "content":{
+            "correction de bugs":[
+                "Etiquetage : correction d'un bug de l'étiquetage du SC1Z"
+            ]
+        }
+    },
+    "2.0.18":{
+        "date":"20/04/2024",
+        "content":{
+            "correction de bugs":[
+                "correction d'un bug majeur qui empêchait sertait téléchargement de dossier"
+            ]
+        }
+    },
+    "2.0.17":{
+        "date":"26/03/2024",
+        "content":{
+            "correction de bugs":[
+                "correction d'un bug lors d'un téléchargement de dossier avec un nom à charactère spéciaux"
+            ],
+            "Changements":[
+                "schéma exe : cache C4 et C5 lorsqu'il n'y a pas de ballon ECS"
+            ]
+        }
+    },
+    "2.0.16":{
+        "date":"26/03/2024",
+        "content":{
+            "correction de bugs":[
+                "Devis : le titre SC1Z400L ne s’adapte pas au contenu de l’offre",
+                "Devis : ajout de aucun pour les appoints",
+                "schéma : correction des lignes de la cartouche qui sortait du cadre"
+            ],
+            "Nouveautés":[
+                "Schéma : ajout du double circulateur sur champ capteur"
+            ]
+        }
+    },
+    "2.0.15":{
+        "date":"09/03/2024",
+        "content":{
+            "correction de bugs":[
+                "Devis : correction du téléchargement en xlsx qui modifiait le devis en cours",
+                "Devis : correction de la sauvegarde de la partie service qui ne marchait pas",
+                "Devis : correction d'un bug où l'on ne pouvait pas modifier le prix du transport zone 5",
+                "Etiquetage : correction d'un cas particulier avec 4 zone et 1 seule plancher chauffant"
+            ]
+        }
+    },
+    "2.0.14":{
+        "date":"07/03/2024",
+        "content":{
+            "changements":[
+                "Devis : trie des dimensions des flexibles inox par DN",
+                "Devis : trie des Flexibles inox par longueur",
+                "Devis : update des libelé de type de pose",  
+                "Devis : possibilités de choisir le nombre de champs de capteur lorsqu'il ne sont pas intégrés"            
+            ],
+            "correction de bugs":[
+                "Devis : correction du changement de quantité qui ne marchait pas pour les accessoires"   
+            ]
+        }
+    },
+    "2.0.13":{
+        "date":"06/03/2024",
+        "content":{
+            "changements":[
+                "Devis : filtrage des accessoires en fonction du diamètre du flexible associé",
+                "Schéma hydraulique : enlevé l’aquastat de sécurité pour le CESI déporté "
+            ]
+        }
+    },
+    "2.0.12":{
+        "date":"05/03/2024",
+        "content":{
+            "changements":[
+                "Schéma d'exe : déplacement de la sonde T6 en appoint sur C7",
+                "Devis : trie par ordre croissant de volum les ballons ECS et tampon"
+            ]
+        }
+    },
+    "2.0.11":{
+        "date":"04/03/2024",
+        "content":{
+            "correction de bugs":[
+                "Devis: remise en place de la sauvegarde du devis en json ou lors d'un changement de page",
+                "Etiquetage: correction du chevauchement de flêches"
+            ]
+        }
+    },
+    "2.0.10":{
+        "date":"02/12/2023",
+        "content":{
+            "Nouveautés":[
+                "Formulaire: ajout de l'appoint double simple (sur le schéma d'exe et le schéma hydraulique)",
+                "Schéma d'exe : ajout de la sonde T6 lors d'un appoint 2 sur C7"
+            ]
+        }
+    },
+    "2.0.9":{
+        "date":"21/07/2023",
+        "content":{
+            "changements":[
+                "Devis: ajout d'options du devis pour les collectif et hydraubox"
+            ]
+        }
+    },
+    "2.0.8":{
+        "date":"21/07/2023",
+        "content":{
+            "changements":[
+                "sauvegarder du taux de remise dans le devis"
+            ]
+        }
+    },
+    "2.0.7":{
+        "date":"19/07/2023",
+        "content":{
+            "changements":[
+                "formulaire : valeur par défaut du module qui passe au SC2"
+            ],
+            "correction de bugs":[
+                "correction d'un bug pour le réchauffeur de boucle'"
+            ]
+        }
+    },
+    "2.0.6":{
+        "date":"19/07/2023",
+        "content":{
+            "changements":[
+                "pour un SC1Z une zone classique sera désormais sur C3 tandis que un appoint sera sur C7"
+            ]
+        }
+    },
+    "2.0.5":{
+        "date":"18/07/2023",
+        "content":{
+            "Nouveautés":[
+                "ajout d'une api pour récupérer une configuration csv à partir du json"
+            ]
+        }
+    },
+    "2.0.4":{
+        "date":"18/07/2023",
+        "content":{
+            "correction de bugs":[
+                "Schéma hydraulique : la sondes T14 apparaissait en permanence",
+                "Formulaire : lors d'un appoint 2 en casade de l'appoint 1 les raccord hydraulique n'etait pas mis à jour"
+            ]
+        }
+    },
+    "2.0.3":{
+        "date":"17/07/2023",
+        "content":{
+            "changements":[
+                "update de certains index par défaut"
+            ]
+        }
+    },
+    "2.0.2":{
+        "date":"17/07/2023",
+        "content":{
+            "Nouveautés":[
+                "ajout d'une api pour pouvoir récupérer les schémas"
+            ]
+        }
+    },
+    "2.0.1":{
+        "date":"17/07/2023",
+        "content":{
+            "Nouveautés":[
+                "Devis : ajout de choix par défaut pour facilité la création de devis"
+            ],
+            "Changements":[
+                "Devis : la remise ne s'applique plus pour la partie service"
+            ]
+        }
+    },
+    "2.0.0":{
+        "date":"13/07/2023",
+        "content":{
+            "changements":[
+                "le partage des données entre les pages se fait maintenant côté serveur avec la $_SESSION",
+                "la génération du schéma hdyraulique, du schéma d'exe, de l'étiquetage et de la fiche de programmation se fait maintenant côté serveur",
+                "le téléchargement du dossier complet se fait aussi côté serveur",
+                "le format json de la sauvegarde de configuration à changé de format mais les anciennes configurations sont toujours récupérable"
+            ],
+            "avertissement":[
+                "avec tout les changements il est possible qu'il y ai beaucoup de bug et de problèmes n'hésitez pas à les faires remonter"
+            ]
+        }
+    }, 
+
+    "1.8.6":{
+        "date":"27/06/2023",
+        "content":{
+            "changements":[
+                "Admin : lorsque un utilisateur enregistre plusieurs fois le même devis celui-ci est mis à jour plutôt que d'avoir un doublon",
+                "Devis : amélioration du design"
+            ],
+            "correction de bugs":[
+                "Devis : bug avec l'appoint sur casse pression ou échangeur",
+                "bug lors du téléchargement du dossier complet où il fallait télécharger 2 fois"
+            ]
+        }
+    },   
+    "1.8.5":{
+        "date":"26/06/2023",
+        "content":{
+            "changements":[
+                "Admin: plus de problème de doublons  de devis et changement du système de sauvegarde de devis"
+            ]
+        }
+    },
+    "1.8.4":{
+        "date":"23/06/2023",
+        "content":{
+            "Nouveautés":[
+                "Admin: ajout de la possibilité d'aller sur la page admin pour visualiser les devis qui ont été générés"
+            ]
+        }
+    },
+    "1.8.3":{
+        "date":"21/06/2023",
+        "content":{
+            "Nouveautés":[
+                "Devis : ajout de la possibilité de choisir un prix pour un commentaire",
+                "Devis : ajout de la catégorie 'Chaudière en option hors commande SolisArt' "
+            ],
+            "changements":[
+                "Devis: le choix des catégories est maintenant plus claire il est fait avec le nom complet des catégories"
+            ],
+            "correction de bugs":[
+                "Devis : bug avec la sauvegarde automatique lors de changement du formulaire de base",
+                "schéma d'exe : pisicine déporté sur T15 reformaté pour pouvoir rentrer avec des capteurs sur échangeurs",
+                "schéma d'exe : meilleur qualité sur les ballons tampons"
+                
+            ]
+        }
+    },
+    "1.8.2":{
+        "date":"20/06/2023",
+        "content":{
+            "Nouveautés":[
+                "Devis : ajout de la sauvegarde automatique du devis. Maintenant lorsque l'on change ou que l'on sauvegarde le devis est sauvegardé",
+                "formulaire : met automatiquement un échangeur dans le ballon tampon lorsque l'on choisit un capteur sans échangeur"
+            ],
+            "correction de bugs":[
+                "Schéma exe : affichage de la cartouche pour l'étiquetage"
+            ]
+        }
+    },
+    "1.8.1":{
+        "date":"20/06/2023",
+        "content":{
+            "changements":[
+                "Devis: les données des articles sont maintenant stocké dans une base de donnée"
+            ]
+        }
+    },
+    "1.8.0":{
+        "date":"14/06/2023",
+        "content":{
+            "Nouveautés":[
+                "ajout de la page version qui est désormais directement présent dans le site"
+            ],
+            "changements":[
+                "Toute la partie client du site se fait désormais à l'aide d'un modèle vu contrôleur"
+            ],
+            "informations":[
+                "La partie admin n'a pas encore été mise à jour elle est donc temporairement indisponible"
+            ]
+        }
+        
+    },
+    "1.7.10":{
+        "date":"",
+        "content":{
+            "Nouveautés":[
+                "Devis : possibilité de choisir la catégorie lors d'un ajout d'un article inutilisé",
+                "Devis : possibilité d'ajouter un commentaire dans le devis dans la catégorie que l'on veut"
+            ],
+            "changements":[
+                "Devis : changement de l'ordre des articles dans le devis (classement par prix)",
+                "Devis : changement de génération des champs : vase expansion, commentaires, ballons-### Correction de bugs",
+                "Formulaire : correction de bug avec l'échangeur dans le ballon solaire qui pouvait s'enlever"
+            ]
+        }
+        
+    },
+    "1.7.9":{
+        "date":"",
+        "content":{
+            "Nouveautés":[
+                "ajout du ballon tampon en eau chaude sanitaire pour le schéma hydraulique et pour le schéma d'exe",
+                "Devis : ajout du choix de quantité pour l'ajout d'un article"
+            ]
+        }
+        
+    },
+    "1.7.8":{
+        "date":"",
+        "content":{
+            "Nouveautés":[
+                "Devis : possibilité d'ajouter un article au devis directement avec une recherche dans la base de données complète"
+            ],
+            "changements":[
+                "Devis : ajout du kit montage réchauffeur de boucle marche maintenant correctement"
+            ]
+        }
+        
+    }
+}

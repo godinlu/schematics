@@ -1,0 +1,58 @@
+/*Partie pour le header*/
+header nav{
+    background-color: #000000;
+    padding: 0.5em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+header nav ul {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    background-color: #222222;
+}
+
+nav li a{
+    font-family: 'Roboto',sans-serif;
+    display: block;
+    padding: 1em;
+    text-decoration: none;
+    font-size: 16px;
+    color: #d9d9d9;
+    text-transform: uppercase;
+    border: none;
+    font-weight: 600;
+}
+
+nav .jaune{
+    background-color: #f6c437;
+    color: #000000;
+}
+nav .bleue{
+    background-color: #10B9B7;
+    color: #000000;
+}
+
+nav li a:hover {
+    background-color:#000000;
+    color: #f6c437;
+}
+
+/*Partie générale*/
+html{
+    font-family: 'Comfortaa';
+    color: #CFDBD5;
+}
+
+body{
+    margin: 0;
+    background-color: #10B9B7;
+}
+.flex{
+    display: flex;
+}
+

@@ -1,0 +1,269 @@
+body{
+    background-color: #10B9B7;
+}
+
+
+/*
+    partie responsable de la mise en forme du tableau du devis
+*/
+#div_affichage_devis{
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: smaller;
+    color: black;
+    background-color: white;
+    padding: 1em;
+}
+#div_affichage_devis table{
+    border-collapse: collapse;
+    max-width: 1000px;
+    border: 1px solid black;
+    margin-bottom: 1em;
+
+}
+#table_devis tr:first-child{
+    border: 1px solid black;
+    
+}
+#table_devis tr:first-child td{
+    text-align: center;
+    background-color: darkgray;
+}
+
+#table_devis td,
+#table_devis th{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0.5em 0.4em 0.5em 0.4em;
+    text-align: start;
+
+}
+#table_devis td:nth-child(2){
+    width: 65%;
+}
+
+/*partie footer du devis*/
+#footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+#footer table:first-child td{
+    border: 1px solid black;
+    text-align: center;
+    padding: 0.5em;
+}
+#footer table:nth-child(2) td,
+#footer table:nth-child(2) th{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0.5em;
+}
+#footer table:nth-child(2) td:last-child{
+    text-align: end;
+}
+#footer table:nth-child(2) th{
+    border-top: 1px solid black;
+}
+
+/*partie pout la mise en forme de la list déroulante module*/
+#module_accesssoires{
+    display: flex;
+}
+#module_accesssoires table{
+    margin-right: 3em;
+}
+
+#piscine_appoint{
+    display: flex;
+    justify-content: space-between;
+}
+
+fieldset.filled{
+    width: fit-content;
+    border-radius: 0.5em;
+    background-color: #222222;
+    border-color: #222222;
+    margin-bottom: 0.2em;
+}
+fieldset.filled legend{
+    font-weight: bold;
+}
+
+/*
+    row est la class qui est donné aux lignes qui s'ajoute ou se suprime
+    on met en forme ces lignes avec le boutons supprimer
+*/
+.row{
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 0.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border-radius: 0.5em;
+    background-color: #222222;
+    border-color: #222222;
+    width: fit-content;
+}
+.row i{
+    position:absolute;
+    top:0;
+    right:0;
+}
+.row i:hover{
+    color: red;
+    cursor: pointer;
+}
+.row table{
+    margin-right: 3em;
+}
+/*partie pout la partie raccordement capteur*/
+.flex{
+    display: flex;
+    align-items: flex-start;
+}
+.equal > *{
+    flex-basis: 0;
+    flex-grow: 1;
+}
+/*partie pour le bouton d'ajout d'un élément*/
+.addButton{
+    color: #CFDBD5;
+    background-color: inherit;
+    border: 1px solid #CFDBD5;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    text-transform: uppercase;
+    border-radius: 0.3em;
+    text-decoration: none;
+    padding: 0.5em;
+}
+.addButton:hover{
+    border-color: #f6c437;
+    color: #f6c437;
+    cursor: pointer;
+}
+
+.addButton i{
+    margin-right: 0.5em;
+}
+
+.bigger{
+    width: 50%;
+}
+
+
+/**/
+#panel_divers fieldset,#panel_services fieldset, #panel_ballon fieldset{
+    margin: 1em 0.5em 1em 0.5em;
+    border-radius: 0.5em;
+}
+
+fieldset{
+    width: fit-content;
+}
+
+#panel_services{
+    line-height: 2em;
+}
+#button_bar{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#button_bar > button{
+    border: none;
+    outline: none;
+    background-color:#f6c437;
+    border-radius: 1em;
+    padding: 0.5em;
+    font-size: large;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.4s;
+    margin-top: 1em;
+    width: 40%;
+}
+
+#button_bar > button:hover{
+    background-color: black;
+    color: #f6c437;
+  }
+
+/*partie header du devis*/
+#header p{
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+#tampon_solisart{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#header >div:first-child{
+    display:flex ;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#header > div:first-child table{
+    width: 400px;
+    
+}
+#header > div:first-child table td,#header > div:first-child table th{
+    border: 1px solid black;
+    text-align: center;
+}
+
+.underline{
+    text-decoration: underline;
+}
+#tableAffaire{
+    width:  100%;
+}
+#tableAffaire td{
+    border: 1px solid black;
+    text-align: center;
+}
+#tableAffaire tr:last-child td{
+    height: 30px;
+}
+
+.small{
+    width: 15em;
+}
+/*==============================================================================*/
+/*partie pour la mise en forme du choix d'un article*/
+
+#panel_article > div{
+    margin: 1em 0.5em 1em 0.5em;
+    border-radius: 0.5em;
+    background-color: #222222;
+}
+#panel_article > div:first-child{
+    flex-basis: 0;
+    flex-grow: 2;
+}
+#panel_article > div:last-child{
+    padding: 1em 0.5em 1em 0.5em;
+    flex-grow: 0;
+}
+#panel_article table{
+    width: 100%;
+}
+
+/*règle pour les filtres*/
+tr.hide_colonne1,
+tr.hide_colonne2,
+tr.hide_article_ajouter,
+.hidden{
+    display: none;
+}
+
+/*==============================================================================*/
+

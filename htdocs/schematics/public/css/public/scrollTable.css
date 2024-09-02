@@ -1,0 +1,32 @@
+/*sous partie pour le tableau*/
+.scroll-container{
+    display: inline-block;
+    height: 20em;
+    overflow: scroll;
+    border-radius: 0.5em;
+    background-color: #222222;
+}
+
+.scroll-container table{
+    border-collapse: collapse;
+    margin-top: 0 !important; 
+    margin-bottom: 0 !important; 
+}
+.scroll-container table td{
+    padding: 0.3em;
+}
+.scroll-container table input[type="number"]{
+    width: 3em;
+}
+
+.scroll-container table thead tr th{
+    position: sticky;
+    font-weight: bold;
+    top: 0;
+    background-color: #10B9B7;
+    padding: 1em;
+}
+
+.scroll-container tbody tr:nth-child(odd) {
+    background-color: #515151;
+}

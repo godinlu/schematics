@@ -1,0 +1,33 @@
+{
+    "title":"Légende des équipements",
+    "L1_title":"Dénom.",
+    "L2_title":"Correspondance",
+    "content":[
+        ["champCapteur","T1","T° capteur chaud"],
+        ["champCapteur","T2","T° capteur froid"],
+        ["","T3","T° bas de ballon / T° ballon solaire"],
+        ["","T4","T° haut de ballon / T° ballon appoint"],
+        ["ballonTampon","T5","T° ballon tampon"],
+        ["appointC7","T6","T° appoint 2"],
+        ["","T7","T° collecteur froid"],
+        ["","T8","T° collecteur chaud"],
+        ["","T9","T° extérieure"],
+        ["sondes","T10","T° sonde d’option"],
+        ["circulateurC1","T11","T° ambiance zone 1"],
+        ["circulateurC2","T12","T° ambiance zone 2"],
+        ["circulateurC3","T13","T° ambiance zone 3"],
+        ["circulateurC7 sans appoint","T14","T° ambiance zone 4"],
+        ["sondes","T15","T° sonde d’option "],
+        ["sondes","T16","T° sonde d’option"],
+        ["circulateurC1","C1","Circulateur chauffage zone 1"],
+        ["circulateurC2","C2","Circulateur chauffage zone 2"],
+        ["circulateurC3","C3","Circulateur chauffage zone 3"],
+        ["","C4","Circulateur ballon appoint"],
+        ["circulateurC5","C5","Circulateur ballon solaire"],
+        ["circulateurC6","C6","Circulateur ballon tampon"],
+        ["circulateurC7","C7","Circulateur appoint 2 / chauffage zone 4"],
+        ["sondes","S10","Sortie disponible pour option 47/48"],
+        ["sondes","S11","Sortie disponible pour option 49/50"]
+    ]
+    
+}

@@ -1,0 +1,14 @@
+# Ignore all files and directories
+#*
+
+# Include the "schematics" directory
+#!htdocs/schematics
+
+# Ignore dev
+dev
+deploy.sh
+
+# ignore the config textfile
+config.txt
+
+
