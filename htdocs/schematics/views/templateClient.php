@@ -73,8 +73,7 @@
     <footer>
         <div>
             <h3>Me contacter<i class="fa fa-phone fa-lg" aria-hidden="true"></i></h3>
-            <p>En cas de bug, de problèmes, de questions ou de suggestions n'hésitez pas à me contacter par mail.</p>
-            <p><a href="mailto:contact@solisart.fr">contact@solisart.fr</a></p>
+            <p><a href="https://github.com/godinlu/schematics/issues">signaler un problème</a></p>
         </div>
         <div>
             <h3>Aide<i class="fa fa-question fa-lg" aria-hidden="true"></i></h3>
