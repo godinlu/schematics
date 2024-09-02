@@ -30,6 +30,6 @@ jobs:
         
     - name: Deploy to www.solisart.fr
       run: |
-        git checkout -b main
-        git push production main
+        git tag -a v${{ github.event.release.tag_name }} -m "Release ${{ github.event.release.tag_name }}"
+        git push production v${{ github.event.release.tag_name }}
         ssh 2609665@git.sd5.gpaas.net deploy www.solisart.fr.git main
