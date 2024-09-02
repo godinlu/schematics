@@ -15,6 +15,7 @@ jobs:
       
     - name: Add SSH key fingerprint to known_hosts
       run: |
+        cd ${{ github.workspace }}
         ssh-keyscan git.sd5.gpaas.net >> ~/.ssh/known_hosts
         
     - name: Set up SSH
