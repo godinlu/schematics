@@ -1,8 +1,9 @@
 name: Deploy to Production
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -10,9 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  # Important pour obtenir l'historique complet
+      uses: actions/checkout@v4
         
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.9.0
@@ -23,13 +22,8 @@ jobs:
       run: |
         git remote add production git+ssh://2609665@git.sd5.gpaas.net/www.solisart.fr.git
         git remote -v  # Optionnel, pour vérifier que le remote a été correctement ajouté
-
-    - name: Verify branches
-      run: |
-        git branch -a
         
     - name: Deploy to www.solisart.fr
       run: |
-        git tag -a v${{ github.event.release.tag_name }} -m "Release ${{ github.event.release.tag_name }}"
-        git push production v${{ github.event.release.tag_name }}
+        git push production main
         ssh 2609665@git.sd5.gpaas.net deploy www.solisart.fr.git main
