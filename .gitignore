@@ -6,7 +6,6 @@
 
 # Ignore dev
 dev
-deploy.sh
 
 # ignore the config textfile
 config.txt
