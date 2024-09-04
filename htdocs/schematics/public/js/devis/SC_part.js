@@ -147,24 +147,42 @@ function addKitCapteur(kitCapteurs_rows){
         !/échangeur/.test(formulaire['champCapteur']) &&
         !/V3V/.test(formulaire['champCapteur'])
         ){
-            document.querySelector("#div_kit_capteur").remove();
+            document.querySelector("#kit_capteur").remove();
             return;
         } 
 
     var rows;
     if (/casse pression/.test(formulaire['champCapteur'])){   //cas ou il y a une casse pression
-        rows = kitCapteurs_rows.filter(raw => raw.filtre3 == "casse pression");
+        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "casse pression");
     }else if (/échangeur/.test(formulaire['champCapteur'])){   //cas ou il y a un échangeur
-        rows = kitCapteurs_rows.filter(raw => raw.filtre3 == "échangeur");
+        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "échangeur");
     }else if (/V3V/.test(formulaire['champCapteur'])){    //cas ou c'est sur V3V
-        rows = kitCapteurs_rows.filter(raw => raw.filtre3 == "V3V");
+        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "V3V");
     }
-    for (var i = 0 ; i < rows.length ; i++){
-        s_KIT_CAPTEUR.addOption(rows[i].label , rows[i].ref);
+    // active les 2 selects qui compose un kit capteur
+    // on met true à la fin de chaque activate_select pour avoir l'option aucun
+    activate_select(
+        document.querySelector("#kit_capteur_mod1"),
+        rows.filter(raw => raw.filtre3 == "module"), true
+    );
+    activate_select(
+        document.querySelector("#kit_capteur_kit1"),
+        rows.filter(raw => raw.filtre3 == "kit"), true
+    );
+
+    if (/2/.test(formulaire["champCapteur"])){
+        activate_select(
+            document.querySelector("#kit_capteur_mod2"),
+            rows.filter(raw => raw.filtre3 == "module"), true
+        );
+        activate_select(
+            document.querySelector("#kit_capteur_kit2"),
+            rows.filter(raw => raw.filtre3 == "kit"), true
+        );
+
+    }else{
+        document.querySelector("#kit_capteur_2").remove();
     }
-    //ici on ajoute l'event listener à la liste et on simule une action pour ajouter une ligne au devis
-    s_KIT_CAPTEUR.addEventListener("change",eventSelectUpdateDevis);
-    eventSelectUpdateDevis.call(s_KIT_CAPTEUR);
 
 }
 //////////////////////////////////////////////////////////////////////////        

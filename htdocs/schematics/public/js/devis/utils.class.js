@@ -362,6 +362,43 @@ function setElementValue(element, value, id_champ = undefined){
     }
 }
 
+/**
+ * cette fonction met à jour les options du select avec le contenue de rows
+ * si none_choice = true alors l'option aucun est ajouté
+ * @param {HTMLSelectElement} select 
+ * @param {JSON[]} rows 
+ * @param {boolean} none_choice
+ */
+function set_options(select, rows, none_choice = false){
+    // supprime toute les options du select
+    while (select.options.length > 0) {
+        select.remove(0);
+    }
+
+    // ajoute toutes les options avec comme valeur la ref de rows et comme label les label de rows
+    for (var i = 0 ; i < rows.length ; i++){
+        select.addOption(rows[i].label, rows[i].ref);
+    }
+
+    // si none_choice est vrai alors on rajoute l'option aucun en dernière option
+    if (none_choice) select.addOption("Aucun","Aucun");
+}
+
+/**
+ * Cette fonction complémente set_options pour aussi ajouter un event listener "change" avec 
+ * comme fonction handler : eventSelectUpdateDevis
+ * Et appele une fois eventSelectUpdateDevis.
+ * Si none_choice = true alors l'option aucun est ajouté.
+ * @param {HTMLSelectElement} select 
+ * @param {JSON[]} rows 
+ */
+function activate_select(select, rows, none_choice = false){
+    set_options(select, rows, none_choice)
+    select.addEventListener("change", eventSelectUpdateDevis)
+    eventSelectUpdateDevis.call(select)
+}
+
+
 
 
 

@@ -58,20 +58,39 @@
         <!-- menu déroulant pour la partie capteurs -->
         <div>
             <button  type="button" class="accordion" id="AC_capteur">Capteurs</button>
-            <div class="panel" id="panel_capteurs">
+            <div class="panel flex" id="panel_capteurs">
                 <fieldset>
                     <legend>Capteurs</legend>
                     <div id="div_capteur"></div>
                     <button id="bt_add_capteur" class="addButton"><i class="fa fa-plus-circle" aria-hidden="true"></i>Ajouter</button>
                 </fieldset>
-                
-                <table id="div_kit_capteur">
-                    <tr>
-                        <td>Kit capteurs</td>
-                        <td><select id="kit_capteur" name="kit_capteur" class="SC_part bigSelect"></select></td>
-                    </tr>
-
-                </table>
+                <fieldset id="kit_capteur">
+                    <legend>Kit capteurs</legend>
+                    <div class="row">
+                        <table>
+                            <tr>
+                                <td>Module:</td>
+                                <td><select id="kit_capteur_mod1" name="kit_capteur_mod1" class="SC_part bigSelect"></select></td>
+                            </tr>
+                            <tr>
+                                <td>Kit:</td>
+                                <td><select id="kit_capteur_kit1" name="kit_capteur_kit1" class="SC_part bigSelect"></select></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row" id="kit_capteur_2">
+                        <table>
+                            <tr>
+                                <td>Module:</td>
+                                <td><select id="kit_capteur_mod2" name="kit_capteur_mod2" class="SC_part bigSelect"></select></td>
+                            </tr>
+                            <tr>
+                                <td>Kit:</td>
+                                <td><select id="kit_capteur_kit2" name="kit_capteur_kit2" class="SC_part bigSelect"></select></td>
+                            </tr>
+                        </table>
+                    </div>
+                </fieldset>
             </div>
         </div>
         

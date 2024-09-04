@@ -14,7 +14,6 @@ var CSV = {}
 var s_GAMME_KIT = document.querySelector("#gamme_kit");
 var s_GAMME_MOD = document.querySelector("#module");
 var s_APPOINT_C7 = document.querySelector("#appoint_c7");
-var s_KIT_CAPTEUR = document.querySelector("#kit_capteur");
 var s_BALLON_ECS = document.querySelector("#ballon_ecs");
 var s_BALLON_TAMPON = document.querySelector("#ballon_tampon");
 
