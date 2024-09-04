@@ -315,7 +315,8 @@ class SchemaExe extends Module{
                     case "V3V décharge zone 1":
                     case "Décharge sur zone 1":
                         // On commence par pointer la bonne image
-                        $zone = (int)preg_replace('/ \d/', '', $value);
+                        preg_match('/\s(\d)/', $value, $matches);
+                        $zone = (int)$matches[0];
                         if ($this->_nb_zone != 4) {   // Si toutes les zones ne sont pas présentes, il faut décaler de 1
                             $zone++;
                             if ($this->_nb_zone != 3 && $this->_is_SC1Z) $zone++;

@@ -3,7 +3,7 @@
         "V3V décharge zone 1": {
             "pos": [
                 757,
-                358
+                357
             ],
             "posLabel": [
                 859,
@@ -62,8 +62,8 @@
         },
         "Free Cooling Zone 1": {
             "pos": [
-                756,
-                369
+                757,
+                357
             ],
             "posLabel": [
                 803,
@@ -73,7 +73,7 @@
         "Free Cooling Zone 2": {
             "pos": [
                 725,
-                233
+                273
             ],
             "posLabel": [
                 807,
@@ -83,7 +83,7 @@
         "Free Cooling Zone 3": {
             "pos": [
                 730,
-                138
+                178
             ],
             "posLabel": [
                 803,
@@ -93,7 +93,7 @@
         "Free Cooling Zone 4": {
             "pos": [
                 654,
-                118
+                158
             ],
             "posLabel": [
                 644,
@@ -113,7 +113,7 @@
         "Décharge sur zone 1": {
             "pos": [
                 757,
-                331
+                357
             ],
             "posLabel": [
                 865,

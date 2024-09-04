@@ -52,7 +52,8 @@ if (isset($_GET['format']) && $_GET['format'] === "PDF"){
      
 
 }else{
-    $schema->show();
+    if (!isset($_GET['debug']))
+        $schema->show();
 }
 
 
