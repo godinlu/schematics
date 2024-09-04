@@ -123,6 +123,10 @@
                         <legend>Réchauffeur de boucle</legend>
                         <div id="div_rechauffeur_boucle"></div>
                     </fieldset>
+                    <div id="div_kit_v3v">
+                        <input type="checkbox" name="kit_v3v" id="kit_v3v" class="SC_part">
+                        <label for="kit_v3v"></label>
+                    </div>
                 </div>
             </div>
             <div>

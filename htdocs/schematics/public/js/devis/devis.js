@@ -118,6 +118,7 @@ function create_SC_part(){
     const KIT_rows = CSV.SC_part.filter(raw => raw.filtre2 == "kit module");
     const OPT_rows = CSV.SC_part.filter(raw => raw.filtre2 == "opt zone");
     const kitCapteurs_rows = CSV.SC_part.filter(raw => raw.filtre2 == "kit capteur");
+    const options_rows = CSV.SC_part.filter(raw => raw.filtre2 == "option");
 
     //partie pour le module 
     for (var i = 0 ; i < MOD_row.length ; i++){
@@ -125,8 +126,8 @@ function create_SC_part(){
     }
     s_GAMME_MOD.addOption("Aucun","Aucun");
 
-    s_GAMME_MOD.addEventListener("change",eventUpdateObjet);//on est dans le cas d'un SC1Z
-    s_GAMME_MOD.addEventListener("change",eventSelectUpdateDevis);//on est dans le cas d'un SC1Z
+    s_GAMME_MOD.addEventListener("change",eventUpdateObjet); // on est dans le cas d'un SC1Z
+    s_GAMME_MOD.addEventListener("change",eventSelectUpdateDevis); // on est dans le cas d'un SC1Z
     eventSelectUpdateDevis.call(s_GAMME_MOD);
     //partie pour les KIT (vase d'exension)
     VaseExpension.lignes = KIT_rows;
@@ -137,6 +138,7 @@ function create_SC_part(){
     addPiscineZone1Devis();
     addZoneDevis(OPT_rows);
     addKitCapteur(kitCapteurs_rows);
+    add_options(options_rows);
 
     VisualDevis.show();
     
