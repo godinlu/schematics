@@ -30,7 +30,7 @@ jobs:
 
     - name: Synchronize remote
       run: |
-        git pull production main
+        git pull --rebase production main
         
     - name: Deploy to www.solisart.fr
       run: |
