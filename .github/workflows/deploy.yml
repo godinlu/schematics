@@ -27,10 +27,6 @@ jobs:
       run: |
         git remote add production git+ssh://2609665@git.sd5.gpaas.net/www.solisart.fr.git
         git remote -v  # Optionnel, pour vérifier que le remote a été correctement ajouté
-
-    - name: Synchronize remote
-      run: |
-        git pull --rebase production main
         
     - name: Deploy to www.solisart.fr
       run: |
