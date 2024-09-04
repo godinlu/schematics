@@ -2,11 +2,7 @@ body{
     background-color: #10B9B7;
 }
 
-
-/*
-    partie responsable de la mise en forme du tableau du devis
-*/
-#div_affichage_devis{
+#table_devis{
     margin-left: auto;
     margin-right: auto;
     width: fit-content;
@@ -15,14 +11,15 @@ body{
     color: black;
     background-color: white;
     padding: 1em;
-}
-#div_affichage_devis table{
     border-collapse: collapse;
     max-width: 1000px;
     border: 1px solid black;
     margin-bottom: 1em;
-
 }
+/*
+    partie responsable de la mise en forme du tableau du devis
+*/
+
 #table_devis tr:first-child{
     border: 1px solid black;
     
