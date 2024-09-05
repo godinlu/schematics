@@ -395,16 +395,22 @@
         <div id="champ_accessoire" class="row">
             <table>
                 <tr>
-                    <td>Accessoire : </td>
-                    <td><select id="accessoire" class="tubeInox_part small"></select></td>
+                    <td>
+                    Type de joint:
+                        <select name="type_joint" id="type_joint">
+                            <option value="metal">métal/métal</option>
+                            <option value="joint">métal joint</option>
+                        </select>
+                    </td>
                 </tr>
-            </table>
-            <table>
                 <tr>
-                    <td>Quantité : </td>
-                    <td><input type="number" id="nb_accessoire"  min="1" value="1"></td>
+                    <td>
+                        <ul id="accessoires">
+                        </ul>
+                    </td>
                 </tr>
             </table>
+            
             
             <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>
         </div>

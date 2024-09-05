@@ -72,7 +72,7 @@
     },
     "accessoire":{
         "true": {
-            "accessoire": "MOD0307"
+            "type_joint": "metal"
         } 
     },
     "S_Transport2":{

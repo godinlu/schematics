@@ -35,33 +35,27 @@ class FlexibleInox extends Champ{
             sort_functions
             );
 
-        this.nodes.Dimension_flexible.addEventListener("change",()=>{
-            this.filtrer_accesoire()
-        });
+        this.nodes.Dimension_flexible.addEventListener("change", this.handler_filtre_join.bind(this));
 
 
 
     }
+
     /**
-     * 
+     * fonction appelé lorsque le select de dimension du flexible change de valeur.
+     * met à jour le select de type de joint
      */
-    filtrer_accesoire(){
+    handler_filtre_join(){
         //on commence par accéder au select associé des accesoires
-        let select = document.getElementById("accessoire_"+this.num);
+        let select = document.getElementById("type_joint_"+this.num);
         //si le select n'existe pas alors on ne fait rien
         if (select === null) return;
 
-        let list_options = Array();
-        Accessoire.lignes.forEach(row =>{
-            if (row.label.includes(this.nodes.Dimension_flexible.value)) list_options.push(row);
-        });
-        //on vide les options du select puis on garde que celle résultant du filtre
-        select.innerHTML = "";
-        list_options.forEach(option => {
-            select.addOption(option.label, option.ref);
-        });
-        select.dispatchEvent(new Event('change'));    
+        if (this.nodes.Dimension_flexible.value == "DN32"){
+            setElementValue(select, "joint");
+        }
 
+        select.dispatchEvent(new Event('change')); 
     }
 
     supprimer(){
@@ -110,30 +104,81 @@ class Accessoire extends Champ{
     constructor(id, texte, categorie){
         super(id, texte, categorie);
 
-        //on initalise le select 
-        Accessoire.lignes.forEach(row => {
-            this.nodes.accessoire.addOption(row.label, row.ref);
-        });
+        this.nodes.type_joint.addEventListener("change", this.handler_type_joint.bind(this))
+        this.nodes.type_joint.dispatchEvent(new Event('change'));  
 
-        //on ajoute le handler sur le select
-        this.nodes.accessoire.addEventListener("change",eventSelectUpdateDevis);
-        this.nodes.accessoire.addEventListener("change",this.handlerQuantity.bind(this));
-        this.nodes.nb_accessoire.addEventListener("input", this.handlerQuantity.bind(this));
-        eventSelectUpdateDevis.call(this.nodes.accessoire);
     }
 
     /**
-     * fonction appellé lorsque l'input type number de quantité est modifié
-     * met à jour la quantité de l'article dans le devis
+     * fonction appellé lorsque le select type_join change de valeur.
+     * Cette fonction met à jour la liste des accessoire en fonction de la valeur de type_join et 
+     * de la valeur du DN choisi
      */
-    handlerQuantity(){
-        const qte = parseInt(this.nodes.nb_accessoire.value);
-        devis.updateQuantity(this.nodes.accessoire.id, qte);
-        VisualDevis.show();
+    handler_type_joint(){
+        // on récupère la dimension du flexible
+        let select_dim_flex = document.querySelector("#Dimension_flexible_"+this.num)
+        let dimension = (select_dim_flex) ? select_dim_flex.value : "DN20";
+
+        // on récupère la valeur du type_joint
+        let type_joint = this.nodes.type_joint.value;
+
+        // on filtre avec la dimension et le type de joint
+        let rows = Accessoire.lignes.filter(raw => (raw.filtre2.includes(type_joint) && raw.filtre3 == dimension));
+
+        // on regarde si parmis ces lignes il y a un choix et on les enlèves des rows
+        let choice = rows.filter(raw => raw.filtre4 == "choix");
+        rows = rows.filter(raw => raw.filtre4 != "choix");
+
+        this.supprimer()
+
+        // ensuite on remplie la liste avec tous les articles de rows
+        this.nodes.accessoires.innerHTML = "";
+        rows.forEach((raw, i) => {
+            let li = document.createElement("li");
+            li.innerText = raw.label;   
+            this.nodes.accessoires.appendChild(li);
+            devis.add("kit_joint_"+this.num+i, raw);
+        });
+
+        this.create_select_choice(choice);
+
+        
     }
 
+    /**
+     * Cette fonction créer un select avec les articles contenue dans choice et
+     * l'ajoute à la list this.nodes.accessoires. Si il n'y a aucun choix alors on supprime l'ancienne article.
+     * @param {JSON[]} choice 
+     */
+    create_select_choice(choice){
+        // si il n'y a aucun choix alors le select ne doit pas apparaitre
+        // et la ligne doit être supprimer du devis
+        if (choice.length == 0){
+            devis.removeRow("kit_joint_"+this.num);
+            VisualDevis.show();
+            return;
+        }else{
+            // ajoute un select avec les choix de choice
+            let li = document.createElement("li");
+            let select = document.createElement("select");
+            select.id = "kit_joint_"+this.num;
+            select.classList.add("tubeInox_part");
+            activate_select(select, choice);
+            li.appendChild(select);
+            this.nodes.accessoires.appendChild(li);
+        }
+    }
+
+    /**
+     * fonction appelé lors de la suppression d'un bloque mais aussi lors
+     * de la modification du type de joint
+     */
     supprimer(){
-        devis.removeRow(this.nodes.accessoire.id);
+        // suppression des articles ajouté au devis
+        for (let i = 0; i < this.nodes.accessoires.children.length; i++) {
+            devis.removeRow("kit_joint_"+this.num+i);
+        }
+        devis.removeRow("kit_joint_"+this.num);
         VisualDevis.show();
     }
 }
