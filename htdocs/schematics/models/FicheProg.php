@@ -51,7 +51,7 @@ class FicheProg{
         else if ($this->_formulaire['ballonECS'] !== AUCUN ) $nb_ballon_ecs = 1;
         else $nb_ballon_ecs = 0;
 
-        $nb_capteurs = (strpos($this->_formulaire['champCapteur'] ,"2") !== false)? 2 : 1;
+        $champs_capteur = $this->_formulaire['champCapteur'];
 
         $surface_capteurs = (!empty($this->_formulaire['champCapteur_surface']))?
              $this->_formulaire['champCapteur_surface'] . ' m²' : "";
@@ -74,7 +74,7 @@ class FicheProg{
             ['Installation'],
             ['Ballon tampon' , ($this->_formulaire['ballonTampon'] !== AUCUN)? 'oui' : 'non'],
             ['Nombre de ballon ECS' , $nb_ballon_ecs ],
-            ['Nombre de champs capteurs' ,  $nb_capteurs ],
+            ['Nombre de champs capteurs' ,  $champs_capteur ],
             ['Surface capteurs' , $surface_capteurs ],
             ['Type d\'appoint 1' , $this->getAppoint1() ],
             ['Type d\'appoint 2' , $this->getAppoint2() ],
