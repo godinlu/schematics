@@ -138,7 +138,7 @@ function addPiscineZone1Devis(){
  *      -V3V
  * ensuite ajoute les lignes dans un select pour laisser le choix à l'utilisateur
  */
-function addKitCapteur(kitCapteurs_rows){
+function addKitCapteur(kit_capteurs_rows){
     /*si il n'y a ni de casse pression ni d'échangeur ni de V3V alors on supprime le select 
     et on sort de la fonction
     */
@@ -153,31 +153,31 @@ function addKitCapteur(kitCapteurs_rows){
 
     var rows;
     if (/casse pression/.test(formulaire['champCapteur'])){   //cas ou il y a une casse pression
-        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "casse pression");
+        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "casse pression");
     }else if (/échangeur/.test(formulaire['champCapteur'])){   //cas ou il y a un échangeur
-        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "échangeur");
+        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "échangeur");
     }else if (/V3V/.test(formulaire['champCapteur'])){    //cas ou c'est sur V3V
-        rows = kitCapteurs_rows.filter(raw => raw.filtre4 == "V3V");
+        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "v3v");
     }
     // active les 2 selects qui compose un kit capteur
     // on met true à la fin de chaque activate_select pour avoir l'option aucun
     activate_select(
         document.querySelector("#kit_capteur_mod1"),
-        rows.filter(raw => raw.filtre3 == "module"), true
+        rows.filter(raw => raw.filtre2 == "module"), true
     );
     activate_select(
         document.querySelector("#kit_capteur_kit1"),
-        rows.filter(raw => raw.filtre3 == "kit"), true
+        rows.filter(raw => raw.filtre2 == "kit"), true
     );
 
     if (/2/.test(formulaire["champCapteur"])){
         activate_select(
             document.querySelector("#kit_capteur_mod2"),
-            rows.filter(raw => raw.filtre3 == "module"), true
+            rows.filter(raw => raw.filtre2 == "module"), true
         );
         activate_select(
             document.querySelector("#kit_capteur_kit2"),
-            rows.filter(raw => raw.filtre3 == "kit"), true
+            rows.filter(raw => raw.filtre2 == "kit"), true
         );
 
     }else{

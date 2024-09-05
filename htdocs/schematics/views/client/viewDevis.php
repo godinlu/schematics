@@ -74,11 +74,11 @@
                         <table>
                             <tr>
                                 <td>Module:</td>
-                                <td><select id="kit_capteur_mod1" name="kit_capteur_mod1" class="SC_part bigSelect"></select></td>
+                                <td><select id="kit_capteur_mod1" name="kit_capteur_mod1" class="tubeInox_part bigSelect"></select></td>
                             </tr>
                             <tr>
                                 <td>Kit:</td>
-                                <td><select id="kit_capteur_kit1" name="kit_capteur_kit1" class="SC_part bigSelect"></select></td>
+                                <td><select id="kit_capteur_kit1" name="kit_capteur_kit1" class="tubeInox_part bigSelect"></select></td>
                             </tr>
                         </table>
                     </div>
@@ -86,11 +86,11 @@
                         <table>
                             <tr>
                                 <td>Module:</td>
-                                <td><select id="kit_capteur_mod2" name="kit_capteur_mod2" class="SC_part bigSelect"></select></td>
+                                <td><select id="kit_capteur_mod2" name="kit_capteur_mod2" class="tubeInox_part bigSelect"></select></td>
                             </tr>
                             <tr>
                                 <td>Kit:</td>
-                                <td><select id="kit_capteur_kit2" name="kit_capteur_kit2" class="SC_part bigSelect"></select></td>
+                                <td><select id="kit_capteur_kit2" name="kit_capteur_kit2" class="tubeInox_part bigSelect"></select></td>
                             </tr>
                         </table>
                     </div>
