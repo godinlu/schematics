@@ -69,7 +69,7 @@ class DependencyLoader {
 
         $jsFiles = array_merge($public_files, $private_files);
         foreach($jsFiles as $path) {
-            echo "<script type=\"text/javascript\" src=\"../public/js/".$path."?v=".$this->_version."\"></script>";
+            echo "<script type=\"text/javascript\" src=\"../public/js/".$path."?v=".$this->_version."\" defer=\"defer\"></script>";
         }
         
     }
