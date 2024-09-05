@@ -1,4 +1,15 @@
 {
+    "2.0.22":{
+        "date":"05/09/2024",
+        "content":{
+            "Changements":[
+                "update de l'option V3V bypass appoint 1 pour le devis",
+                "ajout de la V3V lors de 2 champs capteur sur V3V",
+                "modification du label nb_champ de la fiche de prog",
+                "ajout des nouveaux raccordement capteur pour le devis"
+            ]
+        }
+    },
     "2.0.21":{
         "date":"04/09/2024",
         "content":{
