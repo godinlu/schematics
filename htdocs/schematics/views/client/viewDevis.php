@@ -24,6 +24,10 @@
                             <select id="appoint" name="appoint" class="appoint_part bigSelect"></select>
                         </fieldset>
                         <div id="div_piscine_zone"></div>
+                        <div id="div_kit_v3v">
+                            V3V bypass appoint 1:
+                            <select name="kit_v3v" id="kit_v3v" class="tubeInox_part"></select>
+                        </div>
 
                     </div>
                     
@@ -123,10 +127,6 @@
                         <legend>Réchauffeur de boucle</legend>
                         <div id="div_rechauffeur_boucle"></div>
                     </fieldset>
-                    <div id="div_kit_v3v">
-                        <input type="checkbox" name="kit_v3v" id="kit_v3v" class="SC_part">
-                        <label for="kit_v3v"></label>
-                    </div>
                 </div>
             </div>
             <div>

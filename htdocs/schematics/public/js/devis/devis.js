@@ -109,6 +109,7 @@ function getValue(HtmlElement){
  * créer tout ce qui est nécessaire pour les lignes de devis contenu dans le fichier SC_part.csv
  */
 function create_SC_part(){
+
     //on filtre pour avoir que les ligne qui corresponde au type de l'installation
     CSV.SC_part = CSV.SC_part.filter(function(raw){
         return raw.filtre1.includes(formulaire['typeInstallation']);
@@ -118,7 +119,7 @@ function create_SC_part(){
     const KIT_rows = CSV.SC_part.filter(raw => raw.filtre2 == "kit module");
     const OPT_rows = CSV.SC_part.filter(raw => raw.filtre2 == "opt zone");
     const kitCapteurs_rows = CSV.SC_part.filter(raw => raw.filtre2 == "kit capteur");
-    const options_rows = CSV.SC_part.filter(raw => raw.filtre2 == "option");
+    
 
     //partie pour le module 
     for (var i = 0 ; i < MOD_row.length ; i++){
@@ -138,7 +139,6 @@ function create_SC_part(){
     addPiscineZone1Devis();
     addZoneDevis(OPT_rows);
     addKitCapteur(kitCapteurs_rows);
-    add_options(options_rows);
 
     VisualDevis.show();
     
@@ -196,6 +196,20 @@ function create_tubeInox_part(){
     Accessoire.lignes = CSV.tubeInox_part.filter(row => row["filtre1"] == "accessoire");
     let accessoireManager = new ListeChamp("panel_racc_capt", "accessoire", Accessoire);
     accessoireManager.ajouter();
+
+    //on ajoute l'option V3V bypass appoint 1 si elle est nécessaire
+    if (formulaire['optionS10'] == "V3V bypass appoint 1" || formulaire['optionS11'] == "V3V bypass appoint 1"){
+        let rows = CSV.tubeInox_part.filter(row => row["filtre1"] == "V3V bypass appoint 1");
+        let select = document.querySelector("#kit_v3v");
+        activate_select(select, rows);
+        if (formulaire['typeInstallation'].includes('K')) setElementValue(select, "KITSSC053");
+        else setElementValue(select, "KITSSC018");
+        
+        
+    }else{
+        document.querySelector("#div_kit_v3v").remove()
+    }
+
 
 }
 /**

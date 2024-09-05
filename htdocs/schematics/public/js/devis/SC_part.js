@@ -185,25 +185,6 @@ function addKitCapteur(kitCapteurs_rows){
     }
 
 }
-/**
- * ajoute tous les éléments lié au options:
- * - V3V bypass appoint 1
- * @param {JSON[]} options_rows 
- */
-function add_options(options_rows){
-    if (formulaire['optionS10'] == "V3V décharge zone 1" || formulaire['optionS11'] == "V3V décharge zone 1"){
-        let checkbox = document.querySelector("#kit_v3v")
-        checkbox.value =  options_rows[0].ref
-        document.querySelector("#div_kit_v3v label").innerHTML = options_rows[0].label
-
-        checkbox.addEventListener("input", eventCheckBoxUpdateDevis)
-        eventCheckBoxUpdateDevis.call(checkbox)
-        console.log(devis)
-        
-    }else{
-        document.querySelector("#div_kit_v3v").remove()
-    }
-}
 //////////////////////////////////////////////////////////////////////////        
 //                          FONCTION EVENT
 //////////////////////////////////////////////////////////////////////////
