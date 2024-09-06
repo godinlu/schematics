@@ -324,7 +324,7 @@ class SchemaHydrau extends Schema{
                         // Ici, la V3V décharge zone 1 n'est pas la même s'il y a un plancher chauffant
                         if (preg_match('/Plancher chauffant|PC/', $this->_formulaire['circulateurC1'])) {
                             $nameIMG .= " pc";
-                            $attribut['posLabel'][0] -= 55; // Décalage du label lorsque la décharge est raccordée sur un plancher chauffant
+                            $attribut['posLabel'][0] = 790; // Décalage du label lorsque la décharge est raccordée sur un plancher chauffant
                         } else if ($nameIMG == "V3V décharge zone 1" && preg_match('/Piscine/', $this->_formulaire['circulateurC1'])) {
                             $nameIMG .= " piscine";
                         }

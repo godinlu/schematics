@@ -145,7 +145,6 @@ function create_SC_part(){
  * créer tout ce qui est nécessaire pour les lignes de devis contenu dans le fichier bllon_part.csv
  */
 function create_ballon_part(){
-    const double = /ballon ECS et ballon appoint en série|ballon elec en sortie ballon solaire avec bouclage sanitaire|ballon d'eau chaude sur échangeur/;
     //dans le cas d'un SC1Z le ballon se commande dans le module donc on supprime cette partie
     if (formulaire['typeInstallation'] == "SC1Z"){    
         document.querySelector("#panel_ballon").innerHTML = "";
@@ -153,8 +152,7 @@ function create_ballon_part(){
     }
     BallonTampon.lignes = CSV.ballon_part.filter(row => row.filtre1 == "TAMPON");
     let liste_ballonECS = new ListeChamp("panel_ballon", "ballonECS",BallonECS);
-    liste_ballonECS.ajouter();
-    if (double.test(formulaire['ballonECS'])) liste_ballonECS.ajouter();
+    liste_ballonECS.ajouter();  
 
     if (formulaire['ballonTampon'] == "Aucun"){
         document.querySelector("#panel_ballon fieldset:nth-child(2)").remove();
@@ -581,6 +579,10 @@ function main(){
     // ajoute un deuxième champ capteur si il y a 2 champs capteurs
     if (/2/.test(formulaire["champCapteur"]) && indexs["capteur"].length == 1){
         indexs["capteur"].push(indexs["capteur"][0]);
+    }
+    const double = /ballon ECS et ballon appoint en série|ballon elec en sortie ballon solaire avec bouclage sanitaire|ballon d'eau chaude sur échangeur/;
+    if (double.test(formulaire['ballonECS']) && indexs["ballonECS"].length == 1){
+        indexs["ballonECS"].push(indexs["ballonECS"][0]);
     }
 
     loadDevis(indexs);
