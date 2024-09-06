@@ -132,6 +132,36 @@ function addPiscineZone1Devis(){
 }
 
 /**
+ * cette fonction ajoute le select lorsqu'il y a l'option v3v bypass appoint 1.
+ * Le select est différent si les 2 options v3v bypass appoint 1 sont selectionné
+ * @param {JSON[]} v3v_rows 
+ */
+function add_v3v_bypass(v3v_rows){
+    let select = document.querySelector("#kit_v3v");
+    const opt1 = formulaire['optionS10'] == "V3V bypass appoint 1";
+    const opt2 = formulaire['optionS11'] == "V3V bypass appoint 1";
+
+    // cas ou les 2 options s10 et s11 sont des V3V bypass appoint 1
+    if (opt1 && opt2){
+        const rows = v3v_rows.filter(raw => raw.filtre3 == "double");
+        activate_select(select, rows);
+        if (formulaire['typeInstallation'].includes('K')) setElementValue(select, "KITSSC053");
+        else setElementValue(select, "KITSSC018");
+
+    // cas ou une des 2 options sont des V3V bypass appoint 1
+    }else if (opt1 || opt2){
+        const rows = v3v_rows.filter(raw => raw.filtre3 != "double");
+        activate_select(select, rows);
+        if (formulaire['typeInstallation'].includes('K')) setElementValue(select, "KITSSC0155");
+        else setElementValue(select, "KITSSC069");
+    
+    // cas ou aucune des options n'est selectionné donc on supprime la div.
+    }else{
+        document.querySelector("#div_kit_v3v").remove();
+    }
+}
+
+/**
  * ajoute les lignes de devis pour les kitCapteurs selon le type de capteurs choisi:
  *      -casse pression
  *      -échangeur
@@ -151,39 +181,45 @@ function addKitCapteur(kit_capteurs_rows){
             return;
         } 
 
-    var rows;
-    if (/casse pression/.test(formulaire['champCapteur'])){   //cas ou il y a une casse pression
-        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "casse pression");
-    }else if (/échangeur/.test(formulaire['champCapteur'])){   //cas ou il y a un échangeur
-        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "échangeur");
-    }else if (/V3V/.test(formulaire['champCapteur'])){    //cas ou c'est sur V3V
-        rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "v3v");
-    }
-    // active les 2 selects qui compose un kit capteur
-    // on met true à la fin de chaque activate_select pour avoir l'option aucun
-    activate_select(
-        document.querySelector("#kit_capteur_mod1"),
-        rows.filter(raw => raw.filtre2 == "module"), true
-    );
-    activate_select(
-        document.querySelector("#kit_capteur_kit1"),
-        rows.filter(raw => raw.filtre2 == "kit"), true
-    );
+    let select_mod1 = document.querySelector("#kit_capteur_mod1");
+    let select_kit1 = document.querySelector("#kit_capteur_kit1");
+    let select_mod2 = document.querySelector("#kit_capteur_mod2");
+    let select_kit2 = document.querySelector("#kit_capteur_kit2");
 
-    if (/2/.test(formulaire["champCapteur"])){
-        activate_select(
-            document.querySelector("#kit_capteur_mod2"),
-            rows.filter(raw => raw.filtre2 == "module"), true
-        );
-        activate_select(
-            document.querySelector("#kit_capteur_kit2"),
-            rows.filter(raw => raw.filtre2 == "kit"), true
-        );
+    // dans le cas d'un champ capteur sur V3V on supprime tous les autres select
+    // pour garder que le select_kit1 et lui afficher les lignes de v3v
+    if (/V3V/.test(formulaire['champCapteur'])){
+        let v3v_rows = CSV.SC_part.filter(raw => raw.filtre2 == "v3v" && raw.filtre3 == "double");
 
-    }else{
+        // ici on manipule les données pour que l'options v3v arrive en catégorie capteur.
+        v3v_rows.forEach(obj => {
+            obj.famille = "tubeInox_part";
+        });
+        CSV.tubeInox_part = CSV.tubeInox_part.concat(v3v_rows);
+
         document.querySelector("#kit_capteur_2").remove();
-    }
+        document.querySelector("#tr_module_1").remove();
+        activate_select(select_kit1, v3v_rows);
+    }else{
+        let rows;
+        if (/casse pression/.test(formulaire['champCapteur'])){
+            rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "casse pression");
+        }else if (/échangeur/.test(formulaire['champCapteur'])){
+            rows = kit_capteurs_rows.filter(raw => raw.filtre3 == "échangeur");
+        }
+        const mod_rows = rows.filter(raw => raw.filtre2 == "module");
+        const kit_rows = rows.filter(raw => raw.filtre2 == "kit");
 
+        activate_select(select_mod1, mod_rows, true);
+        activate_select(select_kit1, kit_rows, true);
+
+        if (/2/.test(formulaire["champCapteur"])){
+            activate_select(select_mod2, mod_rows, true);
+            activate_select(select_kit2, kit_rows, true);
+        }else{
+            document.querySelector("#kit_capteur_2").remove();
+        }
+    }
 }
 //////////////////////////////////////////////////////////////////////////        
 //                          FONCTION EVENT

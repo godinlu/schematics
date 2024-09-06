@@ -26,7 +26,7 @@
                         <div id="div_piscine_zone"></div>
                         <div id="div_kit_v3v">
                             V3V bypass appoint 1:
-                            <select name="kit_v3v" id="kit_v3v" class="tubeInox_part"></select>
+                            <select name="kit_v3v" id="kit_v3v" class="SC_part"></select>
                         </div>
 
                     </div>
@@ -72,7 +72,7 @@
                     <legend>Kit capteurs</legend>
                     <div class="row">
                         <table>
-                            <tr>
+                            <tr id="tr_module_1">
                                 <td>Module:</td>
                                 <td><select id="kit_capteur_mod1" name="kit_capteur_mod1" class="tubeInox_part bigSelect"></select></td>
                             </tr>
