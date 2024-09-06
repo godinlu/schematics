@@ -56,16 +56,20 @@ class ControllerDevis
         $articles = json_encode($articles);
         unset($article);
       }
+
+      $file_path = 'config/client/devis_categ.json';
+
+      $JSONContent = file_get_contents($file_path);
+
+      // Conversion du contenu JSON en tableau associatif PHP
+      $devis_categ = json_decode($JSONContent, true);
       
-      $devis_index = $dataForm->getDevis()->getDevisIndex();
-      $default_devis_index = $dataForm->getDevis()->getDefaultDevisIndex();
 
       $this->_view = new View('Devis');
       $this->_view->generate(array(
         'articles' => $articles,
         'formulaire' => $formulaire,
-        'devis_index' => $devis_index,
-        'default_devis_index' => $default_devis_index
+        'devis_categ' => $devis_categ
       ));
     }
 }

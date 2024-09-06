@@ -69,6 +69,7 @@
                 "client/fiche_prog.js"
             ],
             "Devis": [
+                "devis/devis.js"
             ],
             "public":[
                 "public/header.js",
