@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- met le title  -->
+    <title><?= $t ?></title>
     <!-- charge l'icon de solisart -->
     <link rel="icon" href="../public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
     <!-- charge font-awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- charge la police de charactère Comfortaa -->
     <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
-    <!-- met le title  -->
-    <title><?= $t ?></title>
+    
 
     <!-- inclusion des feuilles de style -->
     <?php
         $dependencyLoader->includeCSS();
-        
-
     ?>
+    <script>
+        /*to prevent Firefox FOUC, this must be here*/
+        let FF_FOUC_FIX;
+    </script>
 </head>
 <body>
     <header>
@@ -86,20 +89,18 @@
             
         </div>
     </footer>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<?php
+$dependencyLoader->includeJS();
+?>
 </body>
 
 <!-- inclusion du javascript -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<script>
-    const VERSION = "<?=VERSION?>";
-</script>
 
-<?php
-$dependencyLoader->includeJS();
-?>
+
+
 
 
 </html>

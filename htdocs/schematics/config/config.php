@@ -1,5 +1,5 @@
 <?php 
-const VERSION = "2.0.20";
+const VERSION = "2.0.24";
 //cette constante une fois indiqué à true va forcer le rechargement des fichiers javaScript pour
 //éviter qu'ils soit mis en cache
 const DISABLED_CACHE = false;
@@ -69,7 +69,7 @@ class DependencyLoader {
 
         $jsFiles = array_merge($public_files, $private_files);
         foreach($jsFiles as $path) {
-            echo "<script type=\"text/javascript\" src=\"../public/js/".$path."?v=".$this->_version."\"></script>";
+            echo "<script type=\"text/javascript\" src=\"../public/js/".$path."?v=".$this->_version."\" defer=\"defer\"></script>";
         }
         
     }
