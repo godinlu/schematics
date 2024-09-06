@@ -178,7 +178,7 @@ function create_capteur_part(){
     Capteur.ligne_habillage = CSV.capteur_part.filter(row => row["filtre1"] == "habillage");
     
     let CapteursManager = new ListeChamp("panel_capteurs", "capteur", Capteur);
-    CapteursManager.ajouter();
+    CapteursManager.ajouter(); 
 
 }
 /**
@@ -577,7 +577,14 @@ function main(){
     //ici on concatene les données existante avec les valeurs par défaut
     //Cela permet que si il manque certaines données alors les données par défaut soit pris en compte 
     let indexs = { ...default_devis_index, ...devis_index,};
+
+    // ajoute un deuxième champ capteur si il y a 2 champs capteurs
+    if (/2/.test(formulaire["champCapteur"]) && indexs["capteur"].length == 1){
+        indexs["capteur"].push(indexs["capteur"][0]);
+    }
+
     loadDevis(indexs);
+
 
     //ajout des events listener
     document.querySelector("#bt_dl_xlsx").addEventListener("click",downloadXLSX);

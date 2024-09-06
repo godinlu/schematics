@@ -39,8 +39,6 @@ class DataDevis{
                 }
                 
             }
-            
-            //if ($field['type'] === 'simple_field')
         }
 
         return $res;

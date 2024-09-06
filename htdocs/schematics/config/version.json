@@ -1,4 +1,15 @@
 {
+    "2.0.23":{
+        "date":"06/09/2024",
+        "content":{
+            "Changements":[
+                "ajout de champs capteur pour le devis lorsque 2 champ capteur sont demandé",
+                "correction de bug avec les champs capteur du devis",
+                "2 champ capteur ne rajoute pas de module hydraulique",
+                "résolution de l'option V3V bypass appoint 1, et de la V3V lors de champ capteur sur V3V"
+            ]
+        }
+    },
     "2.0.22":{
         "date":"05/09/2024",
         "content":{

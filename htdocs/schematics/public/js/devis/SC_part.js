@@ -184,7 +184,6 @@ function addKitCapteur(kit_capteurs_rows){
     let select_mod1 = document.querySelector("#kit_capteur_mod1");
     let select_kit1 = document.querySelector("#kit_capteur_kit1");
     let select_mod2 = document.querySelector("#kit_capteur_mod2");
-    let select_kit2 = document.querySelector("#kit_capteur_kit2");
 
     // dans le cas d'un champ capteur sur V3V on supprime tous les autres select
     // pour garder que le select_kit1 et lui afficher les lignes de v3v
@@ -197,7 +196,7 @@ function addKitCapteur(kit_capteurs_rows){
         });
         CSV.tubeInox_part = CSV.tubeInox_part.concat(v3v_rows);
 
-        document.querySelector("#kit_capteur_2").remove();
+        document.querySelector("#tr_module_2").remove();
         document.querySelector("#tr_module_1").remove();
         activate_select(select_kit1, v3v_rows);
     }else{
@@ -215,9 +214,8 @@ function addKitCapteur(kit_capteurs_rows){
 
         if (/2/.test(formulaire["champCapteur"])){
             activate_select(select_mod2, mod_rows, true);
-            activate_select(select_kit2, kit_rows, true);
         }else{
-            document.querySelector("#kit_capteur_2").remove();
+            document.querySelector("#tr_module_2").remove();
         }
     }
 }

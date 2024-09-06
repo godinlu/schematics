@@ -80,17 +80,9 @@
                                 <td>Kit:</td>
                                 <td><select id="kit_capteur_kit1" name="kit_capteur_kit1" class="tubeInox_part bigSelect"></select></td>
                             </tr>
-                        </table>
-                    </div>
-                    <div class="row" id="kit_capteur_2">
-                        <table>
-                            <tr>
-                                <td>Module:</td>
+                            <tr id="tr_module_2">
+                                <td>Module 2:</td>
                                 <td><select id="kit_capteur_mod2" name="kit_capteur_mod2" class="tubeInox_part bigSelect"></select></td>
-                            </tr>
-                            <tr>
-                                <td>Kit:</td>
-                                <td><select id="kit_capteur_kit2" name="kit_capteur_kit2" class="tubeInox_part bigSelect"></select></td>
                             </tr>
                         </table>
                     </div>

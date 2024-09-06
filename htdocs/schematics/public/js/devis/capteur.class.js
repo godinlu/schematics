@@ -41,6 +41,7 @@ class Capteur extends Champ{
             labelisation,
             sort_functions
             );
+
         //ensuite on gère l'habillage
         this.nodes.nb_capteur.addEventListener("change", () => this.manage_habillage());
 
@@ -51,7 +52,18 @@ class Capteur extends Champ{
 
 
         this.nodes.habillage.addEventListener("input", eventCheckBoxUpdateDevis);
-        this.manage_habillage();
+        this.nodes.type_capteur.dispatchEvent(new Event("change"));
+        //this.manage_habillage();
+
+        // on ajoute les index par défaut
+        for (const nodes_id in default_devis_index.capteur[0]){
+            setElementValue(
+                this.nodes[nodes_id],
+                default_devis_index.capteur[0][nodes_id]
+            );
+        }
+
+        
     }
 
 
