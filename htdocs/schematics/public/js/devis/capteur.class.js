@@ -46,7 +46,7 @@ class Capteur extends Champ{
         this.nodes.nb_capteur.addEventListener("change", () => this.manage_habillage());
 
         this.nodes.type_pose.addEventListener("change", ()=> this.manage_champ_range());
-        this.nodes.row_nb_champs.addEventListener("input", ()=>this.handlerQuantity());
+        this.nodes.nb_champs.addEventListener("input", ()=>this.handlerQuantity());
         this.nodes.type_toiture.addEventListener("change", ()=> this.handlerQuantity());
         this.nodes.type_capteur.addEventListener("change", ()=> this.handlerQuantity());
 

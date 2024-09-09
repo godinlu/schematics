@@ -445,40 +445,6 @@ function sauvegardeDevisDansBdd(){
     });
 }
 
-/**
- * cette fonction sert à sauvegarder le devis dans le session storage de js
- * pour pouvoir le récupérer plus tard
- */
-function saveDevisIntoSession(){
-    //on récupère toute les données des select et des inputs
-    let data = {};
-    document.querySelectorAll("#formulaire select, #formulaire input").forEach((element) =>{
-        const value = getValue(element);
-        if (element.id !== "" && value !== ""){
-            data[element.id] = value;
-        }
-        
-    });
-
-    //ensuite on récupère le contenue des champs multiple bien formaté
-    const dataChampMultiple = ListeChamp.getAllContent();
-
-    for (const ListeChamp_key in dataChampMultiple){
-        //on supprime tout les éléments de data qui sont présent dans dataChampMultiple
-        dataChampMultiple[ListeChamp_key].forEach((objet) =>{
-            for (const key in objet){
-                if (key in data){
-                    delete data[key];
-                }
-            }
-        });
-        //puis on ajoute les données bien formatté à data
-        data[ListeChamp_key] = dataChampMultiple[ListeChamp_key];
-    }
-    //et enfin on ajoute les articles ajouter depuis le gros tableau
-    data["articles"] = getArticlesContent();
-
-}
 
 /**
  * cette fonction redirige le formulaire vers la page souhaité pour sauvegarder les données du devis
