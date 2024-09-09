@@ -1,0 +1,40 @@
+[
+    {
+        "type":"categorie",
+        "id": "00000001",
+        "name":"Module de chauffage solaire et ballon ECS",
+        "contents":[
+            {
+                "type":"categorie",
+                "id":"00000011",
+                "name":"module",
+                "contents":[
+                    {
+                        "type":"article",
+                        "ref":"HYBX1MOD",
+                        "condition":"champCapteur=HydrauBox 1"
+                    }
+                ]
+            },
+            {
+                "type":"categorie",
+                "id":"00000021"
+            }
+        ]
+    },
+    {
+        "type":"categorie",
+        "id": "00000002",
+        "name":"Capteurs solaires thermiques"
+    },
+    {
+        "type":"categorie",
+        "id": "00000003",
+        "name":"Appoint électrique ecs en option"
+    },
+    {
+        "type":"categorie",
+        "id": "00000004",
+        "name":"Services"
+    }
+]

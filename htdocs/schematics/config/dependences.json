@@ -82,6 +82,12 @@
                 "devis/articles_commentaires.js",
                 "devis/devis.js"
             ],
+            "Devis2":[
+                "devis2/devis.js",
+                "devis2/utils.js",
+                "devis2/devis.class.js",
+                "devis2/article_row.class.js"
+            ],
             "public":[
                 "public/header.js",
                 "public/utils.js"
