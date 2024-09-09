@@ -14,17 +14,32 @@
                 <th></th>
                 <th></th>
             </tr>
+            <tr >
+                <td colspan="2"><button class="button_add" type="button" value="<?=$item['id']?>">Ajouter</button></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         <?php endforeach;?>
-        
-        <tr>
-            <td>SC2BMOD</td>
-            <td>Module hydraulique de chaufferie Solisconfort 2</td>
-            <td><input type="number" name="" id="" value="1"></td>
-            <td>6 896,00</td>
-            <td><button>edit</button><button>supprimer</button></td>
-        </tr>
     </table>
 </form>
+<button id="ajouter" type="button">add</button>
+
+<!-- Fenêtre modale -->
+<div id="modal_window" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Ajouter un article</h2>
+        <!-- Contenu de la modale -->
+        <form id="articleForm">
+            <label for="articleName">Nom de l'article:</label>
+            <input type="text" id="articleName" name="articleName">
+            <button type="submit">Ajouter</button>
+        </form>
+    </div>
+</div>
+
+
 <script>
     const articles =  <?=$articles?>;
     const articles_tree = <?=json_encode($articles_tree)?>;

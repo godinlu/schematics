@@ -6,7 +6,7 @@
     <!-- met le title  -->
     <title><?= $t ?></title>
     <!-- charge l'icon de solisart -->
-    <link rel="icon" href="../public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
+    <link rel="icon" href="<?=$dependencyLoader->get_url()?>/public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
     <!-- charge font-awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- charge la police de charactère Comfortaa -->
@@ -26,28 +26,28 @@
     <header>
         <nav>
             <div>
-                <img src="../public/img/Solisart-menue.png" alt="logo solisart" width="200">
+                <img src="<?=$dependencyLoader->get_url()?>/public/img/Solisart-menue.png" alt="logo solisart" width="200">
                 <br>
                 <a href="version">Version <?=VERSION?></a>
             </div>
             
             <ul>
-                <li><a href="formulaire" rel="noopener" class="saveForm <?=($t === "Formulaire")? "jaune": NULL?>">Formulaire</a></li>
+                <li><a href="<?=$dependencyLoader->get_url()?>/client/formulaire" rel="noopener" class="saveForm <?=($t === "Formulaire")? "jaune": NULL?>">Formulaire</a></li>
                 <li class="dropdown" style="float:left;">
                     <a href="#" class="dropbtn <?=($t === "Schema_hydrau" || $t === "Schema_exe")? "jaune": NULL?>">Schéma <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
                     <div class="dropdown-content">
-                        <a href="schema_hydrau" rel="noopener" class=" saveForm">Schéma hydraulique</a>
-                        <a href="schema_exe" rel="noopener" class=" saveForm">Schéma d'exe</a>
+                        <a href="<?=$dependencyLoader->get_url()?>/client/schema_hydrau" rel="noopener" class=" saveForm">Schéma hydraulique</a>
+                        <a href="<?=$dependencyLoader->get_url()?>/client/schema_exe" rel="noopener" class=" saveForm">Schéma d'exe</a>
                         
                     </div> 
                     
                 </li>
-                <li><a href="fiche_prog" rel="noopener" class="<?=($t === "Fiche_prog")? "jaune": NULL?> saveForm">Fiche de programmation</a></li>
-                <li><a href="devis" rel="noopener" class="<?=($t === "Devis")? "jaune": NULL?> saveForm">Devis</a></li>
+                <li><a href="<?=$dependencyLoader->get_url()?>/client/fiche_prog" rel="noopener" class="<?=($t === "Fiche_prog")? "jaune": NULL?> saveForm">Fiche de programmation</a></li>
+                <li><a href="<?=$dependencyLoader->get_url()?>/client/devis" rel="noopener" class="<?=($t === "Devis")? "jaune": NULL?> saveForm">Devis</a></li>
                 <li class="dropdown" style="float:right;">
                     <a href="#" class="dropbtn bleue"><i class="fa fa-file-text" aria-hidden="true"></i>  fichier <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
                     <div class="dropdown-content">
-                        <a href="formulaire?action=reinit" id="TB_reinitialisation"><i class="fa fa-refresh" aria-hidden="true"></i> réinitialiser</a>
+                        <a href="<?=$dependencyLoader->get_url()?>/client/formulaire?action=reinit" id="TB_reinitialisation"><i class="fa fa-refresh" aria-hidden="true"></i> réinitialiser</a>
                         <a href="?action=save" id="TB_sauvegarder"><i class="fa fa-floppy-o" aria-hidden="true"></i> sauvegarder</a>
                         <a href="#" id="TB_charger" ><i class="fa fa-folder-open-o" aria-hidden="true"></i> ouvrir</a>
                         <a href="#" id="TB_télécharger_dossier" ><i class="fa fa-download" aria-hidden="true"></i> dossier</a>

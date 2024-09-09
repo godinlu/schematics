@@ -25,6 +25,9 @@
                 "public/menuDeroulant.css",
                 "public/scrollTable.css"
             ],
+            "Devis2": [
+                "devis2/devis.css"
+            ],
             "Version": [
                 "version/version.css"
             ],

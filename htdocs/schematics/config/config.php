@@ -42,6 +42,7 @@ class DependencyLoader {
     private $_pageName;
     private $_part;
     private $_version;
+    private $_url;
     
     public function __construct(string $pageName, string $part = 'client') {
         $fileContent = file_get_contents("config/dependences.json");
@@ -49,6 +50,15 @@ class DependencyLoader {
         $this->_pageName = $pageName;
         $this->_part = $part;
         $this->_version = (DISABLED_CACHE)? date('Y-m-d H:i:s') : VERSION;
+        if ($_SERVER['SERVER_NAME'] === 'localhost')
+            $this->_url = "http://localhost/schematics/htdocs/schematics";
+        else
+            $this->_url = "https://www.solisart.fr/schematics/";
+
+    }
+
+    public function get_url() : string {
+        return $this->_url;
     }
     
     public function includeCSS() {
@@ -58,7 +68,7 @@ class DependencyLoader {
 
         $cssFiles = array_merge($public_files, $private_files);
         foreach($cssFiles as $path) {
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../public/css/".$path."?v=".$this->_version."\">";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$this->_url."/public/css/".$path."?v=".$this->_version."\">";
         }
     }
     
@@ -69,7 +79,7 @@ class DependencyLoader {
 
         $jsFiles = array_merge($public_files, $private_files);
         foreach($jsFiles as $path) {
-            echo "<script type=\"text/javascript\" src=\"../public/js/".$path."?v=".$this->_version."\" defer=\"defer\"></script>";
+            echo "<script type=\"text/javascript\" src=\"".$this->_url."/public/js/".$path."?v=".$this->_version."\" defer=\"defer\"></script>";
         }
         
     }

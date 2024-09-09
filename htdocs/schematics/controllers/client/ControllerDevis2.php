@@ -12,10 +12,9 @@ class ControllerDevis2
 
     public function __construct($url)
     {
-        if (isset($url) && count($url) > 2)
-            throw new Exception('Page introuvable');
-        else
-            $this->devis();
+        if (isset($url))
+          $this->devis();
+            
         
     }
 

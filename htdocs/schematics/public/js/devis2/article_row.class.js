@@ -30,6 +30,7 @@ class ArticleRow{
         this.#create_label_col(article.label);
         this.#create_qte_col(qte, editable_qte);
         this.#create_price_col(article.prix, editable_price);
+        this.#create_edit_col(editable, removeable);
 
         return this.tr;
 
@@ -80,7 +81,8 @@ class ArticleRow{
     }
 
     /**
-     * 
+     * Ajoute la colone prix dans la ligne.
+     * Si editable_price = true alors ajoute un input type number pour mettre à jour le prix.
      * @param {Float32Array} price 
      * @param {boolean} editable_price 
      */
@@ -97,6 +99,31 @@ class ArticleRow{
             td.appendChild(input);
         }else{
             td.innerText = price;
+        }
+        this.tr.appendChild(td);
+    }
+
+    /**
+     * Ajoute la colone edit dans la ligne.
+     * Si editable = true alors ajoute un boutton d'edition.
+     * Si removeable = true alors ajoute un boutton de suppression.
+     * @param {boolean} editable 
+     * @param {boolean} removeable 
+     */
+    #create_edit_col(editable, removeable){
+        let td = document.createElement("td");
+        td.classList.add("edit");
+        if (editable){
+            let button = document.createElement("button");
+            button.type = "button";
+            button.innerText = "edit";
+            td.appendChild(button);
+        }
+        if (removeable){
+            let button = document.createElement("button");
+            button.type = "button";
+            button.innerText = "supprimer";
+            td.appendChild(button);
         }
         this.tr.appendChild(td);
     }

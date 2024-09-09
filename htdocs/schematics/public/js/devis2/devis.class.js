@@ -54,52 +54,6 @@ class Devis{
     }
 
     /**
-     * 
-     * @param {JSON} article 
-     * @param {string} tree_path 
-     * @param {string} tag 
-     * @param {int} qte 
-     * @param {boolean} editable_qte 
-     * @param {boolean} editable_price 
-     * @param {boolean} editable 
-     * @param {boolean} removeable 
-     */
-    create_row(
-        article,
-        tree_path,
-        tag="default",
-        qte=1,
-        editable_qte = true,
-        editable_price = false,
-        editable = true,
-        removeable = true
-    ){
-        let tr = document.createElement("tr");
-        tr.id = article.ref;
-
-        // création des colones
-        let td_ref = document.createElement("td");
-        let td_label = document.createElement("td");
-        let td_qte = document.createElement("td");
-        let td_price = document.createElement("td");
-        let td_edit = document.createElement("td");
-
-        // ajout des class aux colones
-        td_ref.classList.add("ref");
-        td_label.classList.add("label");
-        td_qte.classList.add("qte");
-        td_price.classList.add("price");
-        td_edit.classList.add("edit");
-
-        // ajout du contenue au colones
-        td_ref.textContent = article.ref;
-        td_label.textContent = article.label;
-        td_qte.textContent = qte;
-
-
-    }
-
-    /**
      * renvoie l'article identifié par sa ref.
      * lève une erreur si la référence n'existe pas
      * @param {string} ref 
