@@ -144,6 +144,7 @@ function add_v3v_bypass(v3v_rows){
     // cas ou les 2 options s10 et s11 sont des V3V bypass appoint 1
     if (opt1 && opt2){
         const rows = v3v_rows.filter(raw => raw.filtre3 == "double");
+        rows.reverse(); // inverse l'ordre pour que le kit de base apparaisse avant les SCK
         activate_select(select, rows);
         if (formulaire['typeInstallation'].includes('K')) setElementValue(select, "KITSSC053");
         else setElementValue(select, "KITSSC018");
@@ -151,6 +152,7 @@ function add_v3v_bypass(v3v_rows){
     // cas ou une des 2 options sont des V3V bypass appoint 1
     }else if (opt1 || opt2){
         const rows = v3v_rows.filter(raw => raw.filtre3 != "double");
+        rows.reverse(); // inverse l'ordre pour que le kit de base apparaisse avant les SCK
         activate_select(select, rows);
         if (formulaire['typeInstallation'].includes('K')) setElementValue(select, "KITSSC0155");
         else setElementValue(select, "KITSSC069");
@@ -189,6 +191,7 @@ function addKitCapteur(kit_capteurs_rows){
     // pour garder que le select_kit1 et lui afficher les lignes de v3v
     if (/V3V/.test(formulaire['champCapteur'])){
         let v3v_rows = CSV.SC_part.filter(raw => raw.filtre2 == "v3v" && raw.filtre3 == "double");
+        v3v_rows.reverse(); // inverse l'ordre pour que le kit de base apparaisse avant les SCK
 
         // ici on manipule les données pour que l'options v3v arrive en catégorie capteur.
         v3v_rows.forEach(obj => {
