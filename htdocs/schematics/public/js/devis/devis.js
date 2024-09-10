@@ -542,9 +542,11 @@ function main(){
     //Cela permet que si il manque certaines données alors les données par défaut soit pris en compte 
     let indexs = { ...default_devis_index, ...devis_index,};
 
-    // ajoute un deuxième champ capteur si il y a 2 champs capteurs
-    if (/2/.test(formulaire["champCapteur"]) && indexs["capteur"].length == 1){
-        indexs["capteur"].push(indexs["capteur"][0]);
+    // ajoute un deuxième champ capteur et les kits de raccordement si il y a 2 champs capteurs
+    if (/2/.test(formulaire["champCapteur"])){
+        if (indexs["capteur"].length == 1) indexs["capteur"].push(indexs["capteur"][0]);
+        if (indexs["flexible_inox"].length == 1) indexs["flexible_inox"].push(indexs["flexible_inox"][0]);
+        if (indexs["accessoire"].length == 1) indexs["accessoire"].push(indexs["accessoire"][0]);
     }
     const double = /ballon ECS et ballon appoint en série|ballon elec en sortie ballon solaire avec bouclage sanitaire|ballon d'eau chaude sur échangeur/;
     if (double.test(formulaire['ballonECS']) && indexs["ballonECS"].length == 1){

@@ -53,7 +53,7 @@ class DependencyLoader {
         if ($_SERVER['SERVER_NAME'] === 'localhost')
             $this->_url = "http://localhost/schematics/htdocs/schematics";
         else
-            $this->_url = "https://www.solisart.fr/schematics/";
+            $this->_url = "https://www.solisart.fr/schematics";
 
     }
 

@@ -31,17 +31,13 @@ class ControllerDevis2
       //cette partie sert uniquement pour le développement afin d'avoir accès à la base de donné même sur le serveur
       //de teste
       if ($_SERVER['SERVER_NAME'] === 'localhost'){
-        $url = "https://dev.solisart.fr/schematics/api/getTarif.php";
-
-        // Effectuer la requête GET
-        $response = file_get_contents($url);
+        // Effectue les requêtes GET
+        $tarif = file_get_contents("https://www.solisart.fr/schematics/api/getTarif.php");
+        $categories = file_get_contents("https://www.solisart.fr/schematics/api/get_categorie.php");
+        
         // Vérifier si la requête a réussi
-        if ($response !== false) {
-          // Traitement de la réponse
-          $articles = $response;
-        } else {
-          // Gérer l'erreur de la requête
-          throw new Exception("erreur l'api getTarif.php n'a pas été trouvé");
+        if (!$tarif || !$categories) {
+          throw new Exception("erreur les requêtes api n'ont pas abouti.");
         }
 
       }else{
@@ -55,20 +51,12 @@ class ControllerDevis2
         $articles = json_encode($articles);
         unset($article);
       }
-      
-        $devis_index = $dataForm->getDevis()->getDevisIndex();
-        $default_devis_index = $dataForm->getDevis()->getDefaultDevisIndex();
-
-        // ouverture du fichier json contenant l'abre des articles et leurs catégories
-        $file_path = 'config/client/articles_tree.json';
-        $JSONContent = file_get_contents($file_path);
-        $articles_tree = json_decode($JSONContent, true);
 
         $this->_view = new View('Devis2');
         $this->_view->generate(array(
-            'articles' => $articles,
+            'articles' => $tarif,
             'formulaire' => $formulaire,
-            'articles_tree' => $articles_tree
+            'categories' => $categories
         ));
     }
 }
