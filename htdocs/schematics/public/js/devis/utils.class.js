@@ -401,4 +401,44 @@ function activate_select(select, rows, none_choice = false){
 
 
 
+Node.prototype.create_devis_checkbox = function(row, name, checked=false){
+    this.create_checkbox(row.label, row.ref, name, checked);
+    let checkbox = document.getElementById(name);
+    checkbox.classList.add(row.famille);
+    checkbox.addEventListener("input", eventCheckBoxUpdateDevis);
+    eventCheckBoxUpdateDevis.call(checkbox);
+}
+
+/**
+ * 
+ * @param {string} label_text 
+ * @param {string} value 
+ * @param {string} name 
+ * @param {boolean} checked
+ */
+Node.prototype.create_checkbox = function(label_text, value, name, checked=false) {
+    // Créer un label
+    const label = document.createElement('label');
+    
+    // Créer un input de type checkbox
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = value;
+    checkbox.name = name;
+    checkbox.id = name;
+    checkbox.checked = checked;
+
+    // Ajouter le texte du label
+    label.textContent = label_text;
+
+    // Associer le checkbox au label (en insérant le checkbox dans le label)
+    label.prepend(checkbox); // On ajoute la checkbox avant le texte du label
+
+    // Ajouter le label à l'élément courant (le node sur lequel la méthode est appelée)
+    this.appendChild(label);
+};
+
+
+
+
 

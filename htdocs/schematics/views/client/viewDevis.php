@@ -87,6 +87,8 @@
                         </table>
                     </div>
                 </fieldset>
+                <!-- div pour l'option ON en mode excédent d'énergie l'été -->
+                <div id="div_option_ON_excedent"></div>
             </div>
         </div>
         

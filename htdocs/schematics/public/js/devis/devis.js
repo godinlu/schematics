@@ -178,6 +178,15 @@ function create_capteur_part(){
     let CapteursManager = new ListeChamp("panel_capteurs", "capteur", Capteur);
     CapteursManager.ajouter(); 
 
+    // ajoute l'option ON en mode excédent d'énergie l'été
+    const str = "ON en mode excédent d'énergie l'été";
+    if (formulaire["optionS10"] == str || formulaire["optionS11"] == str){
+        const row = CSV.capteur_part.filter(row => row.ref == "kitSSC083")[0];
+        document.getElementById("div_option_ON_excedent").create_devis_checkbox(
+            row, "option_ON_excedent", true
+        );
+    }
+
 }
 /**
  * s'occupe de créer la partie résponsable des tubes en inox
