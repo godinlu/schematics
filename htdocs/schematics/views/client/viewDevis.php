@@ -392,6 +392,7 @@
     <!-- template pour les accessoires pour les tubes inox-->
     <template id="tp_accessoire">
         <div id="champ_accessoire" class="row">
+            <input type="hidden" value="DN20" id="dn_dim">
             <table>
                 <tr>
                     <td>

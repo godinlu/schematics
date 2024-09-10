@@ -554,8 +554,11 @@ function main(){
     // ajoute un deuxième champ capteur et les kits de raccordement si il y a 2 champs capteurs
     if (/2/.test(formulaire["champCapteur"])){
         if (indexs["capteur"].length == 1) indexs["capteur"].push(indexs["capteur"][0]);
-        if (indexs["flexible_inox"].length == 1) indexs["flexible_inox"].push(indexs["flexible_inox"][0]);
         if (indexs["accessoire"].length == 1) indexs["accessoire"].push(indexs["accessoire"][0]);
+        if (indexs["flexible_inox"].length == 1 &&
+            (/casse pression/.test(formulaire["champCapteur"]) || /échangeur/.test(formulaire["champCapteur"]))){
+                indexs["flexible_inox"].push(indexs["flexible_inox"][0]);
+            }
     }
     const double = /ballon ECS et ballon appoint en série|ballon elec en sortie ballon solaire avec bouclage sanitaire|ballon d'eau chaude sur échangeur/;
     if (double.test(formulaire['ballonECS']) && indexs["ballonECS"].length == 1){

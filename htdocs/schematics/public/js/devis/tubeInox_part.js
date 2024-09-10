@@ -36,7 +36,7 @@ class FlexibleInox extends Champ{
             );
 
         this.nodes.Dimension_flexible.addEventListener("change", this.handler_filtre_join.bind(this));
-
+        this.handler_filtre_join();
 
 
     }
@@ -47,15 +47,44 @@ class FlexibleInox extends Champ{
      */
     handler_filtre_join(){
         //on commence par accéder au select associé des accesoires
-        let select = document.getElementById("type_joint_"+this.num);
-        //si le select n'existe pas alors on ne fait rien
-        if (select === null) return;
-
-        if (this.nodes.Dimension_flexible.value == "DN32"){
-            setElementValue(select, "joint");
+        if (this.nodes.champ_flexible_inox.nextElementSibling){
+            // ici on est dans le cas ou il y a un flexible inox après celui-ci
+            // ce champ doit donc être lié uniquement à l'accessoire en face
+            const position = this.#get_position();
+            let input = document.querySelector(`#div_accessoire > div:nth-child(${position+1}) input[type="hidden"]`);
+            //si le select n'existe pas alors on ne fait rien
+            if (input === null) return;
+            setElementValue(input, this.nodes.Dimension_flexible.value)
+        }else{
+            // ici on est dans le cas ou il n'y a pas de flexible apres celui-ci
+            // ce champ doit donc être lié à l'accessoire en face et à ceux d'en dessous.
+            let childs_div = document.querySelector("#div_accessoire").children;
+            for (let i = this.#get_position(); i < childs_div.length; i++) {
+                let input = childs_div[i].querySelector('input[type="hidden"]');
+                //si le select n'existe pas alors on ne fait rien
+                if (input === null) return;
+                setElementValue(input, this.nodes.Dimension_flexible.value)
+                
+            }            
         }
+    }
 
-        select.dispatchEvent(new Event('change')); 
+    /**
+     * Renvoie la position du champ.
+     * @returns {int}
+     */
+    #get_position(){
+        // Accéder à l'élément parent
+        const parent_div = this.nodes.champ_flexible_inox.parentNode;
+
+        // Trouver l'index de la div spécifique
+        let position = -1;
+        parent_div.querySelectorAll('div').forEach((child, index) => {
+            if (child === this.nodes.champ_flexible_inox) {
+                position = index;
+            }
+        });
+        return position;
     }
 
     supprimer(){
@@ -104,8 +133,9 @@ class Accessoire extends Champ{
     constructor(id, texte, categorie){
         super(id, texte, categorie);
 
-        this.nodes.type_joint.addEventListener("change", this.handler_type_joint.bind(this))
+        this.nodes.type_joint.addEventListener("change", this.handler_type_joint.bind(this));
         this.nodes.type_joint.dispatchEvent(new Event('change'));  
+        this.nodes.dn_dim.addEventListener("input", this.handler_dn_dim.bind(this));
 
     }
 
@@ -116,8 +146,7 @@ class Accessoire extends Champ{
      */
     handler_type_joint(){
         // on récupère la dimension du flexible
-        let select_dim_flex = document.querySelector("#Dimension_flexible_"+this.num)
-        let dimension = (select_dim_flex) ? select_dim_flex.value : "DN20";
+        let dimension = this.nodes.dn_dim.value;
 
         // on récupère la valeur du type_joint
         let type_joint = this.nodes.type_joint.value;
@@ -143,6 +172,16 @@ class Accessoire extends Champ{
         this.create_select_choice(choice);
 
         
+    }
+
+    /**
+     * fonction appellé lorsque l'input hidden dn_dim change de valeur.
+     */
+    handler_dn_dim(){
+        if (this.nodes.dn_dim.value == "DN32"){
+            setElementValue(this.nodes.type_joint, "joint");
+        }
+        this.handler_type_joint();
     }
 
     /**
