@@ -301,6 +301,10 @@
                     <td>Nb de champs : </td>
                     <td> <input type="number" id="nb_champs" class="small" min="1" value="1"></td>
                 </tr>
+                <tr>
+                    <td>Black Frame : </td>
+                    <td><select id="black_frame" class="small"></select></td>
+                </tr>
             </table>
             <table>
                 <tr>
@@ -316,11 +320,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Inclinaison : </td>
+                    <td><select id="inclinaison" class="small"></select></td>
+                </tr>
+                <tr>
                     <td colspan="2">
                         <input type="checkbox" id="habillage" class="capteur_part">
                         <label for="habillage">habillage capteur</label>
                     </td>
                 </tr>
+                
             </table>
             
             <i id="suppr_capt" class="fa fa-times-circle fa-lg" aria-hidden="true"></i>

@@ -18,21 +18,25 @@ class Capteur extends Champ{
             this.nodes.type_capteur,
             this.nodes.nb_capteur,
             this.nodes.nb_range,
+            this.nodes.black_frame,
             this.nodes.type_pose,
-            this.nodes.type_toiture
+            this.nodes.type_toiture,
+            this.nodes.inclinaison
         ];
 
-        const filters_column = ["ref","ref","ref","ref","ref"];
+        const filters_column = ["ref","ref","ref","ref","ref","ref","ref"];
         const filters_functions = [
             Capteur.getType,
             Capteur.getNbCapteur,
             Capteur.getNbRange,
+            Capteur.get_black_frame,
             Capteur.getTypePose,
-            Capteur.getTypeToiture
+            Capteur.getTypeToiture,
+            Capteur.get_inclinaison
 
         ];
-        const sort_functions = [undefined, parseInt, parseInt, undefined, undefined]
-        const labelisation = [undefined, undefined, undefined, this.getLabelTypePose, this.getLabelTypeToiture];
+        const sort_functions = [undefined, parseInt, parseInt, undefined, undefined, undefined, Capteur.filter_func_inclinaison]
+        const labelisation = [undefined, undefined, undefined, undefined, this.getLabelTypePose, this.getLabelTypeToiture, undefined];
         const filtrage = new Filtrage(
             Capteur.ligne_capteurs,
             selects_filtrage,
@@ -137,17 +141,55 @@ class Capteur extends Champ{
         }
     }
 
+    static filter_func_inclinaison(str){
+        if (isNaN(parseInt(str))) return 0;
+        else return parseInt(str);
+    }
+
 
     static getType(ref){
-        return ref.match(/^([^-]+)/)[1];
+        return ref.match(/^([^-^B]+)/)[1];
+    }
+
+    /**
+     * 
+     * @param {string} ref 
+     * @returns {string}
+     */
+    static get_black_frame(ref){
+        if (/B/.test(ref)) return "Black frame";
+        else return "Normal";
     }
 
     static getNbCapteur(ref){
         return ref.match(/\d+(?=-0)|[1-9]+$/)[0];
     }
 
+    /**
+     * Renvoie le nombre de rangé de capteurs d'une référence
+     * @param {string} ref 
+     * @returns {string}
+     */
     static getNbRange(ref){
-        return String(ref.match(/(?!0)(\d+)(?!.*[a-zA-Z])/g).length);
+        let nb_range = 0;
+        ref.split("-").forEach(sub_str => {
+            let int_str = parseInt(sub_str);
+            if (!isNaN(int_str) && int_str > 0 && int_str < 45) nb_range ++;
+        });
+        return String(nb_range);
+    }
+
+    /**
+     * Renvoie l'inclinaison en fonction de la ref ou "Aucun"
+     * si l'inclinaison n'existe pas.
+     * @param {string} ref 
+     * @returns {string}
+     */
+    static get_inclinaison(ref){
+        if (/45/.test(ref)) return "45 degrés";
+        else if (/60/.test(ref)) return "60 degrés";
+        else if (/70/.test(ref)) return "70 degrés";
+        else return "Aucun";
     }
 
     static getTypePose(ref){
