@@ -18,25 +18,23 @@ class Capteur extends Champ{
             this.nodes.type_capteur,
             this.nodes.nb_capteur,
             this.nodes.nb_range,
-            this.nodes.black_frame,
             this.nodes.type_pose,
             this.nodes.type_toiture,
             this.nodes.inclinaison
         ];
 
-        const filters_column = ["ref","ref","ref","ref","ref","ref","ref"];
+        const filters_column = ["ref","ref","ref","ref","ref","ref"];
         const filters_functions = [
             Capteur.getType,
             Capteur.getNbCapteur,
             Capteur.getNbRange,
-            Capteur.get_black_frame,
             Capteur.getTypePose,
             Capteur.getTypeToiture,
             Capteur.get_inclinaison
 
         ];
-        const sort_functions = [undefined, parseInt, parseInt, undefined, undefined, undefined, Capteur.filter_func_inclinaison]
-        const labelisation = [undefined, undefined, undefined, undefined, this.getLabelTypePose, this.getLabelTypeToiture, undefined];
+        const sort_functions = [undefined, parseInt, parseInt, undefined, undefined, Capteur.filter_func_inclinaison]
+        const labelisation = [undefined, undefined, undefined, this.getLabelTypePose, this.getLabelTypeToiture, undefined];
         const filtrage = new Filtrage(
             Capteur.ligne_capteurs,
             selects_filtrage,
@@ -66,7 +64,6 @@ class Capteur extends Champ{
                 default_devis_index.capteur[0][nodes_id]
             );
         }
-
         
     }
 
@@ -148,17 +145,7 @@ class Capteur extends Champ{
 
 
     static getType(ref){
-        return ref.match(/^([^-^B]+)/)[1];
-    }
-
-    /**
-     * 
-     * @param {string} ref 
-     * @returns {string}
-     */
-    static get_black_frame(ref){
-        if (/B/.test(ref)) return "Black frame";
-        else return "Normal";
+        return ref.match(/^([^-]+)/)[1];
     }
 
     static getNbCapteur(ref){
@@ -187,7 +174,6 @@ class Capteur extends Champ{
      */
     static get_inclinaison(ref){
         if (/45/.test(ref)) return "45 degrés";
-        else if (/60/.test(ref)) return "60 degrés";
         else if (/70/.test(ref)) return "70 degrés";
         else return "Aucun";
     }
