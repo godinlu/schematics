@@ -12,7 +12,10 @@ class ArticleManager extends Model{
         return $this->getAll('Tarif','Article',$data, $whereClauses);
     }
 
-    public function getAllArticles(){
+    /**
+     * @return Article[]
+     */
+    public function getAllArticles(): array{
         return $this->getAll('Tarif','Article');
     }
 
@@ -62,6 +65,10 @@ class ArticleManager extends Model{
 
     public function getNbArticles():int{
         return $this->countElements('Tarif');
+    }
+
+    public function delete_article(string $ref){
+        $this->delete("Tarif", ["ref"=>$ref]);
     }
 }
 ?>

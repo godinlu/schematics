@@ -40,9 +40,9 @@ try{
         'articles déjà à jour' => [],
         'articles mis à jour' => []
     ];
+
     foreach($data as $objet){
         $res = $article_manager->updateArticleByRef($objet['ref'], $objet['label'] , $objet['prix']);
-
 
         if ($res === -1){
             $article_manager->insertArticle($objet['ref'], $objet['label'] , $objet['prix']);
@@ -54,11 +54,23 @@ try{
         }
     }
 
+    // ensuite on supprime de la base de données Tarif tous les articles
+    // qui ne sont pas présent dans le JSON envoyé.
+    $articles = $article_manager->getAllArticles();
+    $refs1 = array();
+    foreach($articles as $article){
+        $refs1[] = $article->getRef();
+    }
+    $refs2 = array_column($data, 'ref');
+    $diff_refs = array_diff($refs1, $refs2);
+    foreach($diff_refs as $ref){
+        $article_manager->delete_article($ref);
+    }
+
     // Envoyer la réponse
     http_response_code(200); // OK
     echo "\nRésultat de la mise à jour du tarif\n\n";
     echo "Nombre d'articles envoyés : ". count($data) . "\n";
-    echo "Nombre d'articles dans la base de données : ". $article_manager->getNbArticles() . "\n";
     foreach($compteur as $key => $refs){
         echo "\n\t-$key (".count($refs).")\n";
         if ($key !== "articles déjà à jour"){
@@ -67,6 +79,11 @@ try{
             }
         }
     }
+    echo "\n-articles supprimés (".count($diff_refs).")\n";
+    foreach($diff_refs as $ref){
+        echo $ref."   ";
+    }
+    echo "\nNombre d'articles dans la base de données : ". $article_manager->getNbArticles() . "\n";
     echo "Mise à jour effectué avec succès";
 
 }catch (Exception $e){
