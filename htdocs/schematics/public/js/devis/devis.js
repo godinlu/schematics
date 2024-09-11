@@ -194,13 +194,11 @@ function create_capteur_part(){
 function create_tubeInox_part(){
     //on initialise les lignes de tube inox
     FlexibleInox.lignes = CSV.tubeInox_part.filter(row => row["filtre1"] == "flexible_inox");
-    let flexibleInoxManager = new ListeChamp("panel_racc_capt", "flexible_inox", FlexibleInox);
-    flexibleInoxManager.ajouter();
+    let flexibleInoxManager = new ListFlexibleInox("panel_racc_capt", "flexible_inox", FlexibleInox);
 
     //on initialise les lignes d'accessoire
     Accessoire.lignes = CSV.tubeInox_part.filter(row => row["filtre1"] == "accessoire");
-    let accessoireManager = new ListeChamp("panel_racc_capt", "accessoire", Accessoire);
-    accessoireManager.ajouter();
+    let accessoireManager = new ListAccessoire("panel_racc_capt", "accessoire", Accessoire);
 
     kit_capteurs_rows = CSV.tubeInox_part.filter(row => row["filtre1"] == "kit capteur");
     addKitCapteur(kit_capteurs_rows);

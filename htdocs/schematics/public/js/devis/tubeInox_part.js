@@ -1,3 +1,11 @@
+class ListFlexibleInox extends ListeChamp{
+    ajouter(){
+        super.ajouter();
+        link_flexible_accesoire();
+    }
+}
+
+
 /**
  * le fichier csv tubeInox_part est répartie de la manière suivant
  * ID | REF | LABEL | PRIX | TYPE_ARTICLE | TYPE_TUBE | DN
@@ -35,38 +43,7 @@ class FlexibleInox extends Champ{
             sort_functions
             );
 
-        this.nodes.Dimension_flexible.addEventListener("change", this.handler_filtre_join.bind(this));
-        this.handler_filtre_join();
-
-
-    }
-
-    /**
-     * fonction appelé lorsque le select de dimension du flexible change de valeur.
-     * met à jour le select de type de joint
-     */
-    handler_filtre_join(){
-        //on commence par accéder au select associé des accesoires
-        if (this.nodes.champ_flexible_inox.nextElementSibling){
-            // ici on est dans le cas ou il y a un flexible inox après celui-ci
-            // ce champ doit donc être lié uniquement à l'accessoire en face
-            const position = this.#get_position();
-            let input = document.querySelector(`#div_accessoire > div:nth-child(${position+1}) input[type="hidden"]`);
-            //si le select n'existe pas alors on ne fait rien
-            if (input === null) return;
-            setElementValue(input, this.nodes.Dimension_flexible.value)
-        }else{
-            // ici on est dans le cas ou il n'y a pas de flexible apres celui-ci
-            // ce champ doit donc être lié à l'accessoire en face et à ceux d'en dessous.
-            let childs_div = document.querySelector("#div_accessoire").children;
-            for (let i = this.#get_position(); i < childs_div.length; i++) {
-                let input = childs_div[i].querySelector('input[type="hidden"]');
-                //si le select n'existe pas alors on ne fait rien
-                if (input === null) return;
-                setElementValue(input, this.nodes.Dimension_flexible.value)
-                
-            }            
-        }
+        this.nodes.Dimension_flexible.addEventListener("change", link_flexible_accesoire);
     }
 
     /**
@@ -95,7 +72,7 @@ class FlexibleInox extends Champ{
                 select.addOption(option.label, option.ref);
             });
         }
-        
+        link_flexible_accesoire();
         devis.removeRow(this.nodes.flexible_inox.id);
         VisualDevis.show();
     }
@@ -127,15 +104,23 @@ class FlexibleInox extends Champ{
 }
 
 
+class ListAccessoire extends ListeChamp{
+    ajouter(){
+        super.ajouter();
+        link_flexible_accesoire();
+    }
+}
+
 class Accessoire extends Champ{
     static lignes;
 
     constructor(id, texte, categorie){
         super(id, texte, categorie);
 
+        
         this.nodes.type_joint.addEventListener("change", this.handler_type_joint.bind(this));
-        this.nodes.type_joint.dispatchEvent(new Event('change'));  
         this.nodes.dn_dim.addEventListener("input", this.handler_dn_dim.bind(this));
+        this.nodes.type_joint.dispatchEvent(new Event('change'));  
 
     }
 
@@ -218,7 +203,33 @@ class Accessoire extends Champ{
             devis.removeRow("kit_joint_"+this.num+i);
         }
         devis.removeRow("kit_joint_"+this.num);
+        link_flexible_accesoire();
         VisualDevis.show();
     }
 }
 
+/**
+ * Cette fonction fait le lien entre les flexibles inox et les accessoires
+ * elle est appellé lorsque que:
+ *  - le select DN change de valeur
+ *  - lors de l'ajout ou de la suppression de n'importe qu'elle champs.
+ */
+function link_flexible_accesoire(){
+    const champs_flexible_inox = document.getElementById("div_flexible_inox").children;
+    const champs_accessoire = document.getElementById("div_accessoire").children;
+
+    for (let i = 0; i < champs_accessoire.length; i++) {
+        let dn_dim = "DN20";
+        if (i < champs_flexible_inox.length){
+            // si pour le champ accessoire il existe un champ flexible inox aligné
+            // alors on récupère la dimension de celui-ci
+            dn_dim = champs_flexible_inox[i].querySelector(".dn_dim").value;
+        }else if (champs_flexible_inox.length != 0){
+            dn_dim = champs_flexible_inox[champs_flexible_inox.length-1].querySelector(".dn_dim").value;
+        }
+        // on récupère l'hidden input responsable de la dimension
+        const input = champs_accessoire[i].querySelector("input[type='hidden']");
+        setElementValue(input, dn_dim);        
+    }
+
+}

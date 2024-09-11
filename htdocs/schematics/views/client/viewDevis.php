@@ -378,7 +378,7 @@
                 </tr>
                 <tr>
                     <td>Dimension : </td>
-                    <td><select id="Dimension_flexible"  class="small"></select></td>
+                    <td><select id="Dimension_flexible"  class="small dn_dim"></select></td>
                 </tr>
                 <tr>
                     <td>Flexibles inox : </td>

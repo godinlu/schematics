@@ -216,17 +216,17 @@ class Filtrage{
         //une fois qu'on a bien la liste des valeurs on peut mettre à jour les options du select
         //en prennant en compte la labelisation si il y en a une
         let select = this.selects[index];
+        const old_value = select.value;
         select.innerHTML = "";
         unique_values.forEach((value) => {
             if (this.labelisation[index]) 
                 select.addOption(this.labelisation[index](value), value);
             else
                 select.addOption(value, value);
-            
-            
         });
+        // si l'ancienne valeur du select existe encore alors on garde cette valeur.
+        if (unique_values.includes(old_value)) select.value = old_value;
         
-
     }
 
     /**
