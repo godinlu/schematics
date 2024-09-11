@@ -7,7 +7,7 @@
             <td>Prix tarif</td>
             <td>Édition</td>
         </tr>
-        <?php foreach ($categories as $i => $item):?>
+        <?php foreach ($base_categories as $i => $item):?>
             <tr id="<?=$item['id']?>">
                 <th colspan="2"><?=$item["name"]?></th>
                 <th></th>
@@ -42,5 +42,4 @@
 
 <script>
     const articles =  <?=$articles?>;
-    const articles_tree = <?=json_encode($articles_tree)?>;
 </script>

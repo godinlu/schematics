@@ -52,12 +52,16 @@ class ControllerDevis2
         unset($article);
       }
 
-        $this->_view = new View('Devis2');
-        $this->_view->generate(array(
-            'articles' => $tarif,
-            'formulaire' => $formulaire,
-            'categories' => $categories
-        ));
+      // on récupère les catégories de bases du devis
+      $base_categories = array_filter(json_decode($categories, true), fn($row) => $row['parent_id'] === 0);
+
+      $this->_view = new View('Devis2');
+      $this->_view->generate(array(
+          'articles' => $tarif,
+          'formulaire' => $formulaire,
+          'categories' => $categories,
+          'base_categories' => $base_categories
+      ));
     }
 }
 

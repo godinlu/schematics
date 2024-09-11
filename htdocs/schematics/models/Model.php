@@ -36,6 +36,23 @@ abstract class Model{
         return self::$_bdd;
     }
 
+    /**
+     * cette fonction execute la query select passé en paramètre
+     * et renvoie le résultat tel qu'elle.
+     */
+    protected function select(string $query): array{
+        if (strpos(trim($query), 'SELECT') !== 0) throw new Exception("The query need to start with select");
+        $req = $this->getBdd()->prepare($query);
+        $req->execute();
+        
+        $arr = array();
+        // Parcours des résultats et création des objets correspondants
+        while($data = $req->fetch(PDO::FETCH_ASSOC)){
+            $arr[] = $data;
+        }
+        return $arr;
+    }
+
     protected function getAll(string $table, string $obj, array|null $data = null, string|null $whereClauses = null){
         $var = array();
         
