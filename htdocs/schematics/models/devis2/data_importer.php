@@ -1,4 +1,5 @@
 <?php
+require_once URL_BDD_MODEL;
 // ce fichier contient une classe permettant l'import des données depuis la base
 class DataImporter extends Model{
 

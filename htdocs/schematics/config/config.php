@@ -17,6 +17,8 @@ define('URL_ETIQUETAGE',APP_BASE_PATH . 'models/schema/Etiquetage.php');
 define('URL_IMAGE_FICHE_PROG',APP_BASE_PATH . 'models/schema/ImageFicheProg.php');
 define('URL_DATA_DEVIS', APP_BASE_PATH.'models/client/DataDevis.php');
 define('URL_DEVIS_DEFAULT_INDEX', APP_BASE_PATH.'config/client/devis_default_index.json');
+define('URL_DEVIS_DATA_IMPORTER', APP_BASE_PATH.'models/devis2/data_importer.php');
+define('URL_BDD_MODEL', APP_BASE_PATH.'models/Model.php');
 define('URL_FPDF' , APP_BASE_PATH . "config/libraries/fpdf/fpdf.php");
 
 const FORM_SONDES = 'sondes';

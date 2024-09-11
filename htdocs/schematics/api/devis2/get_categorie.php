@@ -1,5 +1,6 @@
 <?php
-require_once '../../models/devis2/data_importer.php';
+require_once ("../../config/config.php");
+require_once URL_DEVIS_DATA_IMPORTER;
 
 $data_importer = new DataImporter();
 
