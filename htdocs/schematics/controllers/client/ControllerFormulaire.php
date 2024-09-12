@@ -26,6 +26,7 @@ class ControllerFormulaire
                 $dataForm->clearFormulaire();
                 $dataForm->clearFiche_prog();
                 $dataForm->clearDevis();
+                $dataForm->clear_devis2();
                 header('location:formulaire');
                 exit;
             }

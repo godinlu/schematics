@@ -1,10 +1,14 @@
 function main(){
-    let devis = new Devis(articles, articles_tree);
+    let devis = new Devis(articles, categories);
     const url = window.location.href.match(/(.*\/devis2)(?:\/.*)?/)[1];
     let modal_window = document.getElementById("modal_window");
 
     modal_init(modal_window, url);
     action(modal_window);
+
+    document.querySelectorAll(".saveForm").forEach(a =>{
+      a.addEventListener("click" , handleMenuClick);
+    });
 
     // ajoute les event listener au bouton d'ajout d'article
     document.querySelectorAll(".button_add").forEach(button =>{
@@ -15,7 +19,8 @@ function main(){
     });
 
     // ligne temporaire pour ajouter une ligne au devis
-    devis.add_row("SC2BMOD", "00000001", "hey");
+    devis.add_row("SC1ZBMOD", 6, "hey");
+    devis.add_row("SC1ZBMOD500", 6, "hey");
 
     // ajout
     window.addEventListener('popstate', function(event) {
@@ -23,6 +28,18 @@ function main(){
   });
 
 }
+
+/**
+ * cette fonction redirige le formulaire vers la page souhaité pour sauvegarder les données du devis
+ * @param {Event} event 
+ */
+function handleMenuClick(event){
+  event.preventDefault();
+  const form = document.getElementById('formulaire_devis');
+  form.action = event.target.href
+  form.submit();
+}
+
 
 /**
  * Cette fonction initalise la fenêtre modal (popup)

@@ -1,4 +1,6 @@
-<form id="devis"  action="" method="post">
+<form id="formulaire_devis"  action="" method="post">
+    <!-- <input type="hidden" name="SC1ZBMOD" value='{"tag":"default", "categ":"hey", "qte":3}'> -->
+
     <table id="table_devis">
         <tr>
             <td>Référence</td>
@@ -8,7 +10,7 @@
             <td>Édition</td>
         </tr>
         <?php foreach ($base_categories as $i => $item):?>
-            <tr id="<?=$item['id']?>">
+            <tr id="categorie_<?=$item['id']?>">
                 <th colspan="2"><?=$item["name"]?></th>
                 <th></th>
                 <th></th>
@@ -41,5 +43,7 @@
 
 
 <script>
-    const articles =  <?=$articles?>;
+    const articles =  <?=json_encode($articles)?>;
+    const categories = <?=json_encode($categories)?>;
+    console.log(articles);
 </script>

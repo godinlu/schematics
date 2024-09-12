@@ -5,6 +5,7 @@ class DataForm{
     private static string $FORMULAIRE = "formulaire";
     private static string $FICHE_PROG = "fiche_prog";
     private static string $DEVIS = "devis";
+    private static string $DEVIS2 = "devis2";
 
     public function __construct(){
         if (session_status() !== PHP_SESSION_ACTIVE){
@@ -31,6 +32,10 @@ class DataForm{
         unset($_SESSION[self::$FORMULAIRE]);
     }
 
+    public function clear_devis2(){
+        unset($_SESSION[self::$DEVIS2]);
+    }
+
     public function saveFiche_Prog(array $fiche_prog){
         $_SESSION[self::$FICHE_PROG] = $fiche_prog;
     }
@@ -53,9 +58,46 @@ class DataForm{
         }
         $_SESSION[self::$DEVIS] = $devis;
     }
+
+    public function save_devis2(array $post_data){
+        $formatted_data = [];
+        $order = 0;
+        $prefix = null;
+    
+        // Parcourir les données POST
+        foreach ($post_data as $key => $value) {
+            
+            // Identifier le préfixe de chaque groupe
+            if (preg_match('/^(tag|categ|qte)_(.+)$/', $key, $matches)) {
+                if ($prefix !== $matches[2]) $order++;
+                $prefix = $matches[2]; // référence
+                $field = $matches[1]; // tag, categ, ou qte
+    
+                // Initialiser l'objet pour ce préfixe s'il n'existe pas encore
+                if (!isset($formatted_data[$prefix])) {
+                    $formatted_data[$prefix] = [
+                        'tag' => null,
+                        'categ' => null,
+                        'qte' => null,
+                        'order' => $order
+                    ];
+                }
+    
+                // Mettre à jour la valeur dans l'objet
+                $formatted_data[$prefix][$field] = $value;
+
+            }
+        }
+        $_SESSION[self::$DEVIS2] = $formatted_data;
+    }
+
     public function getDevis():DataDevis{
         $devis_index = ($_SESSION[self::$DEVIS])?? null;
         return new DataDevis($_SESSION[self::$FORMULAIRE] , $devis_index);
+    }
+
+    public function get_devis2() : ?array {
+        return ($_SESSION[self::$DEVIS2])?? null;
     }
     public function clearDevis(){
         unset($_SESSION[self::$DEVIS]);
@@ -66,11 +108,14 @@ class DataForm{
             if (!isset($_SERVER['HTTP_REFERER'])) return;
             $url = explode('/', filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_URL));
             $sender_name = $url[count($url) - 1];
+            
 
             if (strpos($sender_name , self::$FORMULAIRE) !== false){
                 $this->saveFormulaire($_POST);
             }else if (strpos($sender_name , self::$FICHE_PROG) !== false){
                 $this->saveFiche_Prog($_POST);
+            }else if (strpos($sender_name , self::$DEVIS2) !== false){
+                $this->save_devis2($_POST);
             }else if (strpos($sender_name , self::$DEVIS) !== false){
                 $this->saveDevis($_POST);
             }

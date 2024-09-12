@@ -2,7 +2,7 @@ class ArticleRow{
     /**
      * 
      * @param {JSON} article 
-     * @param {string} tree_path 
+     * @param {string} category_path 
      * @param {string} tag 
      * @param {int} qte 
      * @param {boolean} editable_qte 
@@ -13,7 +13,7 @@ class ArticleRow{
      */
     constructor(
         article,
-        tree_path,
+        category_path,
         tag="default",
         qte=1,
         editable_qte = true,
@@ -21,11 +21,12 @@ class ArticleRow{
         editable = true,
         removeable = true
     ){
-        console.log(article);
         this.tr = document.createElement("tr");
         this.tr.id = "article_" + article.ref;
+        this.tr.classList.add("article");
         this.ref = article.ref;
 
+        this.#create_hide_input(article.ref, tag, category_path);
         this.#create_ref_col(article.ref);
         this.#create_label_col(article.label);
         this.#create_qte_col(qte, editable_qte);
@@ -34,6 +35,25 @@ class ArticleRow{
 
         return this.tr;
 
+    }
+
+    /**
+     * ajoute un input caché pour ajouté le tag et le categorie
+     * @param {string} ref 
+     * @param {string} tag 
+     */
+    #create_hide_input(ref, tag, category_path){
+        let tag_input = document.createElement("input");
+        tag_input.type = "hidden";
+        tag_input.name = `tag_${ref}`;
+        tag_input.value = tag;
+        this.tr.appendChild(tag_input);   
+
+        let categorie_input = document.createElement("input");
+        categorie_input.type = "hidden";
+        categorie_input.name = `categ_${ref}`;
+        categorie_input.value = category_path;
+        this.tr.appendChild(categorie_input);   
     }
 
     /**
@@ -113,6 +133,18 @@ class ArticleRow{
     #create_edit_col(editable, removeable){
         let td = document.createElement("td");
         td.classList.add("edit");
+        let up = document.createElement("button");
+        let down = document.createElement("button");
+
+        up.type = "button";
+        down.type = "button";
+        up.innerText = "up";
+        down.innerText = "down";
+        td.appendChild(up);
+        td.appendChild(down);
+        up.addEventListener("click", (e) => {move_row(e.target, -1);});
+        down.addEventListener("click", (e) => {move_row(e.target, 1);});
+
         if (editable){
             let button = document.createElement("button");
             button.type = "button";
@@ -128,6 +160,26 @@ class ArticleRow{
         this.tr.appendChild(td);
     }
 
+}
 
+/**
+ * Cette fonction déplace la ligne associé en fonction de la direction
+ * passé en paramètre
+ * @param {HTMLButtonElement} button 
+ * @param {int} direction 
+ */
+function move_row(button, direction) {
+    const row = button.closest('tr');
+    const tbody = row.parentNode;
+    const index = Array.from(tbody.children).indexOf(row);
+    const newIndex = index + direction;
 
+    if (newIndex >= 0 && newIndex < tbody.children.length) {
+        if (tbody.children[newIndex].classList.contains("article")){
+            // controle que l'article puisse être déplacé uniquement parmis les articles.
+            if (direction == 1) tbody.insertBefore(row, tbody.children[newIndex+1]);
+            else tbody.insertBefore(row, tbody.children[newIndex]);
+        }
+        
+    }
 }
