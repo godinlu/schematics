@@ -44,6 +44,10 @@ class FlexibleInox extends Champ{
             );
 
         this.nodes.Dimension_flexible.addEventListener("change", link_flexible_accesoire);
+        // on met les valeurs d'un nouveau champs au valeur par défaut.
+        for (const [key, value] of Object.entries(default_devis_index["flexible_inox"][0])) {
+            setElementValue(this.nodes[key], value);
+        }
     }
 
     /**
