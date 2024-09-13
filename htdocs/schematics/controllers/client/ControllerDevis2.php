@@ -25,16 +25,16 @@ class ControllerDevis2
       session_start();
       $data_form = new DataForm;
       $formulaire = $data_form->getFormulaire();
-      var_dump($data_form->get_devis2());
       if (!isset($formulaire)){
         header('Location: formulaire');
         exit;
       }
 
-      $data_importer = new DataImporter();
+      $data_importer = new DataImporter($formulaire);
 
       $articles = $data_importer->get_used_articles();
       $categories = $data_importer->get_all_categorie();
+      $default_articles = $data_importer->get_default_articles($data_form->get_devis2());
 
       // on récupère les catégories de bases du devis
       $base_categories = array_filter($categories, fn($row) => $row['parent_id'] === 0);
@@ -42,6 +42,7 @@ class ControllerDevis2
       $this->_view = new View('Devis2');
       $this->_view->generate(array(
           'articles' => $articles,
+          'default_articles' => $default_articles,
           'formulaire' => $formulaire,
           'categories' => $categories,
           'base_categories' => $base_categories

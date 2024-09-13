@@ -89,7 +89,10 @@
                 "devis2/devis.js",
                 "devis2/utils.js",
                 "devis2/devis.class.js",
-                "devis2/article_row.class.js"
+                "devis2/article_row.class.js",
+                "devis2/category.class.js",
+                "devis2/modal.class.js",
+                "devis2/url.class.js"
             ],
             "public":[
                 "public/header.js",

@@ -10,7 +10,7 @@
             <td>Édition</td>
         </tr>
         <?php foreach ($base_categories as $i => $item):?>
-            <tr id="categorie_<?=$item['id']?>">
+            <tr>
                 <th colspan="2"><?=$item["name"]?></th>
                 <th></th>
                 <th></th>
@@ -31,19 +31,19 @@
 <div id="modal_window" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Ajouter un article</h2>
-        <!-- Contenu de la modale -->
-        <form id="articleForm">
-            <label for="articleName">Nom de l'article:</label>
-            <input type="text" id="articleName" name="articleName">
-            <button type="submit">Ajouter</button>
-        </form>
+        <div id="modal_content">
+
+        </div>
     </div>
 </div>
 
 
 <script>
     const articles =  <?=json_encode($articles)?>;
+    const default_articles =  <?=json_encode($default_articles)?>;
     const categories = <?=json_encode($categories)?>;
-    console.log(articles);
+    document.addEventListener('DOMContentLoaded', function() {
+        Category.set_categories(<?=json_encode($categories)?>);
+    });
+    
 </script>

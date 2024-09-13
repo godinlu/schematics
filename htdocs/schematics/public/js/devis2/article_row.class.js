@@ -13,7 +13,7 @@ class ArticleRow{
      */
     constructor(
         article,
-        category_path,
+        category,
         tag="default",
         qte=1,
         editable_qte = true,
@@ -26,12 +26,12 @@ class ArticleRow{
         this.tr.classList.add("article");
         this.ref = article.ref;
 
-        this.#create_hide_input(article.ref, tag, category_path);
+        this.#create_hide_input(article.ref, tag, category);
         this.#create_ref_col(article.ref);
         this.#create_label_col(article.label);
         this.#create_qte_col(qte, editable_qte);
         this.#create_price_col(article.prix, editable_price);
-        this.#create_edit_col(editable, removeable);
+        this.#create_edit_col(editable, removeable, article.ref, category);
 
         return this.tr;
 
@@ -41,8 +41,9 @@ class ArticleRow{
      * ajoute un input caché pour ajouté le tag et le categorie
      * @param {string} ref 
      * @param {string} tag 
+     * @param {string} int 
      */
-    #create_hide_input(ref, tag, category_path){
+    #create_hide_input(ref, tag, category){
         let tag_input = document.createElement("input");
         tag_input.type = "hidden";
         tag_input.name = `tag_${ref}`;
@@ -52,7 +53,7 @@ class ArticleRow{
         let categorie_input = document.createElement("input");
         categorie_input.type = "hidden";
         categorie_input.name = `categ_${ref}`;
-        categorie_input.value = category_path;
+        categorie_input.value = category;
         this.tr.appendChild(categorie_input);   
     }
 
@@ -130,37 +131,35 @@ class ArticleRow{
      * @param {boolean} editable 
      * @param {boolean} removeable 
      */
-    #create_edit_col(editable, removeable){
+    #create_edit_col(editable, removeable, ref , category){
         let td = document.createElement("td");
         td.classList.add("edit");
-        let up = document.createElement("button");
-        let down = document.createElement("button");
+        let up = Utils.create_button("up",undefined,(e) => {move_row(e.target, -1);})
+        let down = Utils.create_button("down",undefined,(e) => {move_row(e.target, 1);})
 
-        up.type = "button";
-        down.type = "button";
-        up.innerText = "up";
-        down.innerText = "down";
         td.appendChild(up);
         td.appendChild(down);
-        up.addEventListener("click", (e) => {move_row(e.target, -1);});
-        down.addEventListener("click", (e) => {move_row(e.target, 1);});
 
         if (editable){
-            let button = document.createElement("button");
-            button.type = "button";
-            button.innerText = "edit";
+            let button = Utils.create_button("edit", `${ref}_${category}`, event_edit);
             td.appendChild(button);
         }
         if (removeable){
-            let button = document.createElement("button");
-            button.type = "button";
-            button.innerText = "supprimer";
+            let button = Utils.create_button("supprimer", "");
             td.appendChild(button);
         }
         this.tr.appendChild(td);
     }
 
 }
+
+function event_edit(e){
+    let split = e.target.value.split("_");
+    const category_path = Category.get_category_path(parseInt(split[1]));
+    console.log(Category.get_url_from_category_path(category_path));
+    
+}
+
 
 /**
  * Cette fonction déplace la ligne associé en fonction de la direction

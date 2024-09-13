@@ -10,11 +10,8 @@ class Devis{
         // on initalise tr_categories
         for (let i = 0; i < this.categories.length; i++) {
             const id = this.categories[i]["id"];
-            this.tr_categories.set(id, document.getElementById("categorie_"+id));
+            this.tr_categories.set(id, document.querySelector(`button[value="${id}"]`));
         }
-
-        console.log(this.get_category_path(1));
-
     }
 
     /**
@@ -41,19 +38,16 @@ class Devis{
         // on commence par trouver l'article par sa référence
         const article = this.get_article(ref);
 
-        // on récupère le chemin de la catégorie
-        const category_path = this.get_category_path(categorie);
-
         // ensuite on trouve la ligné associé à la catégorie 
-        const tr_categ = this.tr_categories.get(parseInt(category_path.split("/")[1]));
+        const tr_categ = this.tr_categories.get(Category.get_category_path(categorie)[1]);
 
         // construction de la ligne produit
         const article_row = new ArticleRow(
-            article, category_path, tag, qte, editable_qte, editable_price, editable, removeable
+            article, categorie, tag, qte, editable_qte, editable_price, editable, removeable
         );
         
         // ajout de la ligne produit dans le tableau
-        tr_categ.after(article_row);
+        tr_categ.parentElement.parentElement.before(article_row);
     }
 
     /**
@@ -66,17 +60,5 @@ class Devis{
         const arts = this.articles.filter(raw => raw.ref == ref);
         if (arts.length != 1) throw new Error("Article " + ref + " not found !");
         return arts[0];
-    }
-
-    get_category_path(category_id) {
-        const category_map = new Map(this.categories.map(cat => [cat.id, cat.parent_id]));
-        const path = [];
-
-        while (category_id !== null) {
-            path.unshift(category_id); // Ajouter l'ID au début du tableau
-            category_id = category_map.get(category_id); // Monter au parent
-        }
-
-        return path.join('/'); // Joindre les IDs avec "/"
     }
 }

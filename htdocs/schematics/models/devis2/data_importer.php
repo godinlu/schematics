@@ -29,9 +29,30 @@ class DataImporter extends Model{
         return $this->select($query);    
     }
 
-    public function get_default_articles():array{
+    public function get_default_articles(?array $devis_data):array{
+        if (isset($devis_data)){
+            // si des lignes sont sauvegarder alors on récupère une liste des catégories
+            // déjà utilisé pour éviter de les ajouter par défaut
+            $not_default_articles = array_filter($devis_data, function($article) {
+                return isset($article['tag']) && $article['tag'] !== 'default';
+            });
+            $categs_id = array_column($not_default_articles, "categ");
+            $refs = array_keys($not_default_articles);
+            $str_categs_id = "('" . implode("', '", $categs_id) . "')";
+            $str_refs = "('" . implode("', '", $refs) . "')";
+        }else{
+            $str_categs_id = "('')";
+            $str_refs = "('')";
+        }
         $str_ids = "('" . implode("', '", $this->ids_filter) . "')";
-        $query = "SELECT T.ref, T.label, T.prix, A.category_id FROM Tarif T, ArticleInfo A WHERE T.ref = A.ref AND A.id_default_filter in $str_ids"; 
+        $query = "
+        SELECT T.ref, T.label, T.prix, A.category_id 
+        FROM Tarif T, ArticleInfo A, Categorie C 
+        WHERE T.ref = A.ref AND A.category_id = C.id 
+            AND ((A.id_default_filter in $str_ids AND A.category_id NOT IN $str_categs_id) 
+                OR (T.ref in $str_refs))
+        ORDER BY C.parent_id ASC, C.priority ASC;
+        ";
         return $this->select($query);
     }
 
@@ -40,7 +61,8 @@ class DataImporter extends Model{
      * @return array[]
      */
     public function get_all_categorie() : array {
-        $query = "SELECT * FROM Categorie";
+        $query = "SELECT * FROM Categorie ORDER BY priority";
+        
         return $this->select($query);
     }
 
@@ -124,6 +146,34 @@ class DataImporter extends Model{
             }
         }
         return $ids;
+    }
+
+    /**
+     * Cette fonction ajoute la colone list_priority qui représente une liste 
+     * permettant de connaitre l'ordre 
+     */
+    private function add_category_priorities_in_place(array &$categories) {
+        $categoryById = [];
+
+        // Indexer les catégories par leur id pour faciliter la recherche
+        foreach ($categories as &$category) {
+            $categoryById[$category['id']] = &$category;
+        }
+
+        // Fonction pour construire le chemin de priorités et l'ajouter dans chaque catégorie
+        foreach ($categories as &$category) {
+            $path = [];
+            $current = $category;
+
+            // Remonter dans la hiérarchie parent-enfant pour construire le chemin
+            while ($current !== null) {
+                array_unshift($path, $current['priority']); // Ajouter la priorité au début
+                $current = isset($current['parent_id']) ? $categoryById[$current['parent_id']] : null;
+            }
+
+            // Ajouter la colonne list_priority à la catégorie
+            $category['list_priority'] = $path;
+        }
     }
 }
 
