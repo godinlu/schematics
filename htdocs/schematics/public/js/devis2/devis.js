@@ -1,6 +1,6 @@
 function main(){
-    let devis = new Devis(articles, categories);
     Modal.init(document.getElementById("modal_window"));
+    Devis.init();
 
     Modal.update();
 
@@ -16,8 +16,9 @@ function main(){
     });
 
     // ajoute les articles par défault
-    default_articles.forEach(article =>{
-      devis.add_row(article.ref, article.category_id, "default");
+    articles_in_devis.forEach(virtual_article =>{
+      console.log(virtual_article);
+      Devis.add_article(virtual_article);
     }); 
 
     // ajout

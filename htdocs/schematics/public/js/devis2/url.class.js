@@ -2,17 +2,28 @@ class Url{
     static default_url = window.location.href.match(/(.*\/devis2)(?:\/.*)?/)[1];
 
     /**
-     * met à jour l'url avec l'url par défaut + l'url passé en paramètre
+     * appelle la fonction window.history.pushState avec l'url passé en paramètre
+     * et met à jour la fenêtre modale
      * @param {string} url 
      */
-    static set(url = undefined){
-        if (url){
-            window.history.pushState({}, '', this.default_url + url);
-        }else{
-            window.history.pushState({}, '', this.default_url);
-        }
+    static #push_state(url){
+        window.history.pushState({}, '', url);
         Modal.update();
-        
+    }
+
+    /**
+     * remet l'url par défaut
+     */
+    static reset(){
+        this.#push_state(this.default_url);
+    }
+
+    /**
+     * Ajoute à l'url courant l'url passé en paramètre
+     * @param {string} url 
+     */
+    static add(url){
+        this.#push_state(window.location.href+url);
     }
 
     /**
@@ -22,7 +33,7 @@ class Url{
     static add_article(category_id){
         const category_path = Category.get_category_path(parseInt(category_id));
         const url = Category.get_url_from_category_path(category_path);
-        this.set("/ajouter/"+url);
+        this.add("/ajouter/"+url);
     }
 
     /**

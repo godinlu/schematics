@@ -16,6 +16,7 @@
                 <th></th>
                 <th></th>
             </tr>
+            <tbody class="category-content" id="div_<?=$item["id"]?>"></tbody>
             <tr >
                 <td colspan="2"><button class="button_add" type="button" value="<?=$item['id']?>">Ajouter</button></td>
                 <td></td>
@@ -39,11 +40,10 @@
 
 
 <script>
-    const articles =  <?=json_encode($articles)?>;
-    const default_articles =  <?=json_encode($default_articles)?>;
-    const categories = <?=json_encode($categories)?>;
+    const articles_in_devis =  <?=json_encode($articles_in_devis)?>;
     document.addEventListener('DOMContentLoaded', function() {
         Category.set_categories(<?=json_encode($categories)?>);
+        Devis.articles = <?=json_encode($articles)?>;
     });
     
 </script>

@@ -36,14 +36,14 @@ class Modal{
         window.onclick = function(event) {
             if (event.target == modal_window) {
             modal_window.style.display = "none";
-            Url.set();
+            Url.reset();
             }
         }
 
         // Fermer la modal_window
         this.modal_window.querySelector("span").onclick = function() {
             modal_window.style.display = "none";
-            Url.set();
+            Url.reset();
         }
     }
 
@@ -69,7 +69,9 @@ class Modal{
         for (let sub_categ of sub_categories){
             let tr = document.createElement("tr");
             let td = document.createElement("td");
-            let button = Utils.create_button(sub_categ.name, sub_categ.id)
+            let button = Utils.create_button(sub_categ.name, sub_categ.short_name, (e) =>{
+                Url.add("/"+e.target.value);
+            });
             
             td.appendChild(button);
             tr.appendChild(td);
@@ -80,7 +82,57 @@ class Modal{
     }
 
     static #create_articles_view(category_id){
-        console.log("article");
+        const articles = Devis.get_articles_by_categ(category_id);
+        this.modal_content.appendChild(this.#get_table_articles(articles));
+    }
+
+    /**
+     * 
+     * @param {article[]} articles 
+     * @returns {HTMLTableElement}
+     */
+    static #get_table_articles(articles){
+        const keys = ["ref", "label", "prix"];
+        let table = document.createElement("table");
+
+        // on créer l'entête du tableau avec des th
+        let tr = document.createElement("tr");
+        for (const key of keys) {
+            let th = document.createElement("th");
+            th.innerText = key;
+            tr.appendChild(th);
+        }
+        table.appendChild(tr);
+
+        // ensuite on ajoute les lignes du tableau avec les articles trouvées
+        for (const article of articles) {
+            let tr = document.createElement("tr");
+            tr.addEventListener("click",this.#handler_article_click);
+            tr.dataset.ref = article.ref;
+            tr.dataset.category_id = article.category_id;
+            for (const key of keys) {
+                let td = document.createElement("td");
+                td.innerText = article[key];
+                tr.appendChild(td);
+            }
+            
+            table.appendChild(tr);
+        }
+        return table;
+    }
+
+    /**
+     * 
+     * @param {Event} e 
+     */
+    static #handler_article_click(e){
+        let tr = e.target.parentElement;
+
+        if (Url.get_info()[0] == "ajouter"){
+            const virtual_article = {"ref":tr.dataset.ref, "category_id":parseInt(tr.dataset.category_id),"tag":"added"};
+            Devis.add_article(virtual_article);
+        }
+        Url.reset();
     }
 
 }
