@@ -129,8 +129,11 @@ class Modal{
         let tr = e.target.parentElement;
 
         if (Url.get_info()[0] == "ajouter"){
-            const virtual_article = {"ref":tr.dataset.ref, "category_id":parseInt(tr.dataset.category_id),"tag":"added"};
-            Devis.add_article(virtual_article);
+            const action_add = {"type":"add", "ref":tr.dataset.ref};
+            Actions.push(action_add);
+        }else if (Url.get_info()[0] == "modifier"){
+            const action_edit = {"type":"edit", "old_ref":Url.get_info()[1], "new_ref":tr.dataset.ref};
+            Actions.push(action_edit);
         }
         Url.reset();
     }

@@ -1,10 +1,7 @@
 class ArticleRow{
     /**
      * 
-     * @param {JSON} article 
-     * @param {string} category_path 
-     * @param {string} tag 
-     * @param {int} qte 
+     * @param {article} article 
      * @param {boolean} editable_qte 
      * @param {boolean} editable_price 
      * @param {boolean} editable 
@@ -13,9 +10,6 @@ class ArticleRow{
      */
     constructor(
         article,
-        category,
-        tag="default",
-        qte=1,
         editable_qte = true,
         editable_price = false,
         editable = true,
@@ -24,37 +18,17 @@ class ArticleRow{
         this.tr = document.createElement("tr");
         this.tr.id = "article_" + article.ref;
         this.tr.classList.add("article");
+        this.tr.dataset.ref = article.ref;
         this.ref = article.ref;
 
-        this.#create_hide_input(article.ref, tag, category);
         this.#create_ref_col(article.ref);
         this.#create_label_col(article.label);
-        this.#create_qte_col(qte, editable_qte);
+        this.#create_qte_col(editable_qte);
         this.#create_price_col(article.prix, editable_price);
-        this.#create_edit_col(editable, removeable, article.ref, category);
+        this.#create_edit_col(editable, removeable, article.ref, article.category_id);
 
         return this.tr;
 
-    }
-
-    /**
-     * ajoute un input caché pour ajouté le tag et le categorie
-     * @param {string} ref 
-     * @param {string} tag 
-     * @param {string} int 
-     */
-    #create_hide_input(ref, tag, category){
-        let tag_input = document.createElement("input");
-        tag_input.type = "hidden";
-        tag_input.name = `tag_${ref}`;
-        tag_input.value = tag;
-        this.tr.appendChild(tag_input);   
-
-        let categorie_input = document.createElement("input");
-        categorie_input.type = "hidden";
-        categorie_input.name = `categ_${ref}`;
-        categorie_input.value = category;
-        this.tr.appendChild(categorie_input);   
     }
 
     /**
@@ -82,10 +56,9 @@ class ArticleRow{
     /**
      * Ajoute la colone quantité dans la ligne.
      * Si editable_qte = true alors ajoute un input type number pour mettre à jour la quantité.
-     * @param {int} qte 
      * @param {boolean} editable_qte 
      */
-    #create_qte_col(qte, editable_qte){
+    #create_qte_col(editable_qte){
         let td = document.createElement("td");
         td.classList.add("qte");
         if (editable_qte){
@@ -93,7 +66,7 @@ class ArticleRow{
             input.type = "number";
             input.name = "qte_" + this.ref;
             input.min = 1;
-            input.value = qte;
+            input.value = 1;
             td.appendChild(input);
         }else{
             td.innerText = qte;
@@ -134,18 +107,19 @@ class ArticleRow{
     #create_edit_col(editable, removeable, ref , category){
         let td = document.createElement("td");
         td.classList.add("edit");
-        let up = Utils.create_button("up",undefined,(e) => {move_row(e.target, -1);})
-        let down = Utils.create_button("down",undefined,(e) => {move_row(e.target, 1);})
+        let up = Utils.create_button("up",ref,(e) => {Actions.move_article(e.target.value, -1);});
+        let down = Utils.create_button("down",ref,(e) => {Actions.move_article(e.target.value, 1);});
 
         td.appendChild(up);
         td.appendChild(down);
 
         if (editable){
-            let button = Utils.create_button("edit", `${ref}_${category}`, event_edit);
+            let button = Utils.create_button("edit", category, event_edit);
+            button.dataset.ref = ref;
             td.appendChild(button);
         }
         if (removeable){
-            let button = Utils.create_button("supprimer", "");
+            let button = Utils.create_button("supprimer", "", event_remove);
             td.appendChild(button);
         }
         this.tr.appendChild(td);
@@ -154,31 +128,18 @@ class ArticleRow{
 }
 
 function event_edit(e){
-    let split = e.target.value.split("_");
-    const category_path = Category.get_category_path(parseInt(split[1]));
-    console.log(Category.get_url_from_category_path(category_path));
-    
+    const category_id = parseInt(e.target.value);
+    const ref = e.target.dataset.ref;
+    Url.edit_article(category_id, ref);
 }
 
-
 /**
- * Cette fonction déplace la ligne associé en fonction de la direction
- * passé en paramètre
- * @param {HTMLButtonElement} button 
- * @param {int} direction 
+ * Cette fonction est appelé lors d'un clique sur le bouton de suppression
+ * Elle supprimer la ligne en question
+ * @param {Event} e 
  */
-function move_row(button, direction) {
-    const row = button.closest('tr');
-    const tbody = row.parentNode;
-    const index = Array.from(tbody.children).indexOf(row);
-    const newIndex = index + direction;
-
-    if (newIndex >= 0 && newIndex < tbody.children.length) {
-        if (tbody.children[newIndex].classList.contains("article")){
-            // controle que l'article puisse être déplacé uniquement parmis les articles.
-            if (direction == 1) tbody.insertBefore(row, tbody.children[newIndex+1]);
-            else tbody.insertBefore(row, tbody.children[newIndex]);
-        }
-        
-    }
+function event_remove(e){
+    let ref = e.target.closest('tr').dataset.ref;
+    const action_remove = {"type":"remove","ref":ref};
+    Actions.push(action_remove);
 }

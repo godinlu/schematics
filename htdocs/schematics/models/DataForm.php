@@ -60,35 +60,10 @@ class DataForm{
     }
 
     public function save_devis2(array $post_data){
-        $formatted_data = [];
-        $order = 0;
-        $prefix = null;
-    
-        // Parcourir les données POST
-        foreach ($post_data as $key => $value) {
-            
-            // Identifier le préfixe de chaque groupe
-            if (preg_match('/^(tag|categ|qte)_(.+)$/', $key, $matches)) {
-                if ($prefix !== $matches[2]) $order++;
-                $prefix = $matches[2]; // référence
-                $field = $matches[1]; // tag, categ, ou qte
-    
-                // Initialiser l'objet pour ce préfixe s'il n'existe pas encore
-                if (!isset($formatted_data[$prefix])) {
-                    $formatted_data[$prefix] = [
-                        'tag' => null,
-                        'categ' => null,
-                        'qte' => null,
-                        'order' => $order
-                    ];
-                }
-    
-                // Mettre à jour la valeur dans l'objet
-                $formatted_data[$prefix][$field] = $value;
-
-            }
+        if (isset($post_data["actions"])){
+            $post_data["actions"] = json_decode($post_data["actions"], true);
         }
-        $_SESSION[self::$DEVIS2] = $formatted_data;
+        $_SESSION[self::$DEVIS2] = $post_data;
     }
 
     public function getDevis():DataDevis{

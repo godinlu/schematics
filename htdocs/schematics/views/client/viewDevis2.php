@@ -26,8 +26,6 @@
         <?php endforeach;?>
     </table>
 </form>
-<button id="ajouter" type="button">add</button>
-
 <!-- Fenêtre modale -->
 <div id="modal_window" class="modal">
     <div class="modal-content">
@@ -40,7 +38,10 @@
 
 
 <script>
-    const articles_in_devis =  <?=json_encode($articles_in_devis)?>;
+    const default_articles =  <?=json_encode($default_articles)?>;
+    <?php if (isset($devis_data)):?>
+        const devis_data = <?=json_encode($devis_data)?>;
+    <?php endif;?>
     document.addEventListener('DOMContentLoaded', function() {
         Category.set_categories(<?=json_encode($categories)?>);
         Devis.articles = <?=json_encode($articles)?>;

@@ -11,7 +11,6 @@ class Devis{
      * @typedef {Object} virtualArticle
      * @property {string} ref
      * @property {int} category_id
-     * @property {string} [tag]
      * @property {int} [qte]
      */
 
@@ -40,22 +39,19 @@ class Devis{
      * Ajoute un article au devis sous la forme d'une ligne de tableau
      * l'ordre de cette ligne est determiné par son index dans la list articles
      * qui est rangé par ordre d'importance.
-     * @param {virtualArticle} virtual_article
+     * @param {string} ref
      */
-    static add_article(virtual_article){
+    static add_article(ref){
         // on commence par trouvé l'index de l'article en question.
-        const article_index = this.articles.findIndex(article => article.ref === virtual_article.ref);
-        if (article_index == -1) throw new Error(`L'article ${virtual_article.ref} n'existe pas !`);
+        const article_index = this.articles.findIndex(row => row.ref === ref);
+        if (article_index == -1) throw new Error(`L'article ${ref} n'existe pas !`);
+        const article = this.articles[article_index]
 
-        const base_category = Category.get_category_path(virtual_article.category_id)[1];
+        const base_category = Category.get_category_path(article.category_id)[1];
 
-        const tag = virtual_article.tag ?? "default";
-        const qte = virtual_article.qte ?? 1;
         // construction de la ligne produit
-        let article_row = new ArticleRow(
-            this.articles[article_index], virtual_article.category_id, tag, qte
-        );
-        article_row.dataset.priority = article_index;
+        let article_row = new ArticleRow(article);
+        article_row.dataset.priority = article_index*10;
 
         // on boucle dans toute les lignes de produits pour savoir ou placer 
         // le nouvelle article
@@ -78,6 +74,47 @@ class Devis{
         if (!inserted) {
             this.div_categories.get(base_category).appendChild(article_row);
         }       
+    }
+
+    /**
+     * Modifie l'article identifier par sa référence par le nouvelle article.
+     * @param {string} old_ref
+     * @param {string} new_ref 
+     */
+    static edit_article(old_ref, new_ref){
+        let old_tr = document.getElementById(`article_${old_ref}`);
+        const old_qte = parseInt(old_tr.querySelector(".qte input").value);
+        old_tr.remove();
+        this.add_article(new_ref);
+        let input_qte = document.querySelector(`input[name="qte_${new_ref}"]`);
+        input_qte.value = old_qte;
+    }
+
+    /**
+     * Déplace la ligne de l'article en fonction de la direction 1:en bas et -1 : en haut
+     * @param {string} ref 
+     * @param {int} direction 
+     */
+    static move_article(ref, direction){
+        const tr = document.getElementById(`article_${ref}`);
+        const tbody = tr.parentNode;
+        const tr_articles = tbody.querySelectorAll(".article");
+        const index = Array.from(tr_articles).indexOf(tr);
+
+        if (index + direction >= 0 && index + direction < tr_articles.length) {
+            const new_index = (direction >= 0)? index+2 : index-1
+            const priority = tr_articles[index+direction].dataset.priority
+            tr.dataset.priority = parseInt(priority) + direction;
+            tbody.insertBefore(tr, tr_articles[new_index]);
+        }
+    }
+
+    /**
+     * supprime la ligne correspondant à l'article identifié par sa référence.
+     * @param {string} ref 
+     */
+    static remove_article(ref){
+        document.getElementById(`article_${ref}`).remove();
     }
 
     /**

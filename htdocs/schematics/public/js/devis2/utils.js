@@ -15,4 +15,19 @@ class Utils{
         button.type = type;
         return button;
     }
+
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {string} value 
+     * @returns {HTMLInputElement}
+     */
+    static create_hide_input(name, value){
+        let input = document.createElement("input");
+        input.name = name;
+        input.value = value;
+        input.type = "hidden";
+        return input;
+    }
 }
