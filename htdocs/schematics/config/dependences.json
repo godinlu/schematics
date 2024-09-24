@@ -26,7 +26,8 @@
                 "public/scrollTable.css"
             ],
             "Devis2": [
-                "devis2/devis.css"
+                "devis2/devis.css",
+                "public/scrollTable.css"
             ],
             "Version": [
                 "version/version.css"

@@ -66,6 +66,7 @@ class ArticleRow{
             input.type = "number";
             input.name = "qte_" + this.ref;
             input.min = 1;
+            input.max = 999;
             input.value = 1;
             td.appendChild(input);
         }else{

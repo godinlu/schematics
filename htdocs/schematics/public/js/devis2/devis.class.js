@@ -45,7 +45,7 @@ class Devis{
         // on commence par trouvé l'index de l'article en question.
         const article_index = this.articles.findIndex(row => row.ref === ref);
         if (article_index == -1) throw new Error(`L'article ${ref} n'existe pas !`);
-        const article = this.articles[article_index]
+        const article = this.articles[article_index];
 
         const base_category = Category.get_category_path(article.category_id)[1];
 
@@ -58,11 +58,11 @@ class Devis{
         const tr_articles = this.div_categories.get(base_category).children;
         let inserted = false;
         for (let i = 0; i < tr_articles.length; i++) {
-            if (article_index < tr_articles[i].dataset.priority) {
+            if (article_index*10 < tr_articles[i].dataset.priority) {
                 tr_articles[i].before(article_row);
                 inserted = true;
                 break;
-            }else if (article_index == tr_articles[i].dataset.priority){
+            }else if (article_index*10 == tr_articles[i].dataset.priority){
                 let qte_input = tr_articles[i].querySelector(".qte input");
                 qte_input.value = parseInt(qte_input.value) + 1;
                 inserted = true;

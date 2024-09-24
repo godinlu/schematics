@@ -118,6 +118,8 @@ class DataImporter extends Model{
             // Sinon, comparateur simple d'égalité
             return isset($formulaire[trim($field)]) && $formulaire[trim($field)] == $value;
         }
+
+        if ($filter === "true") return true;
     
         return false; // Par défaut, on retourne false si aucun filtre valide n'est trouvé
     }
