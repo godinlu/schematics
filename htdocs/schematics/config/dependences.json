@@ -27,7 +27,8 @@
             ],
             "Devis2": [
                 "devis2/devis.css",
-                "public/scrollTable.css"
+                "public/scrollTable.css",
+                "../svelte/public/build/bundle.css"
             ],
             "Version": [
                 "version/version.css"
@@ -94,7 +95,8 @@
                 "devis2/category.class.js",
                 "devis2/modal.class.js",
                 "devis2/url.class.js",
-                "devis2/action.class.js"
+                "devis2/action.class.js",
+                "../svelte/public/build/bundle.js"
             ],
             "public":[
                 "public/header.js",
