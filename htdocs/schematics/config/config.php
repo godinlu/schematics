@@ -54,9 +54,11 @@ class DependencyLoader {
         $this->_version = (DISABLED_CACHE)? date('Y-m-d H:i:s') : VERSION;
         if ($_SERVER['SERVER_NAME'] === 'localhost')
             $this->_url = "http://localhost/schematics/htdocs/schematics";
-        else
-            $this->_url = "https://www.solisart.fr/schematics";
-
+        else{
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'];
+            $this->_url = sprintf("%s://%s", $scheme, $host) . "/schematics";
+        }
     }
 
     public function get_url() : string {

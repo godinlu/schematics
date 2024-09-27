@@ -34,17 +34,12 @@ class ControllerDevis2
       $categories = $data_importer->get_all_categorie();
       $default_articles = $data_importer->get_default_articles();
 
-      // on récupère les catégories de bases du devis
-      $base_categories = array_filter($categories, fn($row) => $row['parent_id'] === 0);
-
       $this->_view = new View('Devis2');
       $this->_view->generate(array(
           'articles' => $articles,
           'default_articles' => $default_articles,
-          'formulaire' => $formulaire,
           'categories' => $categories,
-          'devis_data' => $devis_data,
-          'base_categories' => $base_categories
+          'devis_data' => $devis_data
       ));
     }
 }

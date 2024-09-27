@@ -23,38 +23,35 @@
 /**
  * @typedef	{actionAdd|actionEdit|actionRemove|actionMove} action
  */
-class Actions {
-    /**
-     * @type {action[]} action_queue
-     */
-    static action_queue = [];
 
+import { ArticleManager } from "./article_manager.class";
+
+export class Devis{
     /**
-     * ajoute l'action passé en paramètre à la file d'actions (action_queue)
-     * et execute l'action passé en paramètre
-     * @param {action} action 
+     * 
+     * @param {ArticleManager} article_manager 
+     * @param {?action[]} devis_data 
      */
-    static push(action){
-        if (this.execute(action)){
-            this.action_queue.push(action);
-        }
-        
+    constructor(article_manager, devis_data = []){
+        this.action_queue = devis_data;
+        this.article_manager = article_manager;
     }
+
     /**
      * execute l'action passé en paramètre
      * @param {action} action 
      * @returns {boolean}
      */
-    static execute(action){
+    execute_action(action){
         try{
             if (action.type == "add"){
-                Devis.add_article(action.ref);
+                this.article_manager.add_article(action.ref);
             }else if (action.type == "edit"){
-                Devis.edit_article(action.old_ref, action.new_ref);
+                this.article_manager.edit_article(action.old_ref, action.new_ref);
             }else if (action.type == "move"){
-                Devis.move_article(action.ref, action.direction);
+                this.article_manager.move_article(action.ref, action.direction);
             }else if (action.type == "remove"){
-                Devis.remove_article(action.ref);
+                this.article_manager.remove_article(action.ref);
             }else{
                 throw new Error();
             }
@@ -64,19 +61,8 @@ class Actions {
         }
     }
 
-    static undo(objetc){
 
+    push(){
+        
     }
-
-    /**
-     * 
-     * @param {string} ref 
-     * @param {int} direction 
-     */
-    static move_article(ref, direction){
-        const action = {"type":"move","ref":ref,"direction":direction};
-        this.push(action);
-    }
-    
 }
-
