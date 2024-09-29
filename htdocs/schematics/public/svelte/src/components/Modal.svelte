@@ -1,7 +1,10 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { fade } from "svelte/transition";
 
     export let modal_show = false;
+    export let slot_key = 0;
+
     const dispatcher = createEventDispatcher();
 
     const toggle_modal = () =>{
@@ -11,10 +14,14 @@
 </script>
 {#if modal_show}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div class="modal" on:click|self={toggle_modal}>
-        <div class="modal-content">
-            <slot></slot>
-        </div>
+    <div class="modal" on:click|self={toggle_modal} out:fade>
+        {#key slot_key}
+            <div class="modal-content" in:fade>
+                <slot></slot>
+            </div>
+        {/key}
+        
+        
     </div>
 {/if}
 
@@ -32,9 +39,11 @@
         align-items: center;     /* Centrage vertical */
         z-index:10000;
     }
+
     .modal-content {
         background-color: #fff;
         box-shadow: 10px 10px 60px #555;
         padding: 5px;
     }
+
 </style>

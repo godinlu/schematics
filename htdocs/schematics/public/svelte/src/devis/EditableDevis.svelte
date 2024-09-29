@@ -1,9 +1,7 @@
 <script>
     import {get_base_categories} from "./utils";
     import Category from "./Category.svelte";
-
-    export let article_list;
-    export let categories;
+    import {categories, articles_in_devis, articles} from "./store.js";
 
 </script>
 
@@ -14,14 +12,13 @@
             <th>Désignation</th>
             <th>Quantité</th>
             <th>Prix Tarif</th>
-            <th>Édition</th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        {#each get_base_categories(categories) as category (category.id)}
-            <Category on:start_modal {category} article_list={
-                article_list.filter(row => row.base_category_id === category.id)
-            } />
+        {#each get_base_categories() as category (category.id)}
+            <Category category_id={category.id} />
         {/each}
     </tbody>
 </table>

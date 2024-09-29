@@ -1,29 +1,20 @@
-<script>
+<script lang="ts">
     import Modal from "../components/Modal.svelte";
     import EditableDevis from "./EditableDevis.svelte";
     import ModalContent from "./ModalContent.svelte";
     import {get_article_by_ref} from "./utils.js";
+    import {articles_in_devis, modal_info} from "./store.js";
 
     export let default_articles;
-    export let categories;
-    export let all_articles;
-    export let devis_data = [];
 
-    let article_list = [];
     let action_list = [];
-    let modal_info = {display:false};
 
     // initialisation des articles par défault
-    for (const article of default_articles) {
-        article_list.push(get_article_by_ref(all_articles, categories, article.ref));
-    }
+    articles_in_devis.set(default_articles.map(article => get_article_by_ref(article.ref)));
+    
     // trie des articles par leurs priorité
-    article_list.sort((a, b) => a.priority - b.priority);
-
-
-    const toogle_modal = ()=>{
-        modal_info = { ...modal_info, display: !modal_info.display };
-    }
+    articles_in_devis.update(arts => arts.sort((a, b) => a.priority - b.priority) );
+    //article_list.sort((a, b) => a.priority - b.priority);
 
     /**
      * ajoute l'action passé en paramètre à la file d'actions (action_queue)
@@ -46,11 +37,11 @@
             if (action.type == "add"){
                 add_article(action.ref);
             }else if (action.type == "edit"){
-                edit_article(action.old_ref, action.new_ref);
+                //edit_article(action.old_ref, action.new_ref);
             }else if (action.type == "move"){
-                move_article(action.ref, action.direction);
+                //move_article(action.ref, action.direction);
             }else if (action.type == "remove"){
-                remove_article(action.ref);
+                //remove_article(action.ref);
             }else{
                 throw new Error();
             }
@@ -60,25 +51,14 @@
         }
     }
 
-    /**
-     * 
-     * @param ref
-     */
-    function add_article(ref){
-        const new_article = get_article_by_ref(all_articles, categories, ref);
-        article_list = [...article_list, new_article];
-        article_list.sort((a, b) => a.priority - b.priority);
-    }
-
-    function start_modal(e){
-        modal_info = {...modal_info, display: true, ...e.detail};
-        //console.log(modal_info);
+    function toogle_modal(){
+        modal_info.set(null);
     }
 
 </script>
-<EditableDevis on:start_modal={start_modal} {article_list} {categories}/>
-<Modal modal_show={modal_info.display} on:toogle_modal={toogle_modal}>
-    <ModalContent {modal_info} {all_articles} {categories} on:start_modal={start_modal}/>
+<EditableDevis/>
+<Modal modal_show={$modal_info !== null} slot_key={$modal_info} on:toogle_modal={toogle_modal}>
+    <ModalContent modal_info={$modal_info}/>    
 </Modal>
 <style>
     

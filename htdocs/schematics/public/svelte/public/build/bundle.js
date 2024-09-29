@@ -4,6 +4,7 @@ var app = (function () {
     'use strict';
 
     function noop() { }
+    const identity = x => x;
     function assign(tar, src) {
         // @ts-ignore
         for (const k in src)
@@ -32,6 +33,21 @@ var app = (function () {
     }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
+    }
+    function validate_store(store, name) {
+        if (store != null && typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(store, ...callbacks) {
+        if (store == null) {
+            return noop;
+        }
+        const unsub = store.subscribe(...callbacks);
+        return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+    }
+    function component_subscribe(component, store, callback) {
+        component.$$.on_destroy.push(subscribe(store, callback));
     }
     function create_slot(definition, ctx, $$scope, fn) {
         if (definition) {
@@ -80,6 +96,41 @@ var app = (function () {
         return -1;
     }
 
+    const is_client = typeof window !== 'undefined';
+    let now = is_client
+        ? () => window.performance.now()
+        : () => Date.now();
+    let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
+
+    const tasks = new Set();
+    function run_tasks(now) {
+        tasks.forEach(task => {
+            if (!task.c(now)) {
+                tasks.delete(task);
+                task.f();
+            }
+        });
+        if (tasks.size !== 0)
+            raf(run_tasks);
+    }
+    /**
+     * Creates a new task that runs on each raf frame
+     * until it returns a falsy value or is aborted
+     */
+    function loop(callback) {
+        let task;
+        if (tasks.size === 0)
+            raf(run_tasks);
+        return {
+            promise: new Promise(fulfill => {
+                tasks.add(task = { c: callback, f: fulfill });
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
+    }
+
     const globals = (typeof window !== 'undefined'
         ? window
         : typeof globalThis !== 'undefined'
@@ -87,6 +138,24 @@ var app = (function () {
             : global);
     function append(target, node) {
         target.appendChild(node);
+    }
+    function get_root_for_style(node) {
+        if (!node)
+            return document;
+        const root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
+        if (root && root.host) {
+            return root;
+        }
+        return node.ownerDocument;
+    }
+    function append_empty_stylesheet(node) {
+        const style_element = element('style');
+        append_stylesheet(get_root_for_style(node), style_element);
+        return style_element.sheet;
+    }
+    function append_stylesheet(node, style) {
+        append(node.head || node, style);
+        return style.sheet;
     }
     function insert(target, node, anchor) {
         target.insertBefore(node, anchor || null);
@@ -134,10 +203,83 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_style(node, key, value, important) {
+        if (value == null) {
+            node.style.removeProperty(key);
+        }
+        else {
+            node.style.setProperty(key, value, important ? 'important' : '');
+        }
+    }
     function custom_event(type, detail, { bubbles = false, cancelable = false } = {}) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, bubbles, cancelable, detail);
         return e;
+    }
+
+    // we need to store the information for multiple documents because a Svelte application could also contain iframes
+    // https://github.com/sveltejs/svelte/issues/3624
+    const managed_styles = new Map();
+    let active = 0;
+    // https://github.com/darkskyapp/string-hash/blob/master/index.js
+    function hash(str) {
+        let hash = 5381;
+        let i = str.length;
+        while (i--)
+            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+        return hash >>> 0;
+    }
+    function create_style_information(doc, node) {
+        const info = { stylesheet: append_empty_stylesheet(node), rules: {} };
+        managed_styles.set(doc, info);
+        return info;
+    }
+    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+        const step = 16.666 / duration;
+        let keyframes = '{\n';
+        for (let p = 0; p <= 1; p += step) {
+            const t = a + (b - a) * ease(p);
+            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+        }
+        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+        const name = `__svelte_${hash(rule)}_${uid}`;
+        const doc = get_root_for_style(node);
+        const { stylesheet, rules } = managed_styles.get(doc) || create_style_information(doc, node);
+        if (!rules[name]) {
+            rules[name] = true;
+            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+        }
+        const animation = node.style.animation || '';
+        node.style.animation = `${animation ? `${animation}, ` : ''}${name} ${duration}ms linear ${delay}ms 1 both`;
+        active += 1;
+        return name;
+    }
+    function delete_rule(node, name) {
+        const previous = (node.style.animation || '').split(', ');
+        const next = previous.filter(name
+            ? anim => anim.indexOf(name) < 0 // remove specific animation
+            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+        );
+        const deleted = previous.length - next.length;
+        if (deleted) {
+            node.style.animation = next.join(', ');
+            active -= deleted;
+            if (!active)
+                clear_rules();
+        }
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            managed_styles.forEach(info => {
+                const { ownerNode } = info.stylesheet;
+                // there is no ownerNode if it runs on jsdom.
+                if (ownerNode)
+                    detach(ownerNode);
+            });
+            managed_styles.clear();
+        });
     }
 
     let current_component;
@@ -176,16 +318,6 @@ var app = (function () {
             }
             return true;
         };
-    }
-    // TODO figure out if we still want to support
-    // shorthand events, or if we want to implement
-    // a real bubbling mechanism
-    function bubble(component, event) {
-        const callbacks = component.$$.callbacks[event.type];
-        if (callbacks) {
-            // @ts-ignore
-            callbacks.slice().forEach(fn => fn.call(this, event));
-        }
     }
 
     const dirty_components = [];
@@ -293,6 +425,20 @@ var app = (function () {
         targets.forEach((c) => c());
         render_callbacks = filtered;
     }
+
+    let promise;
+    function wait() {
+        if (!promise) {
+            promise = Promise.resolve();
+            promise.then(() => {
+                promise = null;
+            });
+        }
+        return promise;
+    }
+    function dispatch(node, direction, kind) {
+        node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
+    }
     const outroing = new Set();
     let outros;
     function group_outros() {
@@ -332,6 +478,128 @@ var app = (function () {
         else if (callback) {
             callback();
         }
+    }
+    const null_transition = { duration: 0 };
+    function create_in_transition(node, fn, params) {
+        const options = { direction: 'in' };
+        let config = fn(node, params, options);
+        let running = false;
+        let animation_name;
+        let task;
+        let uid = 0;
+        function cleanup() {
+            if (animation_name)
+                delete_rule(node, animation_name);
+        }
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+            tick(0, 1);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            if (task)
+                task.abort();
+            running = true;
+            add_render_callback(() => dispatch(node, true, 'start'));
+            task = loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(1, 0);
+                        dispatch(node, true, 'end');
+                        cleanup();
+                        return running = false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(t, 1 - t);
+                    }
+                }
+                return running;
+            });
+        }
+        let started = false;
+        return {
+            start() {
+                if (started)
+                    return;
+                started = true;
+                delete_rule(node);
+                if (is_function(config)) {
+                    config = config(options);
+                    wait().then(go);
+                }
+                else {
+                    go();
+                }
+            },
+            invalidate() {
+                started = false;
+            },
+            end() {
+                if (running) {
+                    cleanup();
+                    running = false;
+                }
+            }
+        };
+    }
+    function create_out_transition(node, fn, params) {
+        const options = { direction: 'out' };
+        let config = fn(node, params, options);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.r += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            add_render_callback(() => dispatch(node, false, 'start'));
+            loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(0, 1);
+                        dispatch(node, false, 'end');
+                        if (!--group.r) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.c);
+                        }
+                        return false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (is_function(config)) {
+            wait().then(() => {
+                // @ts-ignore
+                config = config(options);
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
     }
 
     function destroy_block(block, lookup) {
@@ -430,43 +698,6 @@ var app = (function () {
             }
             keys.add(key);
         }
-    }
-
-    function get_spread_update(levels, updates) {
-        const update = {};
-        const to_null_out = {};
-        const accounted_for = { $$scope: 1 };
-        let i = levels.length;
-        while (i--) {
-            const o = levels[i];
-            const n = updates[i];
-            if (n) {
-                for (const key in o) {
-                    if (!(key in n))
-                        to_null_out[key] = 1;
-                }
-                for (const key in n) {
-                    if (!accounted_for[key]) {
-                        update[key] = n[key];
-                        accounted_for[key] = 1;
-                    }
-                }
-                levels[i] = n;
-            }
-            else {
-                for (const key in o) {
-                    accounted_for[key] = 1;
-                }
-            }
-        }
-        for (const key in to_null_out) {
-            if (!(key in update))
-                update[key] = undefined;
-        }
-        return update;
-    }
-    function get_spread_object(spread_props) {
-        return typeof spread_props === 'object' && spread_props !== null ? spread_props : {};
     }
     function create_component(block) {
         block && block.c();
@@ -684,72 +915,74 @@ var app = (function () {
         $inject_state() { }
     }
 
-    /* src\components\Modal.svelte generated by Svelte v3.59.2 */
-    const file$5 = "src\\components\\Modal.svelte";
+    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
 
-    // (12:0) {#if modal_show}
+    /* src\components\Modal.svelte generated by Svelte v3.59.2 */
+    const file$6 = "src\\components\\Modal.svelte";
+
+    // (15:0) {#if modal_show}
     function create_if_block$2(ctx) {
-    	let div1;
-    	let div0;
+    	let div;
+    	let previous_key = /*slot_key*/ ctx[1];
+    	let div_outro;
     	let current;
     	let mounted;
     	let dispose;
-    	const default_slot_template = /*#slots*/ ctx[3].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[2], null);
+    	let key_block = create_key_block(ctx);
 
     	const block = {
     		c: function create() {
-    			div1 = element("div");
-    			div0 = element("div");
-    			if (default_slot) default_slot.c();
-    			attr_dev(div0, "class", "modal-content svelte-11s2moi");
-    			add_location(div0, file$5, 14, 8, 385);
-    			attr_dev(div1, "class", "modal svelte-11s2moi");
-    			add_location(div1, file$5, 13, 4, 327);
+    			div = element("div");
+    			key_block.c();
+    			attr_dev(div, "class", "modal svelte-prnje8");
+    			add_location(div, file$6, 16, 4, 406);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			append_dev(div1, div0);
-
-    			if (default_slot) {
-    				default_slot.m(div0, null);
-    			}
-
+    			insert_dev(target, div, anchor);
+    			key_block.m(div, null);
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(div1, "click", self(/*toggle_modal*/ ctx[1]), false, false, false, false);
+    				dispose = listen_dev(div, "click", self(/*toggle_modal*/ ctx[2]), false, false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (default_slot) {
-    				if (default_slot.p && (!current || dirty & /*$$scope*/ 4)) {
-    					update_slot_base(
-    						default_slot,
-    						default_slot_template,
-    						ctx,
-    						/*$$scope*/ ctx[2],
-    						!current
-    						? get_all_dirty_from_scope(/*$$scope*/ ctx[2])
-    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[2], dirty, null),
-    						null
-    					);
-    				}
+    			if (dirty & /*slot_key*/ 2 && safe_not_equal(previous_key, previous_key = /*slot_key*/ ctx[1])) {
+    				group_outros();
+    				transition_out(key_block, 1, 1, noop);
+    				check_outros();
+    				key_block = create_key_block(ctx);
+    				key_block.c();
+    				transition_in(key_block, 1);
+    				key_block.m(div, null);
+    			} else {
+    				key_block.p(ctx, dirty);
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(default_slot, local);
+    			transition_in(key_block);
+    			if (div_outro) div_outro.end(1);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(default_slot, local);
+    			transition_out(key_block);
+    			div_outro = create_out_transition(div, fade, {});
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
-    			if (default_slot) default_slot.d(detaching);
+    			if (detaching) detach_dev(div);
+    			key_block.d(detaching);
+    			if (detaching && div_outro) div_outro.end();
     			mounted = false;
     			dispose();
     		}
@@ -759,14 +992,88 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(12:0) {#if modal_show}",
+    		source: "(15:0) {#if modal_show}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$8(ctx) {
+    // (18:8) {#key slot_key}
+    function create_key_block(ctx) {
+    	let div;
+    	let div_intro;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[4].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[3], null);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (default_slot) default_slot.c();
+    			attr_dev(div, "class", "modal-content svelte-prnje8");
+    			add_location(div, file$6, 18, 12, 502);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(div, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 8)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[3],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[3])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[3], dirty, null),
+    						null
+    					);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+
+    			if (!div_intro) {
+    				add_render_callback(() => {
+    					div_intro = create_in_transition(div, fade, {});
+    					div_intro.start();
+    				});
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_key_block.name,
+    		type: "key",
+    		source: "(18:8) {#key slot_key}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$9(ctx) {
     	let if_block_anchor;
     	let current;
     	let if_block = /*modal_show*/ ctx[0] && create_if_block$2(ctx);
@@ -825,7 +1132,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$8.name,
+    		id: create_fragment$9.name,
     		type: "component",
     		source: "",
     		ctx
@@ -834,17 +1141,18 @@ var app = (function () {
     	return block;
     }
 
-    function instance$8($$self, $$props, $$invalidate) {
+    function instance$9($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Modal', slots, ['default']);
     	let { modal_show = false } = $$props;
+    	let { slot_key = 0 } = $$props;
     	const dispatcher = createEventDispatcher();
 
     	const toggle_modal = () => {
     		dispatcher("toogle_modal");
     	};
 
-    	const writable_props = ['modal_show'];
+    	const writable_props = ['modal_show', 'slot_key'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Modal> was created with unknown prop '${key}'`);
@@ -852,37 +1160,41 @@ var app = (function () {
 
     	$$self.$$set = $$props => {
     		if ('modal_show' in $$props) $$invalidate(0, modal_show = $$props.modal_show);
-    		if ('$$scope' in $$props) $$invalidate(2, $$scope = $$props.$$scope);
+    		if ('slot_key' in $$props) $$invalidate(1, slot_key = $$props.slot_key);
+    		if ('$$scope' in $$props) $$invalidate(3, $$scope = $$props.$$scope);
     	};
 
     	$$self.$capture_state = () => ({
     		createEventDispatcher,
+    		fade,
     		modal_show,
+    		slot_key,
     		dispatcher,
     		toggle_modal
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('modal_show' in $$props) $$invalidate(0, modal_show = $$props.modal_show);
+    		if ('slot_key' in $$props) $$invalidate(1, slot_key = $$props.slot_key);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [modal_show, toggle_modal, $$scope, slots];
+    	return [modal_show, slot_key, toggle_modal, $$scope, slots];
     }
 
     class Modal extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$8, create_fragment$8, safe_not_equal, { modal_show: 0 });
+    		init(this, options, instance$9, create_fragment$9, safe_not_equal, { modal_show: 0, slot_key: 1 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Modal",
     			options,
-    			id: create_fragment$8.name
+    			id: create_fragment$9.name
     		});
     	}
 
@@ -893,7 +1205,95 @@ var app = (function () {
     	set modal_show(value) {
     		throw new Error("<Modal>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
+
+    	get slot_key() {
+    		throw new Error("<Modal>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set slot_key(value) {
+    		throw new Error("<Modal>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
     }
+
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=} start
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = new Set();
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (const subscriber of subscribers) {
+                        subscriber[1]();
+                        subscriber_queue.push(subscriber, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.add(subscriber);
+            if (subscribers.size === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                subscribers.delete(subscriber);
+                if (subscribers.size === 0 && stop) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
+    /**
+     * Un objet représentant une categorie.
+     * @typedef {Object} category
+     * @property {number} id - identifiant de la catégorie
+     * @property {string} name - nom complet de la catégorie
+     * @property {string} short_name - nom court de la catégorie
+     * @property {string} type - type de la catégorie
+     * @property {int} priority - ordre de priority de la catégorie
+     * @property {int} parent_id - id de la catégorie parent
+    */
+
+    /**
+     * @typedef {object} ModalInfo
+     * @property {string} type
+     * @property {category} category
+     * @property {string} [ref]
+     */
+
+
+    let articles_in_devis = writable([]);
+
+    /**
+     * @type {Writable<?ModalInfo>} modal_info
+     */
+    let modal_info = writable(null);
+
+
+    const articles = window.global_vars["all_articles"];
+
+
+    const categories = window.global_vars["categories"];
 
     /**
      * Un objet représentant une categorie.
@@ -919,25 +1319,23 @@ var app = (function () {
 
     /**
      * renvoies les catégories de bases.
-     * @param {category[]} categories 
      * @returns {category[]}
      */
-    function get_base_categories(categories){
+    function get_base_categories(){
         return categories.filter(row => row.parent_id == 0);
     }
 
     /**
      * Renvoie l'arborescence de la category sous la forme d'une liste d'id.
-     * @param {category[]} categories 
      * @param {int} category_id 
      * @returns 
      */
-    function get_path_category(categories, category_id){
-        let current_categorie = get_category_from_id(categories, category_id);
+    function get_path_category(category_id){
+        let current_categorie = get_category_from_id(category_id);
         let path = [];
         while (current_categorie.id != 0) {
             path.unshift(current_categorie.id);
-            current_categorie = get_category_from_id(categories, current_categorie.parent_id);
+            current_categorie = get_category_from_id(current_categorie.parent_id);
         }
         return path;
     }
@@ -945,11 +1343,10 @@ var app = (function () {
     /**
      * Renvoie la catégorie identifé par son id, si aucune categories 
      * n'esite pour cette id alors renvoie une erreur
-     * @param {category[]} categories 
      * @param {int} category_id 
      * @returns 
      */
-    function get_category_from_id(categories, category_id){
+    function get_category_from_id(category_id){
         let categorie = categories.filter(row => row.id == category_id);
         if (categorie) return categorie[0];
         else throw new Error(`la catégorie : '${category_id}' n'existe pas.`);
@@ -957,21 +1354,19 @@ var app = (function () {
 
     /**
      * Renvoie la liste des sous catégorie de la catégorie passé en paramètre
-     * @param {category[]} categories
      * @param {int} category_id 
      * @returns {categorie[]}
      */
-    function get_sub_categories(categories, category_id){
+    function get_sub_categories(category_id){
         return categories.filter(category => category.parent_id == category_id);
     }
 
     /**
      * Renvoie la liste des sous catégorie de la catégorie passé en paramètre
-     * @param {article[]} articles 
      * @param {int} category_id 
      * @returns {categorie[]}
      */
-    function get_articles_by_categ(articles, category_id){
+    function get_articles_by_categ(category_id){
         return articles.filter(article => article.category_id == category_id);
     }
 
@@ -979,26 +1374,149 @@ var app = (function () {
     /**
      * Renvoie l'article identifié par sa référence.
      * Cette fonction initialise également les champs priority et base_category_id
-     * @param {article[]} articles 
-     * @param {category[]} categories
      * @param {string} ref 
      * @returns {article}
      */
-    function get_article_by_ref(articles, categories, ref){
+    function get_article_by_ref(ref){
          // on commence par trouvé l'index de l'article en question.
          const article_index = articles.findIndex(row => row.ref === ref);
          if (article_index == -1) throw new Error(`L'article ${ref} n'existe pas !`);
          const article = articles[article_index];
 
-         const base_category_id = get_path_category(categories, article.category_id)[0];
+         const base_category_id = get_path_category(article.category_id)[0];
          const priority = article_index * 10;
         
          return {...article, priority, base_category_id};
 
     }
 
-    /* src\devis\Article.svelte generated by Svelte v3.59.2 */
+    /* src\components\IconButton.svelte generated by Svelte v3.59.2 */
 
+    const file$5 = "src\\components\\IconButton.svelte";
+
+    function create_fragment$8(ctx) {
+    	let button;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[2].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[1], null);
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			if (default_slot) default_slot.c();
+    			set_style(button, "background-color", /*color*/ ctx[0]);
+    			attr_dev(button, "class", "svelte-wz319b");
+    			add_location(button, file$5, 3, 0, 57);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(button, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 2)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[1],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[1])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[1], dirty, null),
+    						null
+    					);
+    				}
+    			}
+
+    			if (!current || dirty & /*color*/ 1) {
+    				set_style(button, "background-color", /*color*/ ctx[0]);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			if (default_slot) default_slot.d(detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$8.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$8($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots('IconButton', slots, ['default']);
+    	let { color = "#04AA6D" } = $$props;
+    	const writable_props = ['color'];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<IconButton> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$$set = $$props => {
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    		if ('$$scope' in $$props) $$invalidate(1, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({ color });
+
+    	$$self.$inject_state = $$props => {
+    		if ('color' in $$props) $$invalidate(0, color = $$props.color);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [color, $$scope, slots];
+    }
+
+    class IconButton extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, { color: 0 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "IconButton",
+    			options,
+    			id: create_fragment$8.name
+    		});
+    	}
+
+    	get color() {
+    		throw new Error("<IconButton>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set color(value) {
+    		throw new Error("<IconButton>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src\devis\Article.svelte generated by Svelte v3.59.2 */
     const file$4 = "src\\devis\\Article.svelte";
 
     function create_fragment$7(ctx) {
@@ -1020,12 +1538,11 @@ var app = (function () {
     	let t6;
     	let td4;
     	let button0;
-    	let t8;
+    	let i0;
+    	let t7;
+    	let td5;
     	let button1;
-    	let t10;
-    	let button2;
-    	let t12;
-    	let button3;
+    	let i1;
 
     	const block = {
     		c: function create() {
@@ -1044,31 +1561,29 @@ var app = (function () {
     			t6 = space();
     			td4 = element("td");
     			button0 = element("button");
-    			button0.textContent = "up";
-    			t8 = space();
+    			i0 = element("i");
+    			t7 = space();
+    			td5 = element("td");
     			button1 = element("button");
-    			button1.textContent = "down";
-    			t10 = space();
-    			button2 = element("button");
-    			button2.textContent = "edit";
-    			t12 = space();
-    			button3 = element("button");
-    			button3.textContent = "remove";
-    			add_location(td0, file$4, 4, 4, 56);
-    			add_location(td1, file$4, 5, 4, 84);
+    			i1 = element("i");
+    			add_location(td0, file$4, 8, 4, 129);
+    			add_location(td1, file$4, 9, 4, 157);
     			attr_dev(input, "type", "number");
     			input.value = "1";
     			attr_dev(input, "min", "1");
     			attr_dev(input, "max", "99");
-    			add_location(input, file$4, 6, 8, 118);
-    			add_location(td2, file$4, 6, 4, 114);
-    			add_location(td3, file$4, 7, 4, 177);
-    			add_location(button0, file$4, 9, 8, 220);
-    			add_location(button1, file$4, 10, 8, 249);
-    			add_location(button2, file$4, 11, 8, 280);
-    			add_location(button3, file$4, 12, 8, 311);
-    			add_location(td4, file$4, 8, 4, 206);
-    			add_location(tr, file$4, 3, 0, 46);
+    			add_location(input, file$4, 10, 8, 191);
+    			add_location(td2, file$4, 10, 4, 187);
+    			add_location(td3, file$4, 11, 4, 250);
+    			attr_dev(i0, "class", "fa-solid fa-pen");
+    			add_location(i0, file$4, 13, 16, 301);
+    			add_location(button0, file$4, 13, 8, 293);
+    			add_location(td4, file$4, 12, 4, 279);
+    			attr_dev(i1, "class", "fa-solid fa-trash");
+    			add_location(i1, file$4, 16, 16, 380);
+    			add_location(button1, file$4, 16, 8, 372);
+    			add_location(td5, file$4, 15, 4, 358);
+    			add_location(tr, file$4, 7, 0, 119);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1089,12 +1604,11 @@ var app = (function () {
     			append_dev(tr, t6);
     			append_dev(tr, td4);
     			append_dev(td4, button0);
-    			append_dev(td4, t8);
-    			append_dev(td4, button1);
-    			append_dev(td4, t10);
-    			append_dev(td4, button2);
-    			append_dev(td4, t12);
-    			append_dev(td4, button3);
+    			append_dev(button0, i0);
+    			append_dev(tr, t7);
+    			append_dev(tr, td5);
+    			append_dev(td5, button1);
+    			append_dev(button1, i1);
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*article*/ 1 && t0_value !== (t0_value = /*article*/ ctx[0].ref + "")) set_data_dev(t0, t0_value);
@@ -1140,7 +1654,7 @@ var app = (function () {
     		if ('article' in $$props) $$invalidate(0, article = $$props.article);
     	};
 
-    	$$self.$capture_state = () => ({ article });
+    	$$self.$capture_state = () => ({ IconButton, article });
 
     	$$self.$inject_state = $$props => {
     		if ('article' in $$props) $$invalidate(0, article = $$props.article);
@@ -1180,38 +1694,31 @@ var app = (function () {
 
     function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[5] = list[i];
     	return child_ctx;
     }
 
-    // (20:0) {#each article_list as article (article.ref)}
-    function create_each_block$3(key_1, ctx) {
-    	let first;
+    // (20:0) {#each articles as article}
+    function create_each_block$3(ctx) {
     	let article;
     	let current;
 
     	article = new Article({
-    			props: { article: /*article*/ ctx[4] },
+    			props: { article: /*article*/ ctx[5] },
     			$$inline: true
     		});
 
     	const block = {
-    		key: key_1,
-    		first: null,
     		c: function create() {
-    			first = empty();
     			create_component(article.$$.fragment);
-    			this.first = first;
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, first, anchor);
     			mount_component(article, target, anchor);
     			current = true;
     		},
-    		p: function update(new_ctx, dirty) {
-    			ctx = new_ctx;
+    		p: function update(ctx, dirty) {
     			const article_changes = {};
-    			if (dirty & /*article_list*/ 2) article_changes.article = /*article*/ ctx[4];
+    			if (dirty & /*articles*/ 1) article_changes.article = /*article*/ ctx[5];
     			article.$set(article_changes);
     		},
     		i: function intro(local) {
@@ -1224,7 +1731,6 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(first);
     			destroy_component(article, detaching);
     		}
     	};
@@ -1233,7 +1739,7 @@ var app = (function () {
     		block,
     		id: create_each_block$3.name,
     		type: "each",
-    		source: "(20:0) {#each article_list as article (article.ref)}",
+    		source: "(20:0) {#each articles as article}",
     		ctx
     	});
 
@@ -1243,32 +1749,27 @@ var app = (function () {
     function create_fragment$6(ctx) {
     	let tr;
     	let th;
-    	let t0_value = /*category*/ ctx[0].name + "";
+    	let t0_value = /*category*/ ctx[1].name + "";
     	let t0;
     	let t1;
-    	let td0;
-    	let t2;
-    	let td1;
-    	let t3;
-    	let td2;
     	let button;
-    	let t5;
-    	let each_blocks = [];
-    	let each_1_lookup = new Map();
+    	let i;
+    	let t2;
     	let each_1_anchor;
     	let current;
     	let mounted;
     	let dispose;
-    	let each_value = /*article_list*/ ctx[1];
+    	let each_value = /*articles*/ ctx[0];
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*article*/ ctx[4].ref;
-    	validate_each_keys(ctx, each_value, get_each_context$3, get_key);
+    	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		let child_ctx = get_each_context$3(ctx, each_value, i);
-    		let key = get_key(child_ctx);
-    		each_1_lookup.set(key, each_blocks[i] = create_each_block$3(key, child_ctx));
+    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
     	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
 
     	const block = {
     		c: function create() {
@@ -1276,27 +1777,21 @@ var app = (function () {
     			th = element("th");
     			t0 = text(t0_value);
     			t1 = space();
-    			td0 = element("td");
-    			t2 = space();
-    			td1 = element("td");
-    			t3 = space();
-    			td2 = element("td");
     			button = element("button");
-    			button.textContent = "Ajouter";
-    			t5 = space();
+    			i = element("i");
+    			t2 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
     			each_1_anchor = empty();
-    			attr_dev(th, "colspan", "2");
-    			add_location(th, file$3, 14, 4, 340);
-    			add_location(td0, file$3, 15, 4, 382);
-    			add_location(td1, file$3, 16, 4, 397);
-    			add_location(button, file$3, 17, 8, 416);
-    			add_location(td2, file$3, 17, 4, 412);
-    			add_location(tr, file$3, 13, 0, 330);
+    			attr_dev(i, "class", "fa-solid fa-circle-plus");
+    			add_location(i, file$3, 17, 67, 564);
+    			add_location(button, file$3, 17, 36, 533);
+    			attr_dev(th, "colspan", "6");
+    			add_location(th, file$3, 17, 4, 501);
+    			add_location(tr, file$3, 16, 0, 491);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1305,14 +1800,10 @@ var app = (function () {
     			insert_dev(target, tr, anchor);
     			append_dev(tr, th);
     			append_dev(th, t0);
-    			append_dev(tr, t1);
-    			append_dev(tr, td0);
-    			append_dev(tr, t2);
-    			append_dev(tr, td1);
-    			append_dev(tr, t3);
-    			append_dev(tr, td2);
-    			append_dev(td2, button);
-    			insert_dev(target, t5, anchor);
+    			append_dev(th, t1);
+    			append_dev(th, button);
+    			append_dev(button, i);
+    			insert_dev(target, t2, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				if (each_blocks[i]) {
@@ -1329,14 +1820,31 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*category*/ 1) && t0_value !== (t0_value = /*category*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
-
-    			if (dirty & /*article_list*/ 2) {
-    				each_value = /*article_list*/ ctx[1];
+    			if (dirty & /*articles*/ 1) {
+    				each_value = /*articles*/ ctx[0];
     				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$3(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block$3(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
     				group_outros();
-    				validate_each_keys(ctx, each_value, get_each_context$3, get_key);
-    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, each_1_anchor.parentNode, outro_and_destroy_block, create_each_block$3, each_1_anchor, get_each_context$3);
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
     				check_outros();
     			}
     		},
@@ -1350,6 +1858,8 @@ var app = (function () {
     			current = true;
     		},
     		o: function outro(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				transition_out(each_blocks[i]);
     			}
@@ -1358,12 +1868,8 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(tr);
-    			if (detaching) detach_dev(t5);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].d(detaching);
-    			}
-
+    			if (detaching) detach_dev(t2);
+    			destroy_each(each_blocks, detaching);
     			if (detaching) detach_dev(each_1_anchor);
     			mounted = false;
     			dispose();
@@ -1382,62 +1888,69 @@ var app = (function () {
     }
 
     function instance$6($$self, $$props, $$invalidate) {
+    	let $articles_in_devis;
+    	validate_store(articles_in_devis, 'articles_in_devis');
+    	component_subscribe($$self, articles_in_devis, $$value => $$invalidate(4, $articles_in_devis = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Category', slots, []);
-    	let { category } = $$props;
-    	let { article_list } = $$props;
-    	const dispatcher = createEventDispatcher();
+    	let { category_id } = $$props;
+    	let articles;
+    	const category = get_category_from_id(category_id);
 
-    	const add_article = () => {
-    		dispatcher("start_modal", { action: "add", category });
-    	};
+    	function add_article() {
+    		modal_info.set({ type: "add", category });
+    	}
 
     	$$self.$$.on_mount.push(function () {
-    		if (category === undefined && !('category' in $$props || $$self.$$.bound[$$self.$$.props['category']])) {
-    			console.warn("<Category> was created without expected prop 'category'");
-    		}
-
-    		if (article_list === undefined && !('article_list' in $$props || $$self.$$.bound[$$self.$$.props['article_list']])) {
-    			console.warn("<Category> was created without expected prop 'article_list'");
+    		if (category_id === undefined && !('category_id' in $$props || $$self.$$.bound[$$self.$$.props['category_id']])) {
+    			console.warn("<Category> was created without expected prop 'category_id'");
     		}
     	});
 
-    	const writable_props = ['category', 'article_list'];
+    	const writable_props = ['category_id'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Category> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ('category' in $$props) $$invalidate(0, category = $$props.category);
-    		if ('article_list' in $$props) $$invalidate(1, article_list = $$props.article_list);
+    		if ('category_id' in $$props) $$invalidate(3, category_id = $$props.category_id);
     	};
 
     	$$self.$capture_state = () => ({
     		Article,
-    		createEventDispatcher,
+    		get_category_from_id,
+    		articles_in_devis,
+    		modal_info,
+    		category_id,
+    		articles,
     		category,
-    		article_list,
-    		dispatcher,
-    		add_article
+    		add_article,
+    		$articles_in_devis
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ('category' in $$props) $$invalidate(0, category = $$props.category);
-    		if ('article_list' in $$props) $$invalidate(1, article_list = $$props.article_list);
+    		if ('category_id' in $$props) $$invalidate(3, category_id = $$props.category_id);
+    		if ('articles' in $$props) $$invalidate(0, articles = $$props.articles);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [category, article_list, add_article];
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$articles_in_devis, category_id*/ 24) {
+    			$$invalidate(0, articles = $articles_in_devis.filter(article => article.base_category_id === category_id));
+    		}
+    	};
+
+    	return [articles, category, add_article, category_id, $articles_in_devis];
     }
 
     class Category extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$6, create_fragment$6, safe_not_equal, { category: 0, article_list: 1 });
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, { category_id: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1447,19 +1960,11 @@ var app = (function () {
     		});
     	}
 
-    	get category() {
+    	get category_id() {
     		throw new Error("<Category>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set category(value) {
-    		throw new Error("<Category>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get article_list() {
-    		throw new Error("<Category>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set article_list(value) {
+    	set category_id(value) {
     		throw new Error("<Category>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -1469,29 +1974,20 @@ var app = (function () {
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[0] = list[i];
     	return child_ctx;
     }
 
-    // (21:8) {#each get_base_categories(categories) as category (category.id)}
+    // (20:8) {#each get_base_categories() as category (category.id)}
     function create_each_block$2(key_1, ctx) {
     	let first;
     	let category;
     	let current;
 
-    	function func(...args) {
-    		return /*func*/ ctx[2](/*category*/ ctx[4], ...args);
-    	}
-
     	category = new Category({
-    			props: {
-    				category: /*category*/ ctx[4],
-    				article_list: /*article_list*/ ctx[0].filter(func)
-    			},
+    			props: { category_id: /*category*/ ctx[0].id },
     			$$inline: true
     		});
-
-    	category.$on("start_modal", /*start_modal_handler*/ ctx[3]);
 
     	const block = {
     		key: key_1,
@@ -1508,10 +2004,6 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			const category_changes = {};
-    			if (dirty & /*categories*/ 2) category_changes.category = /*category*/ ctx[4];
-    			if (dirty & /*article_list, categories*/ 3) category_changes.article_list = /*article_list*/ ctx[0].filter(func);
-    			category.$set(category_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1532,7 +2024,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(21:8) {#each get_base_categories(categories) as category (category.id)}",
+    		source: "(20:8) {#each get_base_categories() as category (category.id)}",
     		ctx
     	});
 
@@ -1552,14 +2044,16 @@ var app = (function () {
     	let th3;
     	let t7;
     	let th4;
+    	let t8;
+    	let th5;
     	let t9;
     	let tbody;
     	let each_blocks = [];
     	let each_1_lookup = new Map();
     	let current;
-    	let each_value = get_base_categories(/*categories*/ ctx[1]);
+    	let each_value = get_base_categories();
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*category*/ ctx[4].id;
+    	const get_key = ctx => /*category*/ ctx[0].id;
     	validate_each_keys(ctx, each_value, get_each_context$2, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1586,7 +2080,8 @@ var app = (function () {
     			th3.textContent = "Prix Tarif";
     			t7 = space();
     			th4 = element("th");
-    			th4.textContent = "Édition";
+    			t8 = space();
+    			th5 = element("th");
     			t9 = space();
     			tbody = element("tbody");
 
@@ -1594,16 +2089,17 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(th0, file$2, 12, 12, 250);
-    			add_location(th1, file$2, 13, 12, 282);
-    			add_location(th2, file$2, 14, 12, 316);
-    			add_location(th3, file$2, 15, 12, 347);
-    			add_location(th4, file$2, 16, 12, 380);
-    			add_location(tr, file$2, 11, 8, 232);
-    			add_location(thead, file$2, 10, 4, 215);
-    			add_location(tbody, file$2, 19, 4, 431);
+    			add_location(th0, file$2, 10, 12, 263);
+    			add_location(th1, file$2, 11, 12, 295);
+    			add_location(th2, file$2, 12, 12, 329);
+    			add_location(th3, file$2, 13, 12, 360);
+    			add_location(th4, file$2, 14, 12, 393);
+    			add_location(th5, file$2, 15, 12, 416);
+    			add_location(tr, file$2, 9, 8, 245);
+    			add_location(thead, file$2, 8, 4, 228);
+    			add_location(tbody, file$2, 18, 4, 460);
     			attr_dev(table, "class", "style-table");
-    			add_location(table, file$2, 9, 0, 182);
+    			add_location(table, file$2, 7, 0, 195);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1621,6 +2117,8 @@ var app = (function () {
     			append_dev(tr, th3);
     			append_dev(tr, t7);
     			append_dev(tr, th4);
+    			append_dev(tr, t8);
+    			append_dev(tr, th5);
     			append_dev(table, t9);
     			append_dev(table, tbody);
 
@@ -1633,8 +2131,8 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*get_base_categories, categories, article_list*/ 3) {
-    				each_value = get_base_categories(/*categories*/ ctx[1]);
+    			if (dirty & /*get_base_categories*/ 0) {
+    				each_value = get_base_categories();
     				validate_each_argument(each_value);
     				group_outros();
     				validate_each_keys(ctx, each_value, get_each_context$2, get_key);
@@ -1681,59 +2179,27 @@ var app = (function () {
     function instance$5($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('EditableDevis', slots, []);
-    	let { article_list } = $$props;
-    	let { categories } = $$props;
-
-    	$$self.$$.on_mount.push(function () {
-    		if (article_list === undefined && !('article_list' in $$props || $$self.$$.bound[$$self.$$.props['article_list']])) {
-    			console.warn("<EditableDevis> was created without expected prop 'article_list'");
-    		}
-
-    		if (categories === undefined && !('categories' in $$props || $$self.$$.bound[$$self.$$.props['categories']])) {
-    			console.warn("<EditableDevis> was created without expected prop 'categories'");
-    		}
-    	});
-
-    	const writable_props = ['article_list', 'categories'];
+    	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<EditableDevis> was created with unknown prop '${key}'`);
     	});
 
-    	const func = (category, row) => row.base_category_id === category.id;
-
-    	function start_modal_handler(event) {
-    		bubble.call(this, $$self, event);
-    	}
-
-    	$$self.$$set = $$props => {
-    		if ('article_list' in $$props) $$invalidate(0, article_list = $$props.article_list);
-    		if ('categories' in $$props) $$invalidate(1, categories = $$props.categories);
-    	};
-
     	$$self.$capture_state = () => ({
     		get_base_categories,
     		Category,
-    		article_list,
-    		categories
+    		categories,
+    		articles_in_devis,
+    		articles
     	});
 
-    	$$self.$inject_state = $$props => {
-    		if ('article_list' in $$props) $$invalidate(0, article_list = $$props.article_list);
-    		if ('categories' in $$props) $$invalidate(1, categories = $$props.categories);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [article_list, categories, func, start_modal_handler];
+    	return [];
     }
 
     class EditableDevis extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$5, create_fragment$5, safe_not_equal, { article_list: 0, categories: 1 });
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1742,22 +2208,6 @@ var app = (function () {
     			id: create_fragment$5.name
     		});
     	}
-
-    	get article_list() {
-    		throw new Error("<EditableDevis>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set article_list(value) {
-    		throw new Error("<EditableDevis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get categories() {
-    		throw new Error("<EditableDevis>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set categories(value) {
-    		throw new Error("<EditableDevis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
     }
 
     /* src\devis\CategoryForm.svelte generated by Svelte v3.59.2 */
@@ -1765,20 +2215,20 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (13:4) {#each categories as category (category.id)}
+    // (10:4) {#each categories as category (category.id)}
     function create_each_block$1(key_1, ctx) {
     	let button;
-    	let t_value = /*category*/ ctx[4].name + "";
+    	let t_value = /*category*/ ctx[3].name + "";
     	let t;
     	let mounted;
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[2](/*category*/ ctx[4]);
+    		return /*click_handler*/ ctx[2](/*category*/ ctx[3]);
     	}
 
     	const block = {
@@ -1788,7 +2238,7 @@ var app = (function () {
     			button = element("button");
     			t = text(t_value);
     			attr_dev(button, "class", "svelte-1vrd102");
-    			add_location(button, file$1, 13, 8, 329);
+    			add_location(button, file$1, 10, 8, 322);
     			this.first = button;
     		},
     		m: function mount(target, anchor) {
@@ -1802,7 +2252,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*categories*/ 1 && t_value !== (t_value = /*category*/ ctx[4].name + "")) set_data_dev(t, t_value);
+    			if (dirty & /*categories*/ 1 && t_value !== (t_value = /*category*/ ctx[3].name + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(button);
@@ -1815,7 +2265,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(13:4) {#each categories as category (category.id)}",
+    		source: "(10:4) {#each categories as category (category.id)}",
     		ctx
     	});
 
@@ -1828,7 +2278,7 @@ var app = (function () {
     	let each_1_lookup = new Map();
     	let each_value = /*categories*/ ctx[0];
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*category*/ ctx[4].id;
+    	const get_key = ctx => /*category*/ ctx[3].id;
     	validate_each_keys(ctx, each_value, get_each_context$1, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1846,7 +2296,7 @@ var app = (function () {
     			}
 
     			attr_dev(div, "class", "svelte-1vrd102");
-    			add_location(div, file$1, 11, 0, 264);
+    			add_location(div, file$1, 8, 0, 257);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1894,10 +2344,9 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('CategoryForm', slots, []);
     	let { categories } = $$props;
-    	const dispatcher = createEventDispatcher();
 
-    	const click_on_categ = category_id => {
-    		dispatcher("click_on_categ", { category_id });
+    	const click_on_categ = category => {
+    		modal_info.update(old_info => ({ ...old_info, category }));
     	};
 
     	$$self.$$.on_mount.push(function () {
@@ -1913,7 +2362,7 @@ var app = (function () {
     	});
 
     	const click_handler = category => {
-    		click_on_categ(category.id);
+    		click_on_categ(category);
     	};
 
     	$$self.$$set = $$props => {
@@ -1921,9 +2370,9 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		createEventDispatcher,
+    		modal_info,
+    		fade,
     		categories,
-    		dispatcher,
     		click_on_categ
     	});
 
@@ -1960,31 +2409,150 @@ var app = (function () {
     	}
     }
 
-    /* src\devis\ArticleForm.svelte generated by Svelte v3.59.2 */
+    class Actions{
+        /**
+         * @type {Action[]} action_queue
+         */
+        static action_queue = [];
 
+        /**
+         * 
+         * @param {Action} action 
+         */
+        static push(action){
+            if (action.execute()){
+                this.action_queue.push(action);
+            }
+        }
+    }
+
+
+    class Action {
+        /**
+         * 
+         * @param {string} type 
+         */
+        constructor(type) {
+          this.type = type; // Par exemple, l'entité sur laquelle l'action sera effectuée
+        }
+      
+        /**
+         * @return {boolean}
+         */
+        execute() {
+            throw new Error("Cette method est abstraite");
+        }
+      
+        // Méthode générique pour annuler une action
+        undo() {
+            throw new Error("Cette method est abstraite");
+        }
+
+        tojson(){
+            throw new Error("Cette method est abstraite");
+        }
+
+        static fromjson(action_json){
+            if (action_json.type === "add"){
+                return new AddAction(action_json.ref);
+            }
+        }
+    }
+      
+    class AddAction extends Action{
+        /**
+         * 
+         * @param {string} ref 
+         */
+        constructor(ref){
+            super("add");
+            this.ref = ref;
+        }
+
+        /**
+         * 
+         * @returns {boolean}
+         */
+        execute(){
+            try{
+                const new_article = get_article_by_ref(this.ref);
+                articles_in_devis.update(a => {
+                    let new_articles = [...a, new_article];
+                    new_articles.sort((a, b) => a.priority - b.priority);
+                    return new_articles;
+                });
+                return true;
+            }catch (e){
+                return false;
+            }
+            
+        }
+
+        tojson(){
+            return {"type":this.type, "ref":this.ref};
+        }
+    }
+
+    /* src\devis\ArticleForm.svelte generated by Svelte v3.59.2 */
     const file = "src\\devis\\ArticleForm.svelte";
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[1] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (14:12) {#each articles as article}
+    // (31:12) {:else}
+    function create_else_block$1(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "Aucun article...";
+    			add_location(p, file, 31, 16, 867);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$1.name,
+    		type: "else",
+    		source: "(31:12) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (24:12) {#each articles as article}
     function create_each_block(ctx) {
     	let tr;
     	let td0;
-    	let t0_value = /*article*/ ctx[1].ref + "";
+    	let t0_value = /*article*/ ctx[3].ref + "";
     	let t0;
     	let t1;
     	let td1;
-    	let t2_value = /*article*/ ctx[1].label + "";
+    	let t2_value = /*article*/ ctx[3].label + "";
     	let t2;
     	let t3;
     	let td2;
-    	let t4_value = /*article*/ ctx[1].prix + "";
+    	let t4_value = /*article*/ ctx[3].prix + "";
     	let t4;
     	let t5;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[2](/*article*/ ctx[3]);
+    	}
 
     	const block = {
     		c: function create() {
@@ -1998,11 +2566,11 @@ var app = (function () {
     			td2 = element("td");
     			t4 = text(t4_value);
     			t5 = space();
-    			add_location(td0, file, 15, 20, 395);
-    			add_location(td1, file, 16, 20, 439);
-    			add_location(td2, file, 17, 20, 485);
+    			add_location(td0, file, 25, 20, 690);
+    			add_location(td1, file, 26, 20, 734);
+    			add_location(td2, file, 27, 20, 780);
     			attr_dev(tr, "class", "svelte-1h7e1av");
-    			add_location(tr, file, 14, 16, 369);
+    			add_location(tr, file, 24, 16, 622);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -2015,14 +2583,22 @@ var app = (function () {
     			append_dev(tr, td2);
     			append_dev(td2, t4);
     			append_dev(tr, t5);
+
+    			if (!mounted) {
+    				dispose = listen_dev(tr, "click", click_handler, false, false, false, false);
+    				mounted = true;
+    			}
     		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*articles*/ 1 && t0_value !== (t0_value = /*article*/ ctx[1].ref + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*articles*/ 1 && t2_value !== (t2_value = /*article*/ ctx[1].label + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*articles*/ 1 && t4_value !== (t4_value = /*article*/ ctx[1].prix + "")) set_data_dev(t4, t4_value);
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*articles*/ 1 && t0_value !== (t0_value = /*article*/ ctx[3].ref + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*articles*/ 1 && t2_value !== (t2_value = /*article*/ ctx[3].label + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*articles*/ 1 && t4_value !== (t4_value = /*article*/ ctx[3].prix + "")) set_data_dev(t4, t4_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(tr);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -2030,7 +2606,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(14:12) {#each articles as article}",
+    		source: "(24:12) {#each articles as article}",
     		ctx
     	});
 
@@ -2057,6 +2633,12 @@ var app = (function () {
     		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
     	}
 
+    	let each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block$1(ctx);
+    	}
+
     	const block = {
     		c: function create() {
     			div = element("div");
@@ -2078,21 +2660,25 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
+    			if (each_1_else) {
+    				each_1_else.c();
+    			}
+
     			attr_dev(th0, "class", "svelte-1h7e1av");
-    			add_location(th0, file, 7, 16, 163);
+    			add_location(th0, file, 17, 16, 416);
     			attr_dev(th1, "class", "svelte-1h7e1av");
-    			add_location(th1, file, 8, 16, 199);
+    			add_location(th1, file, 18, 16, 452);
     			attr_dev(th2, "class", "svelte-1h7e1av");
-    			add_location(th2, file, 9, 16, 237);
+    			add_location(th2, file, 19, 16, 490);
     			attr_dev(tr, "class", "svelte-1h7e1av");
-    			add_location(tr, file, 6, 12, 141);
+    			add_location(tr, file, 16, 12, 394);
     			attr_dev(thead, "class", "svelte-1h7e1av");
-    			add_location(thead, file, 5, 8, 120);
-    			add_location(tbody, file, 12, 8, 303);
+    			add_location(thead, file, 15, 8, 373);
+    			add_location(tbody, file, 22, 8, 556);
     			attr_dev(table, "class", "style-table svelte-1h7e1av");
-    			add_location(table, file, 4, 4, 83);
+    			add_location(table, file, 14, 4, 336);
     			attr_dev(div, "class", "scroll-container svelte-1h7e1av");
-    			add_location(div, file, 3, 0, 47);
+    			add_location(div, file, 13, 0, 300);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2115,9 +2701,13 @@ var app = (function () {
     					each_blocks[i].m(tbody, null);
     				}
     			}
+
+    			if (each_1_else) {
+    				each_1_else.m(tbody, null);
+    			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*articles*/ 1) {
+    			if (dirty & /*add_article, articles*/ 3) {
     				each_value = /*articles*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
@@ -2139,6 +2729,17 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+
+    				if (!each_value.length && each_1_else) {
+    					each_1_else.p(ctx, dirty);
+    				} else if (!each_value.length) {
+    					each_1_else = create_else_block$1(ctx);
+    					each_1_else.c();
+    					each_1_else.m(tbody, null);
+    				} else if (each_1_else) {
+    					each_1_else.d(1);
+    					each_1_else = null;
+    				}
     			}
     		},
     		i: noop,
@@ -2146,6 +2747,7 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			destroy_each(each_blocks, detaching);
+    			if (each_1_else) each_1_else.d();
     		}
     	};
 
@@ -2165,6 +2767,12 @@ var app = (function () {
     	validate_slots('ArticleForm', slots, []);
     	let { articles } = $$props;
 
+    	function add_article(ref) {
+    		let add_action = new AddAction(ref);
+    		Actions.push(add_action);
+    		modal_info.set(null);
+    	}
+
     	$$self.$$.on_mount.push(function () {
     		if (articles === undefined && !('articles' in $$props || $$self.$$.bound[$$self.$$.props['articles']])) {
     			console.warn("<ArticleForm> was created without expected prop 'articles'");
@@ -2177,11 +2785,19 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<ArticleForm> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = article => add_article(article.ref);
+
     	$$self.$$set = $$props => {
     		if ('articles' in $$props) $$invalidate(0, articles = $$props.articles);
     	};
 
-    	$$self.$capture_state = () => ({ articles });
+    	$$self.$capture_state = () => ({
+    		AddAction,
+    		Actions,
+    		modal_info,
+    		articles,
+    		add_article
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ('articles' in $$props) $$invalidate(0, articles = $$props.articles);
@@ -2191,7 +2807,7 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [articles];
+    	return [articles, add_article, click_handler];
     }
 
     class ArticleForm extends SvelteComponentDev {
@@ -2218,7 +2834,7 @@ var app = (function () {
 
     /* src\devis\ModalContent.svelte generated by Svelte v3.59.2 */
 
-    // (32:0) {:else}
+    // (25:4) {:else}
     function create_else_block(ctx) {
     	let articleform;
     	let current;
@@ -2259,14 +2875,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(32:0) {:else}",
+    		source: "(25:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (30:0) {#if sub_categories.length !== 0}
+    // (23:4) {#if sub_categories.length !== 0}
     function create_if_block$1(ctx) {
     	let categoryform;
     	let current;
@@ -2275,8 +2891,6 @@ var app = (function () {
     			props: { categories: /*sub_categories*/ ctx[0] },
     			$$inline: true
     		});
-
-    	categoryform.$on("click_on_categ", /*click_on_categ*/ ctx[2]);
 
     	const block = {
     		c: function create() {
@@ -2309,7 +2923,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(30:0) {#if sub_categories.length !== 0}",
+    		source: "(23:4) {#if sub_categories.length !== 0}",
     		ctx
     	});
 
@@ -2402,63 +3016,38 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('ModalContent', slots, []);
     	let { modal_info } = $$props;
-    	let { categories } = $$props;
-    	let { all_articles } = $$props;
     	let sub_categories;
     	let articles;
-    	const dispatcher = createEventDispatcher();
-
-    	function click_on_categ(e) {
-    		const category = get_category_from_id(categories, e.detail.category_id);
-    		dispatcher("start_modal", { ...modal_info, category });
-    	}
 
     	$$self.$$.on_mount.push(function () {
     		if (modal_info === undefined && !('modal_info' in $$props || $$self.$$.bound[$$self.$$.props['modal_info']])) {
     			console.warn("<ModalContent> was created without expected prop 'modal_info'");
     		}
-
-    		if (categories === undefined && !('categories' in $$props || $$self.$$.bound[$$self.$$.props['categories']])) {
-    			console.warn("<ModalContent> was created without expected prop 'categories'");
-    		}
-
-    		if (all_articles === undefined && !('all_articles' in $$props || $$self.$$.bound[$$self.$$.props['all_articles']])) {
-    			console.warn("<ModalContent> was created without expected prop 'all_articles'");
-    		}
     	});
 
-    	const writable_props = ['modal_info', 'categories', 'all_articles'];
+    	const writable_props = ['modal_info'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<ModalContent> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ('modal_info' in $$props) $$invalidate(3, modal_info = $$props.modal_info);
-    		if ('categories' in $$props) $$invalidate(4, categories = $$props.categories);
-    		if ('all_articles' in $$props) $$invalidate(5, all_articles = $$props.all_articles);
+    		if ('modal_info' in $$props) $$invalidate(2, modal_info = $$props.modal_info);
     	};
 
     	$$self.$capture_state = () => ({
     		get_sub_categories,
     		get_articles_by_categ,
     		get_category_from_id,
-    		createEventDispatcher,
     		CategoryForm,
     		ArticleForm,
     		modal_info,
-    		categories,
-    		all_articles,
     		sub_categories,
-    		articles,
-    		dispatcher,
-    		click_on_categ
+    		articles
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ('modal_info' in $$props) $$invalidate(3, modal_info = $$props.modal_info);
-    		if ('categories' in $$props) $$invalidate(4, categories = $$props.categories);
-    		if ('all_articles' in $$props) $$invalidate(5, all_articles = $$props.all_articles);
+    		if ('modal_info' in $$props) $$invalidate(2, modal_info = $$props.modal_info);
     		if ('sub_categories' in $$props) $$invalidate(0, sub_categories = $$props.sub_categories);
     		if ('articles' in $$props) $$invalidate(1, articles = $$props.articles);
     	};
@@ -2468,30 +3057,25 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*modal_info, categories, sub_categories, all_articles*/ 57) {
+    		if ($$self.$$.dirty & /*modal_info, sub_categories*/ 5) {
     			{
     				const category_id = modal_info.category.id;
-    				$$invalidate(0, sub_categories = get_sub_categories(categories, category_id));
+    				$$invalidate(0, sub_categories = get_sub_categories(category_id));
 
     				if (sub_categories.length === 0) {
-    					$$invalidate(1, articles = get_articles_by_categ(all_articles, category_id));
+    					$$invalidate(1, articles = get_articles_by_categ(category_id));
     				}
     			}
     		}
     	};
 
-    	return [sub_categories, articles, click_on_categ, modal_info, categories, all_articles];
+    	return [sub_categories, articles, modal_info];
     }
 
     class ModalContent extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-    			modal_info: 3,
-    			categories: 4,
-    			all_articles: 5
-    		});
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { modal_info: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -2508,43 +3092,21 @@ var app = (function () {
     	set modal_info(value) {
     		throw new Error("<ModalContent>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
-
-    	get categories() {
-    		throw new Error("<ModalContent>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set categories(value) {
-    		throw new Error("<ModalContent>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get all_articles() {
-    		throw new Error("<ModalContent>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set all_articles(value) {
-    		throw new Error("<ModalContent>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
     }
 
     /* src\devis\Devis.svelte generated by Svelte v3.59.2 */
 
     const { Error: Error_1 } = globals;
 
-    // (80:0) <Modal modal_show={modal_info.display} on:toogle_modal={toogle_modal}>
+    // (60:0) <Modal modal_show={$modal_info !== null} slot_key={$modal_info} on:toogle_modal={toogle_modal}>
     function create_default_slot(ctx) {
     	let modalcontent;
     	let current;
 
     	modalcontent = new ModalContent({
-    			props: {
-    				modal_info: /*modal_info*/ ctx[3],
-    				all_articles: /*all_articles*/ ctx[1],
-    				categories: /*categories*/ ctx[0]
-    			},
+    			props: { modal_info: /*$modal_info*/ ctx[0] },
     			$$inline: true
     		});
-
-    	modalcontent.$on("start_modal", /*start_modal*/ ctx[5]);
 
     	const block = {
     		c: function create() {
@@ -2556,9 +3118,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const modalcontent_changes = {};
-    			if (dirty & /*modal_info*/ 8) modalcontent_changes.modal_info = /*modal_info*/ ctx[3];
-    			if (dirty & /*all_articles*/ 2) modalcontent_changes.all_articles = /*all_articles*/ ctx[1];
-    			if (dirty & /*categories*/ 1) modalcontent_changes.categories = /*categories*/ ctx[0];
+    			if (dirty & /*$modal_info*/ 1) modalcontent_changes.modal_info = /*$modal_info*/ ctx[0];
     			modalcontent.$set(modalcontent_changes);
     		},
     		i: function intro(local) {
@@ -2579,7 +3139,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(80:0) <Modal modal_show={modal_info.display} on:toogle_modal={toogle_modal}>",
+    		source: "(60:0) <Modal modal_show={$modal_info !== null} slot_key={$modal_info} on:toogle_modal={toogle_modal}>",
     		ctx
     	});
 
@@ -2591,27 +3151,19 @@ var app = (function () {
     	let t;
     	let modal;
     	let current;
-
-    	editabledevis = new EditableDevis({
-    			props: {
-    				article_list: /*article_list*/ ctx[2],
-    				categories: /*categories*/ ctx[0]
-    			},
-    			$$inline: true
-    		});
-
-    	editabledevis.$on("start_modal", /*start_modal*/ ctx[5]);
+    	editabledevis = new EditableDevis({ $$inline: true });
 
     	modal = new Modal({
     			props: {
-    				modal_show: /*modal_info*/ ctx[3].display,
+    				modal_show: /*$modal_info*/ ctx[0] !== null,
+    				slot_key: /*$modal_info*/ ctx[0],
     				$$slots: { default: [create_default_slot] },
     				$$scope: { ctx }
     			},
     			$$inline: true
     		});
 
-    	modal.$on("toogle_modal", /*toogle_modal*/ ctx[4]);
+    	modal.$on("toogle_modal", /*toogle_modal*/ ctx[1]);
 
     	const block = {
     		c: function create() {
@@ -2629,14 +3181,11 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			const editabledevis_changes = {};
-    			if (dirty & /*article_list*/ 4) editabledevis_changes.article_list = /*article_list*/ ctx[2];
-    			if (dirty & /*categories*/ 1) editabledevis_changes.categories = /*categories*/ ctx[0];
-    			editabledevis.$set(editabledevis_changes);
     			const modal_changes = {};
-    			if (dirty & /*modal_info*/ 8) modal_changes.modal_show = /*modal_info*/ ctx[3].display;
+    			if (dirty & /*$modal_info*/ 1) modal_changes.modal_show = /*$modal_info*/ ctx[0] !== null;
+    			if (dirty & /*$modal_info*/ 1) modal_changes.slot_key = /*$modal_info*/ ctx[0];
 
-    			if (dirty & /*$$scope, modal_info, all_articles, categories*/ 4107) {
+    			if (dirty & /*$$scope, $modal_info*/ 33) {
     				modal_changes.$$scope = { dirty, ctx };
     			}
 
@@ -2671,32 +3220,44 @@ var app = (function () {
     	return block;
     }
 
+    function execute_action(action) {
+    	try {
+    		if (action.type == "add") {
+    			add_article(action.ref);
+    		} else if (action.type == "edit") {
+    			
+    		} else if (action.type == "move") {
+    			
+    		} else if (action.type == "remove") {
+    			
+    		} else {
+    			throw new Error(); //edit_article(action.old_ref, action.new_ref);
+    			//move_article(action.ref, action.direction);
+    			//remove_article(action.ref);
+    		}
+
+    		return true;
+    	} catch(e) {
+    		return false;
+    	}
+    }
+
     function instance$1($$self, $$props, $$invalidate) {
+    	let $modal_info;
+    	validate_store(modal_info, 'modal_info');
+    	component_subscribe($$self, modal_info, $$value => $$invalidate(0, $modal_info = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Devis', slots, []);
     	let { default_articles } = $$props;
-    	let { categories } = $$props;
-    	let { all_articles } = $$props;
-    	let { devis_data = [] } = $$props;
-    	let article_list = [];
     	let action_list = [];
-    	let modal_info = { display: false };
 
     	// initialisation des articles par défault
-    	for (const article of default_articles) {
-    		article_list.push(get_article_by_ref(all_articles, categories, article.ref));
-    	}
+    	articles_in_devis.set(default_articles.map(article => get_article_by_ref(article.ref)));
 
     	// trie des articles par leurs priorité
-    	article_list.sort((a, b) => a.priority - b.priority);
+    	articles_in_devis.update(arts => arts.sort((a, b) => a.priority - b.priority));
 
-    	const toogle_modal = () => {
-    		$$invalidate(3, modal_info = {
-    			...modal_info,
-    			display: !modal_info.display
-    		});
-    	};
-
+    	//article_list.sort((a, b) => a.priority - b.priority);
     	/**
      * ajoute l'action passé en paramètre à la file d'actions (action_queue)
      * et execute l'action passé en paramètre
@@ -2708,74 +3269,24 @@ var app = (function () {
     		}
     	}
 
-    	/**
-     * execute l'action passé en paramètre
-     * @param {object} action 
-     * @returns {boolean}
-     */
-    	function execute_action(action) {
-    		try {
-    			if (action.type == "add") {
-    				add_article(action.ref);
-    			} else if (action.type == "edit") {
-    				edit_article(action.old_ref, action.new_ref);
-    			} else if (action.type == "move") {
-    				move_article(action.ref, action.direction);
-    			} else if (action.type == "remove") {
-    				remove_article(action.ref);
-    			} else {
-    				throw new Error();
-    			}
-
-    			return true;
-    		} catch(e) {
-    			return false;
-    		}
+    	function toogle_modal() {
+    		modal_info.set(null);
     	}
-
-    	/**
-     * 
-     * @param ref
-     */
-    	function add_article(ref) {
-    		const new_article = get_article_by_ref(all_articles, categories, ref);
-    		$$invalidate(2, article_list = [...article_list, new_article]);
-    		article_list.sort((a, b) => a.priority - b.priority);
-    	}
-
-    	function start_modal(e) {
-    		$$invalidate(3, modal_info = {
-    			...modal_info,
-    			display: true,
-    			...e.detail
-    		});
-    	} //console.log(modal_info);
 
     	$$self.$$.on_mount.push(function () {
     		if (default_articles === undefined && !('default_articles' in $$props || $$self.$$.bound[$$self.$$.props['default_articles']])) {
     			console.warn("<Devis> was created without expected prop 'default_articles'");
     		}
-
-    		if (categories === undefined && !('categories' in $$props || $$self.$$.bound[$$self.$$.props['categories']])) {
-    			console.warn("<Devis> was created without expected prop 'categories'");
-    		}
-
-    		if (all_articles === undefined && !('all_articles' in $$props || $$self.$$.bound[$$self.$$.props['all_articles']])) {
-    			console.warn("<Devis> was created without expected prop 'all_articles'");
-    		}
     	});
 
-    	const writable_props = ['default_articles', 'categories', 'all_articles', 'devis_data'];
+    	const writable_props = ['default_articles'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Devis> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ('default_articles' in $$props) $$invalidate(6, default_articles = $$props.default_articles);
-    		if ('categories' in $$props) $$invalidate(0, categories = $$props.categories);
-    		if ('all_articles' in $$props) $$invalidate(1, all_articles = $$props.all_articles);
-    		if ('devis_data' in $$props) $$invalidate(7, devis_data = $$props.devis_data);
+    		if ('default_articles' in $$props) $$invalidate(2, default_articles = $$props.default_articles);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2783,56 +3294,32 @@ var app = (function () {
     		EditableDevis,
     		ModalContent,
     		get_article_by_ref,
-    		default_articles,
-    		categories,
-    		all_articles,
-    		devis_data,
-    		article_list,
-    		action_list,
+    		articles_in_devis,
     		modal_info,
-    		toogle_modal,
+    		default_articles,
+    		action_list,
     		push_action,
     		execute_action,
-    		add_article,
-    		start_modal
+    		toogle_modal,
+    		$modal_info
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ('default_articles' in $$props) $$invalidate(6, default_articles = $$props.default_articles);
-    		if ('categories' in $$props) $$invalidate(0, categories = $$props.categories);
-    		if ('all_articles' in $$props) $$invalidate(1, all_articles = $$props.all_articles);
-    		if ('devis_data' in $$props) $$invalidate(7, devis_data = $$props.devis_data);
-    		if ('article_list' in $$props) $$invalidate(2, article_list = $$props.article_list);
+    		if ('default_articles' in $$props) $$invalidate(2, default_articles = $$props.default_articles);
     		if ('action_list' in $$props) action_list = $$props.action_list;
-    		if ('modal_info' in $$props) $$invalidate(3, modal_info = $$props.modal_info);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [
-    		categories,
-    		all_articles,
-    		article_list,
-    		modal_info,
-    		toogle_modal,
-    		start_modal,
-    		default_articles,
-    		devis_data
-    	];
+    	return [$modal_info, toogle_modal, default_articles];
     }
 
     class Devis extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
-    			default_articles: 6,
-    			categories: 0,
-    			all_articles: 1,
-    			devis_data: 7
-    		});
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { default_articles: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -2849,46 +3336,21 @@ var app = (function () {
     	set default_articles(value) {
     		throw new Error_1("<Devis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
-
-    	get categories() {
-    		throw new Error_1("<Devis>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set categories(value) {
-    		throw new Error_1("<Devis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get all_articles() {
-    		throw new Error_1("<Devis>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set all_articles(value) {
-    		throw new Error_1("<Devis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get devis_data() {
-    		throw new Error_1("<Devis>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set devis_data(value) {
-    		throw new Error_1("<Devis>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
     }
 
     /* src\App.svelte generated by Svelte v3.59.2 */
 
-    // (7:0) {#if (title == "Devis2")}
+    // (6:0) {#if (title == "Devis2")}
     function create_if_block(ctx) {
     	let devis;
     	let current;
-    	const devis_spread_levels = [/*global_vars*/ ctx[1]];
-    	let devis_props = {};
 
-    	for (let i = 0; i < devis_spread_levels.length; i += 1) {
-    		devis_props = assign(devis_props, devis_spread_levels[i]);
-    	}
-
-    	devis = new Devis({ props: devis_props, $$inline: true });
+    	devis = new Devis({
+    			props: {
+    				default_articles: window.global_vars.default_articles
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
@@ -2898,13 +3360,7 @@ var app = (function () {
     			mount_component(devis, target, anchor);
     			current = true;
     		},
-    		p: function update(ctx, dirty) {
-    			const devis_changes = (dirty & /*global_vars*/ 2)
-    			? get_spread_update(devis_spread_levels, [get_spread_object(/*global_vars*/ ctx[1])])
-    			: {};
-
-    			devis.$set(devis_changes);
-    		},
+    		p: noop,
     		i: function intro(local) {
     			if (current) return;
     			transition_in(devis.$$.fragment, local);
@@ -2923,7 +3379,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(7:0) {#if (title == \\\"Devis2\\\")}",
+    		source: "(6:0) {#if (title == \\\"Devis2\\\")}",
     		ctx
     	});
 
@@ -3002,19 +3458,14 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('App', slots, []);
     	let { title } = $$props;
-    	let { global_vars } = $$props;
 
     	$$self.$$.on_mount.push(function () {
     		if (title === undefined && !('title' in $$props || $$self.$$.bound[$$self.$$.props['title']])) {
     			console.warn("<App> was created without expected prop 'title'");
     		}
-
-    		if (global_vars === undefined && !('global_vars' in $$props || $$self.$$.bound[$$self.$$.props['global_vars']])) {
-    			console.warn("<App> was created without expected prop 'global_vars'");
-    		}
     	});
 
-    	const writable_props = ['title', 'global_vars'];
+    	const writable_props = ['title'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<App> was created with unknown prop '${key}'`);
@@ -3022,27 +3473,25 @@ var app = (function () {
 
     	$$self.$$set = $$props => {
     		if ('title' in $$props) $$invalidate(0, title = $$props.title);
-    		if ('global_vars' in $$props) $$invalidate(1, global_vars = $$props.global_vars);
     	};
 
-    	$$self.$capture_state = () => ({ Devis, title, global_vars });
+    	$$self.$capture_state = () => ({ Devis, title });
 
     	$$self.$inject_state = $$props => {
     		if ('title' in $$props) $$invalidate(0, title = $$props.title);
-    		if ('global_vars' in $$props) $$invalidate(1, global_vars = $$props.global_vars);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [title, global_vars];
+    	return [title];
     }
 
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance, create_fragment, safe_not_equal, { title: 0, global_vars: 1 });
+    		init(this, options, instance, create_fragment, safe_not_equal, { title: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3059,21 +3508,12 @@ var app = (function () {
     	set title(value) {
     		throw new Error("<App>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
-
-    	get global_vars() {
-    		throw new Error("<App>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set global_vars(value) {
-    		throw new Error("<App>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
     }
 
     const app = new App({
     	target: document.getElementById('svelte-app'),
     	props: {
-    	  title: document.title,
-    	  global_vars: window.global_vars
+    	  title: document.title	
     	},
       });
 

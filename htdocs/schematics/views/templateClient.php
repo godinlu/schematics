@@ -8,7 +8,8 @@
     <!-- charge l'icon de solisart -->
     <link rel="icon" href="<?=$dependencyLoader->get_url()?>/public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
     <!-- charge font-awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- charge la police de charactère Comfortaa -->
     <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
     
@@ -48,8 +49,8 @@
                     <a href="#" class="dropbtn bleue"><i class="fa fa-file-text" aria-hidden="true"></i>  fichier <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
                     <div class="dropdown-content">
                         <a href="<?=$dependencyLoader->get_url()?>/client/formulaire?action=reinit" id="TB_reinitialisation"><i class="fa fa-refresh" aria-hidden="true"></i> réinitialiser</a>
-                        <a href="?action=save" id="TB_sauvegarder"><i class="fa fa-floppy-o" aria-hidden="true"></i> sauvegarder</a>
-                        <a href="#" id="TB_charger" ><i class="fa fa-folder-open-o" aria-hidden="true"></i> ouvrir</a>
+                        <a href="?action=save" id="TB_sauvegarder"><i class="fa-regular fa-floppy-disk"></i> sauvegarder</a>
+                        <a href="#" id="TB_charger" ><i class="fa-regular fa-folder-open"></i>   ouvrir</a>
                         <a href="#" id="TB_télécharger_dossier" ><i class="fa fa-download" aria-hidden="true"></i> dossier</a>
                         <!-- <a href="#" id="TB_power_point" ><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i></i> power point</a> -->
                         
