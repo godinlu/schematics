@@ -1,13 +1,19 @@
 <script>
-    import {AddAction, Actions} from "./Action.class"
+    import {AddAction, EditAction, Actions} from "./Action.class"
     import {modal_info} from "./store";
 
     export let articles;
 
-    function add_article(ref){
-        let add_action = new AddAction(ref);
-        Actions.push(add_action);
+    function execute_action(ref){
+        if ($modal_info.type ===  "add"){
+            let add_action = new AddAction(ref);
+            Actions.push(add_action);
+        }else if ($modal_info.type === "edit"){
+            let edit_action = new EditAction($modal_info.ref, ref);
+            Actions.push(edit_action);
+        }
         modal_info.set(null);
+        
 
     }
 </script>
@@ -21,8 +27,8 @@
             </tr>
         </thead>
         <tbody>
-            {#each articles as article}
-                <tr on:click={() => add_article(article.ref)}>
+            {#each articles as article (article.ref)}
+                <tr on:click={() => execute_action(article.ref)}>
                     <td>{article.ref}</td>
                     <td>{article.label}</td>
                     <td>{article.prix}</td>

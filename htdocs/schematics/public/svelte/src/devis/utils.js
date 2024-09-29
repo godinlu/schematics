@@ -90,6 +90,6 @@ export function get_article_by_ref(ref){
      const base_category_id = get_path_category(article.category_id)[0];
      const priority = article_index * 10;
     
-     return {...article, priority, base_category_id};
+     return {...article, priority, base_category_id, quantity:1};
 
 } 

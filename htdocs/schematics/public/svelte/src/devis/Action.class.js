@@ -86,3 +86,48 @@ export class AddAction extends Action{
     }
 }
 
+export class RemoveAction extends Action{
+    /**
+     * 
+     * @param {string} ref 
+     */
+    constructor(ref){
+        super("remove");
+        this.ref = ref;
+    }
+
+    execute(){
+        articles_in_devis.update(a =>(a.filter(article => article.ref !== this.ref)));
+        return true;
+    }
+
+    tojson(){
+        return {type:this.type, ref:this.ref};
+    }
+}
+
+export class EditAction extends Action{
+    /**
+     * 
+     * @param {string} old_ref 
+     * @param {string} new_ref 
+     */
+    constructor(old_ref, new_ref){
+        super("edit");
+        this.old_ref = old_ref;
+        this.new_ref = new_ref;
+    }
+
+    execute(){
+        articles_in_devis.update(a =>{
+            const index = a.findIndex(article => article.ref === this.old_ref);
+            if (index === -1) throw new Error(`L'article ${this.old_ref} n'existe pas !`);
+            const old_qte = a[index].quantity;
+            let new_article = get_article_by_ref(this.new_ref);
+            new_article.quantity = old_qte;
+            a[index] = new_article;
+            return a;
+        });
+    }
+}
+

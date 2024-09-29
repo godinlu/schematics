@@ -17,7 +17,7 @@
 <tr>
     <th colspan="6">{category.name} <button on:click={add_article}><i class="fa-solid fa-circle-plus"></i></button></th>
 </tr>
-{#each articles as article}
+{#each articles as article (article.ref)}
     <Article {article}/>
 {/each}
 <!--  -->
