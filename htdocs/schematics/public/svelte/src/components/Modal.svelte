@@ -16,7 +16,7 @@
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="modal" on:click|self={toggle_modal} out:fade>
         {#key slot_key}
-            <div class="modal-content" in:fade>
+            <div class="modal-content" in:fade="{{duration:200}}">
                 <slot></slot>
             </div>
         {/key}
@@ -31,7 +31,6 @@
         width: 100%;
         height:100%;
         position:fixed;
-        text-align:center;
         color: black;
         top:0;
         display: flex;
@@ -43,7 +42,7 @@
     .modal-content {
         background-color: #fff;
         box-shadow: 10px 10px 60px #555;
-        padding: 5px;
+        padding: 10px;
     }
 
 </style>

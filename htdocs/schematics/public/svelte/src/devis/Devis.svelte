@@ -58,7 +58,9 @@
 </script>
 <EditableDevis/>
 <Modal modal_show={$modal_info !== null} slot_key={$modal_info} on:toogle_modal={toogle_modal}>
-    <ModalContent modal_info={$modal_info}/>    
+    {#if $modal_info !== null}
+        <ModalContent/> 
+    {/if}
 </Modal>
 <style>
     

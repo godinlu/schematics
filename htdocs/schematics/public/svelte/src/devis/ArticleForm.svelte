@@ -47,6 +47,7 @@
         height: 400px; /* Hauteur du conteneur */
         overflow: auto; /* Activer le scroll si nécessaire */
         border: 1px solid #ccc; /* Bordure pour délimiter le conteneur */
+        margin: 5px;
     }
     table{
         width: 600px;

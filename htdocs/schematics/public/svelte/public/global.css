@@ -19,3 +19,23 @@ html{
 .style-table tbody tr:nth-child(even){
 	background-color: #f2f2f2;
 }
+
+/* CSS pour le devis editable*/
+.custom-row{
+	display: grid; /* Utilisation de CSS Grid */
+	grid-template-columns: 15% 50% 10% 15% 5% 5%; /* Définit les largeurs de colonnes */
+	border-top: 1px solid #ddd;
+}
+.custom-row:nth-child(even){
+	background-color: #f2f2f2;
+}
+.custom-row:last-child{
+	border-bottom: 1px solid #ddd;
+}
+.custom-col{
+	border-left: 1px solid #ddd;
+	padding: 8px;
+}
+.custom-col:last-child{
+	border-right: 1px solid #ddd;
+}

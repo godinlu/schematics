@@ -32,16 +32,16 @@ export function get_base_categories(){
 /**
  * Renvoie l'arborescence de la category sous la forme d'une liste d'id.
  * @param {int} category_id 
- * @returns 
+ * @returns {category[]}
  */
 export function get_path_category(category_id){
     let current_categorie = get_category_from_id(category_id);
-    let path = [];
+    let categories = [];
     while (current_categorie.id != 0) {
-        path.unshift(current_categorie.id);
+        categories.unshift(current_categorie);
         current_categorie = get_category_from_id(current_categorie.parent_id)
     }
-    return path;
+    return categories;
 }
 
 /**
@@ -87,9 +87,9 @@ export function get_article_by_ref(ref){
      if (article_index == -1) throw new Error(`L'article ${ref} n'existe pas !`);
      const article = articles[article_index];
 
-     const base_category_id = get_path_category(article.category_id)[0];
+     const base_category_id = get_path_category(article.category_id)[0].id;
      const priority = article_index * 10;
     
-     return {...article, priority, base_category_id, quantity:1};
+     return {...article, priority, base_category_id, quantity:1, id:ref};
 
 } 
