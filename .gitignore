@@ -10,4 +10,5 @@ dev
 # ignore the config textfile
 config.txt
 
+node_modules/
 
