@@ -14,3 +14,7 @@ config.txt
 TODO.md
 
 
+node_modules/
+#/public/build/
+
+.DS_Store
