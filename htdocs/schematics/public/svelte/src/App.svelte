@@ -1,9 +1,9 @@
 <script>
-	import Quotation from './devis/Quotation.svelte';
+	import Devis from './devis/Devis.svelte';
 	export let title;
 </script>
 
 {#if (title == "Devis2")}
-	<Quotation/>
+	<Devis default_articles={window.global_vars["default_articles"]}/>
 {/if}
 
