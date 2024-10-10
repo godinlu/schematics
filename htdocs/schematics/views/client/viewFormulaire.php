@@ -338,6 +338,10 @@
 </form>
 <script>
 	const formulaire = <?= json_encode($formulaire) ?>;
+	const data_list = <?= $data_list?>;
+	const DATA_LIST = data_list.listInfo;
+    const DATA_DEFAULT_INDEX = data_list.defaultIndex;
+    const DATA_MSG = data_list.forbidMessage;
 </script>
 
 	

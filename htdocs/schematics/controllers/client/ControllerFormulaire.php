@@ -34,7 +34,8 @@ class ControllerFormulaire
 
         $this->_view = new View('Formulaire');
         $this->_view->generate(array(
-            'formulaire' => $dataForm->getFormulaire()
+            'formulaire' => $dataForm->getFormulaire(),
+            'data_list' => file_get_contents("config/client/data_list.json")
         ));
     }
 }
