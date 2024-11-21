@@ -89,7 +89,7 @@ class Capteur extends Champ{
      */
     handlerQuantity(){
         const qte = parseInt(this.nodes.nb_champs.value);
-        devis.updateQuantity(this.nodes.type_toiture.id, qte);
+        devis.updateQuantity(this.nodes.inclinaison.id, qte);
         VisualDevis.show();
     }
 
