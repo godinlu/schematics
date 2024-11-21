@@ -45,7 +45,6 @@ var valueDivers = new Array();      //tableau des options divers selectionné
 var start = false;                  //sert à faciliter la récupération des index dans la variable dataForm
 var dataForm = {};
 var list_select_with_sonde = [];
-let DATA_LIST, DATA_MSG, DATA_DEFAULT_INDEX;
 
 //variable JQuery
 var $precisionAppoint1 = $(".precisionAppoint1");
@@ -974,15 +973,7 @@ function main(){
 
 }
 
-fetch("../config/client/data_list.json")
-.then(response => response.json())
-.then(json => {
-    DATA_LIST = json.listInfo;
-    DATA_DEFAULT_INDEX = json.defaultIndex;
-    DATA_MSG = json.forbidMessage;
-    main();
-})
-
+main();
 
 
 
