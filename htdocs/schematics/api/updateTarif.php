@@ -42,30 +42,36 @@ try{
     ];
 
     foreach($data as $objet){
-        $res = $article_manager->updateArticleByRef($objet['ref'], $objet['label'] , $objet['prix']);
-
-        if ($res === -1){
-            $article_manager->insertArticle($objet['ref'], $objet['label'] , $objet['prix']);
-            array_push($compteur['articles insérés'] ,$objet['ref'] );
-        }else if ($res === 0){
-            array_push($compteur['articles déjà à jour'] ,$objet['ref'] );
-        }else if ($res === 1){
-            array_push($compteur['articles mis à jour'] ,$objet['ref'] );
+        if ($objet['tarif'] === 'TARIF'){
+            $res = $article_manager->updateArticleByRef($objet['ref'], $objet['label'] , $objet['prix']);
+            if ($res === -1){
+                $article_manager->insertArticle($objet['ref'], $objet['label'] , $objet['prix']);
+                array_push($compteur['articles insérés'] ,$objet['ref'] );
+            }else if ($res === 0){
+                array_push($compteur['articles déjà à jour'] ,$objet['ref'] );
+            }else if ($res === 1){
+                array_push($compteur['articles mis à jour'] ,$objet['ref'] );
+            }
         }
     }
 
     // ensuite on supprime de la base de données Tarif tous les articles
-    // qui ne sont pas présent dans le JSON envoyé.
+    // qui ne sont pas présent dans le JSON envoyé ou qui n'on pas le 'TARIF'.
     $articles = $article_manager->getAllArticles();
     $refs1 = array();
     foreach($articles as $article){
         $refs1[] = $article->getRef();
     }
-    $refs2 = array_column($data, 'ref');
+    // Filtrer les articles pour ne garder que ceux avec "tarif" === 'TARIF'
+    $filteredData = array_filter($data, function ($article) {
+        return isset($article["tarif"]) && $article["tarif"] === 'TARIF';
+    });
+    $refs2 = array_column($filteredData, 'ref');
     $diff_refs = array_diff($refs1, $refs2);
     foreach($diff_refs as $ref){
         $article_manager->delete_article($ref);
     }
+
 
     // Envoyer la réponse
     http_response_code(200); // OK
