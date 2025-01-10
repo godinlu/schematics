@@ -55,12 +55,14 @@ try{
         }
     }
 
-    // ensuite on supprime de la base de données Tarif tous les articles
+    // ensuite on met 'inutiliser' tout les articles de la base de données Tarif
     // qui ne sont pas présent dans le JSON envoyé ou qui n'on pas le 'TARIF'.
     $articles = $article_manager->getAllArticles();
     $refs1 = array();
     foreach($articles as $article){
-        $refs1[] = $article->getRef();
+        if ($article->getFamille() !== 'inutiliser'){
+            $refs1[] = $article->getRef();
+        }
     }
     // Filtrer les articles pour ne garder que ceux avec "tarif" === 'TARIF'
     $filteredData = array_filter($data, function ($article) {
@@ -69,7 +71,7 @@ try{
     $refs2 = array_column($filteredData, 'ref');
     $diff_refs = array_diff($refs1, $refs2);
     foreach($diff_refs as $ref){
-        $article_manager->delete_article($ref);
+        $article_manager->unusedArticle($ref);
     }
 
 

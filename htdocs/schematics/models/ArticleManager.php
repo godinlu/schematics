@@ -70,5 +70,12 @@ class ArticleManager extends Model{
     public function delete_article(string $ref){
         $this->delete("Tarif", ["ref"=>$ref]);
     }
+
+    public function unusedArticle(string $ref){
+        $data = ['famille' => 'inutiliser'];
+        $whereClauses = array("ref" => $ref);
+        $this->update('Tarif' , $data , $whereClauses);
+
+    }
 }
 ?>
