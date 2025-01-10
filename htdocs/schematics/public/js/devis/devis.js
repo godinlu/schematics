@@ -252,7 +252,6 @@ function create_appoint_part(){;
 function create_service_part(){
 
     Service.initServicePart();
-    Service.manageTransportZone5();
 }
 /**
  * cette fonction est appelé à l'initialisation de la page 

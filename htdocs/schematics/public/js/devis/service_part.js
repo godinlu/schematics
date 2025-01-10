@@ -91,7 +91,7 @@ class Service{
         }
 
         //on ajoute l'option aucun pour l'assistance:
-        document.getElementById("S_Assistance1").addOption("Aucun","Aucun");
+        //document.getElementById("S_Assistance1").addOption("Aucun","Aucun");
     }
 
     /**
