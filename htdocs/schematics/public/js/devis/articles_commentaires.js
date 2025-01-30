@@ -148,6 +148,7 @@ function initTableArticle(){
         if (!devis.updateQuantity(ref, qte)){
             const article = json_tarif.filter(ligne => ligne.ref == ref)[0];
             devis.add(ref, article);
+            devis.updateQuantity(ref, qte)
         }
         VisualDevis.show();
     }
