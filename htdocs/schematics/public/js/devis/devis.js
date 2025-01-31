@@ -363,7 +363,15 @@ function downloadPDF(event){
     const filename = 'devis' + formulaire['nom_affaire'] + '.pdf';
 
     window.scrollTo(0, 0);
-    html2pdf().set().from(divToPdf).save(filename);
+    const options = {
+        margin: [10, 10, 10, 10], // Marges : [haut, gauche, bas, droite] en mm
+        filename: filename,
+        image: { type: 'jpeg', quality: 1 }, // Qualité max
+        html2canvas: { scale: 3, dpi: 300, letterRendering: true, scrollY: -window.scrollY }, // Haute résolution
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // Format impression
+    };
+
+    html2pdf().set(options).from(divToPdf).save(filename);
 }
 /**
  * cette fonction est appelé lors du changement de valeur de soit :

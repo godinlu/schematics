@@ -118,6 +118,7 @@ function initTableArticle(){
      */
     function ecouteurQuantite(){
         const qte = parseInt(this.value); 
+        console.log(qte);
         //on récupère l'index de l'article dans le tableau
         const index = parseInt(this.getAttribute("index"));
 
@@ -144,7 +145,6 @@ function initTableArticle(){
             ajouterSelectCateg(td_categ, ref);
             return;
         }
-       
         if (!devis.updateQuantity(ref, qte)){
             const article = json_tarif.filter(ligne => ligne.ref == ref)[0];
             devis.add(ref, article);
@@ -159,8 +159,8 @@ function initTableArticle(){
      */
     function ajouterSelectCateg(td, ref){
         function ecouteurCategorie(){
-            
-            const quantite = devis.map.get(ref) ? devis.map.get(ref).qte : 1;
+            let input = td.parentElement.querySelector("input[type=number]");
+            const quantite = parseInt(input.value);
 
             //on commence par enlever la ligne du devis
             devis.removeRow(ref);
