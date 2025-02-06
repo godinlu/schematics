@@ -1,5 +1,5 @@
 <?php 
-const VERSION = "2.0.34";
+const VERSION = "2.0.35";
 //cette constante une fois indiqué à true va forcer le rechargement des fichiers javaScript pour
 //éviter qu'ils soit mis en cache
 const DISABLED_CACHE = false;

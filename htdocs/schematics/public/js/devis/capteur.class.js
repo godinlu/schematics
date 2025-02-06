@@ -108,7 +108,7 @@ class Capteur extends Champ{
     }
 
     supprimer(){
-        devis.removeRow(this.nodes.type_toiture.id);
+        devis.removeRow(this.nodes.inclinaison.id);
         devis.removeRow(this.nodes.habillage.id);
         VisualDevis.show();
         delete this;
