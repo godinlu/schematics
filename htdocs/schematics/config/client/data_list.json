@@ -38,7 +38,8 @@
             "Granulé": {
                 "Appoint simple T16": "T16",
                 "Appoint sur casse pression T16": "T16",
-                "Appoint sur échangeur T16": "T16"
+                "Appoint sur échangeur T16": "T16",
+                "Appoint sur tampon avec échangeur T16 S10": "T16 S10"
             },
             "Bois": {
                 "Appoint simple T16": "T16",
