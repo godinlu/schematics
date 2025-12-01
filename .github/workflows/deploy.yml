@@ -13,22 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Push to remote Git repository
+      - name: Setup SSH
         run: |
-          git remote add gandi git+ssh://$SSH_USER@$SSH_HOST/www.solisart.fr.git || true
-          git push gandi main --force
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Trigger deployment on server
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            echo "Deploying www.solisart.fr..."
-            deploy www.solisart.fr.git
-            echo "Deployment finished!"
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Add Remote
+        run: git remote add gandi git+ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}/www.solisart.fr.git || true
+
+      - name: Push to Gandi
+        run: git push gandi main -f
+      - name: Deploy on Gandi
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} deploy www.solisart.fr.git
