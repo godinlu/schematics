@@ -1,8 +1,5 @@
 <?php 
 const VERSION = "2.0.36";
-//cette constante une fois indiqué à true va forcer le rechargement des fichiers javaScript pour
-//éviter qu'ils soit mis en cache
-const DISABLED_CACHE = false;
 
 //constante d'url
 define('APP_BASE_PATH' , __DIR__ . '/../');
@@ -37,8 +34,6 @@ const FORM_LOC_APPOINT_2 = 'locAppoint2';
 
 const AUCUN = 'Aucun';
 
-if (DISABLED_CACHE) echo "CACHE DESACTIVE";
-
 class DependencyLoader {
     private $_dependences;
     private $_pageName;
@@ -51,7 +46,6 @@ class DependencyLoader {
         $this->_dependences = json_decode($fileContent, true);
         $this->_pageName = $pageName;
         $this->_part = $part;
-        $this->_version = (DISABLED_CACHE)? date('Y-m-d H:i:s') : VERSION;
         if ($_SERVER['SERVER_NAME'] === 'localhost')
             $this->_url = "http://localhost/schematics/htdocs/schematics";
         else{
@@ -72,7 +66,9 @@ class DependencyLoader {
 
         $cssFiles = array_merge($public_files, $private_files);
         foreach($cssFiles as $path) {
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$this->_url."/public/css/".$path."?v=".$this->_version."\">";
+            $filePath = APP_BASE_PATH."public/css/".$path;
+            $version = (file_exists($filePath) ? filemtime($filePath) : time());
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$this->_url."/public/css/".$path."?v=".$version."\">";
         }
     }
     
@@ -83,7 +79,9 @@ class DependencyLoader {
 
         $jsFiles = array_merge($public_files, $private_files);
         foreach($jsFiles as $path) {
-            echo "<script type=\"text/javascript\" src=\"".$this->_url."/public/js/".$path."?v=".$this->_version."\" defer=\"defer\"></script>";
+            $filePath = APP_BASE_PATH."public/js/".$path;
+            $version = (file_exists($filePath) ? filemtime($filePath) : time());
+            echo "<script type=\"text/javascript\" src=\"".$this->_url."/public/js/".$path."?v=".$version."\" defer=\"defer\"></script>";
         }
         
     }
