@@ -32,4 +32,4 @@ jobs:
       - name: Push to Gandi
         run: git push gandi main -f
       - name: Deploy on Gandi
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} deploy www.solisart.fr.git
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} deploy www.solisart.fr.git main
