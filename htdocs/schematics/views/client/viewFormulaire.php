@@ -130,7 +130,6 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td>Type:</td>
 						<td class="precisionAppoint1">Puissance (kW):</td>
 						<td class="precisionAppoint1">Zone:</td>
 					</tr>
@@ -139,10 +138,6 @@
 						<td>Appoint 1 : </td>
 						<td><select id="appoint1" name="appoint1" class="desc bigSelect"></select></td>
 						<td>Précision :</td>
-						<td>
-							<select id="typeAppoint1" class="desc" name="typeAppoint1" title='Nécessite un appoint 1 sur "Autre"'>
-							</select>
-						</td>
 						<td><input type="text" id="puissanceApp1" name="puissanceApp1" class="precisionAppoint1 verif info"></td>
 						<td>
 							<select class="precisionAppoint1" id="Zone" name="Zone" >

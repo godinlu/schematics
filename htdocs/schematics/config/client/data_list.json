@@ -35,23 +35,43 @@
             "Aucun": ""
         },
         "raccordementHydraulique": {
-            "Granulé": {
+            "Bois granulés sur T16": {
                 "Appoint simple T16": "T16",
                 "Appoint sur casse pression T16": "T16",
                 "Appoint sur échangeur T16": "T16",
                 "Appoint sur tampon avec échangeur T16 S10": "T16 S10"
             },
-            "Bois": {
+            "Bois sur T16": {
                 "Appoint simple T16": "T16",
                 "Appoint sur casse pression T16": "T16",
                 "Appoint sur échangeur T16": "T16",
                 "Appoint sur tampon avec échangeur T16 S10": "T16 S10"
             },
-            "PAC": {
+            "Pompe à chaleur": {
                 "Appoint sur casse pression": "",
                 "Appoint sur échangeur": ""
             },
-            "Autre": {
+            "Chaudière fioul": {
+                "Appoint simple": "",
+                "Appoint sur casse pression": "",
+                "Appoint sur échangeur": ""
+            },
+            "Chaudière gaz": {
+                "Appoint simple": "",
+                "Appoint sur casse pression": "",
+                "Appoint sur échangeur": ""
+            },
+            "Chaudière condensation fioul": {
+                "Appoint simple": "",
+                "Appoint sur casse pression": "",
+                "Appoint sur échangeur": ""
+            },
+            "Chaudière condensation gaz": {
+                "Appoint simple": "",
+                "Appoint sur casse pression": "",
+                "Appoint sur échangeur": ""
+            },
+            "Electrique": {
                 "Appoint simple": "",
                 "Appoint sur casse pression": "",
                 "Appoint sur échangeur": ""
@@ -91,11 +111,15 @@
             "Aucun": ""
         },
         "appoint1": {
-            "Granulé": "",
-            "Bois": "",
-            "PAC": "",
-            "Autre": "",
-            "Aucun": ""
+            "Chaudière fioul":"",
+            "Chaudière gaz":"",
+            "Chaudière condensation fioul":"",
+            "Chaudière condensation gaz":"",
+            "Electrique":"",
+            "Pompe à chaleur":"",
+            "Bois granulés sur T16":"",
+            "Bois sur T16":"",
+            "Aucun":""
         },
         "appoint2": {
             "Electrique": "",
@@ -110,18 +134,6 @@
             "Appoint bois": "",
             "Appoint granulé": "",
             "Appoint multiple": "",
-            "Aucun": ""
-        },
-        "typeAppoint1": {
-            "electrique": "",
-            "gaz": "",
-            "gaz condensation": "",
-            "fioul": "",
-            "fioul condensation": "",
-            "PAC": "",
-            "granulé": "",
-            "granule condensation": "",
-            "bois": "",
             "Aucun": ""
         },
         "circulateurC1": {
@@ -272,7 +284,7 @@
         "champCapteur": "1 champ capteurs",
         "ballonTampon": "Ballon Tampon",
         "ballonECS": "ballon ECS 2 échangeurs",
-        "appoint1": "Autre",
+        "appoint1": "Chaudière fioul",
         "typeAppoint1": "fioul",
         "appoint2": "Electrique",
         "raccordementHydraulique": "Appoint simple",

@@ -329,13 +329,7 @@ function manageT15_T6PiscineDeporte(){
 function actionAppoint1(){
     if (S.appoint1.value != "Aucun"){
         $precisionAppoint1.css({"visibility":"visible"});
-        if (S.appoint1.value == "Autre"){
-            S.appoint1.enable(S.typeAppoint1);
-            S.appoint1.forbid(S.typeAppoint1,["Aucun"]);
-        } 
-        else S.appoint1.forbidAll(S.typeAppoint1,["Aucun"]);
     }else{
-        S.appoint1.forbidAll(S.typeAppoint1,["Aucun"]);
         $precisionAppoint1.css({"visibility":"hidden"});
     }
     
@@ -344,7 +338,6 @@ function actionAppoint1(){
     S.raccordementHydraulique.changeOptionSelect();
     if (start) S.raccordementHydraulique.value = dataForm["raccordementHydraulique"]; //cela sert à l'initialisation d'un formulaire existant
     S.raccordementHydraulique.loadList();
-    S.typeAppoint1.loadList();
 
     manageOption("V3V bypass appoint 1|Electrovanne Appoint 1 ou Flow Switch");
     manageOption("recharge nappes goethermiques sur T15 sur serpentin BTC");
@@ -576,8 +569,7 @@ function description() {
 	chain=chain+temp;
     
 
-	if (appoint1 == "Autre") chain = chain + ", Appoint 1 "+ S.typeAppoint1.value;
-	else if(appoint1 != "Aucun") chain = chain + ", Appoint 1 "+ appoint1;
+	if(appoint1 != "Aucun") chain = chain + ", Appoint 1 "+ appoint1;
     if (S.appoint2.value != "Aucun"){
         if (/Appoint/.test(S.appoint2.value)){ //si cette condition est vérifié alors on est dans le cas d'un appoint sur C7
             chain = chain + ", " + S.appoint2.value.replace(/Appoint/,"Appoint 2") + " sur C7";
@@ -807,7 +799,7 @@ function manageOption(key){
         },
         "V3V retour bouclage sanitaire solaire":{
             id:"k_v3v_retour",
-            cond:(/bouclage sanitaire/.test(S.ballonECS.value))
+            cond:(/^(?!.*2 échangeurs).*bouclage sanitaire/.test(S.ballonECS.value))
         }
 
 
