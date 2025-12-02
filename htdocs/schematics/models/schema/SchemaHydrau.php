@@ -79,7 +79,7 @@ class SchemaHydrau extends Schema{
         # which is TRUE if the image need to be added
         $mapping = [
             "Appoint" => preg_match("/Appoint/i", $rh),
-            "En directe" => preg_match("/En direct/i", $rh),
+            "En direct" => preg_match("/En direct/i", $rh),
             "RDH_app1" => ($rdh1 === "on"),
             "RDH_app2" => ($rdh2 === "on" && $loc_app2 === "cascade"),
             "casse pression" => preg_match("/casse pression/i", $rh),
@@ -88,8 +88,7 @@ class SchemaHydrau extends Schema{
             "double sur" => preg_match("/Appoint double sur/i", $rh),
             "appoint sur tampon" => preg_match("/Appoint sur tampon avec échangeur/i", $rh),
             "T16 simple" => preg_match("/simple T16/i", $rh),
-            "T16 échangeur" => preg_match("/échangeur T16/i", $rh),
-            "T16 casse pression" => preg_match("/casse pression T16/i", $rh),
+            "T16" => preg_match('/^(?!.*simple)(?!.*tampon).*T16/i', $rh),
             "réchauffeur de boucle Droite" => (preg_match("/réchauffeur de boucle/i", $rh) && $gauche_droite == "Droite"),
             "réchauffeur de boucle Gauche" => (preg_match("/réchauffeur de boucle/i", $rh) && $gauche_droite == "Gauche")
         ];
