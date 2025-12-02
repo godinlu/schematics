@@ -69,31 +69,39 @@ class SchemaHydrau extends Schema{
     }
 
     private function setImageAppoint(array $position){
-        $list_str = ["En direct","Appoint","en cascade","double sur","RDH_app1","RDH_app2","tampon","casse pression","échangeur","simple T16","T16","réchauffeur de boucle"];
-        $value = $this->_formulaire['raccordementHydraulique'];
+        $rh = $this->_formulaire['raccordementHydraulique'];
+        $rdh1 = $this->_formulaire['RDH_appoint1'];
+        $rdh2 = $this->_formulaire['RDH_appoint2'];
+        $loc_app2 = $this->_formulaire['locAppoint2'];
+
+        # $mapping is a dict where key represent the image_name and the value represent a boolean
+        # which is TRUE if the image need to be added
+        $mapping = [
+            "Appoint" => preg_match("/Appoint/i", $rh),
+            "En directe" => preg_match("/En direct/i", $rh),
+            "RDH_app1" => ($rdh1 === "on"),
+            "RDH_app2" => ($rdh2 === "on" && $loc_app2 === "cascade"),
+            "casse pression" => preg_match("/casse pression/i", $rh),
+            "échangeur" => preg_match("/échangeur/i", $rh),
+            "en cascade" => preg_match("/Appoint double en cascade/i", $rh),
+            "double sur" => preg_match("/Appoint double sur/i", $rh),
+            "appoint sur tampon" => preg_match("/Appoint sur tampon avec échangeur/i", $rh),
+            "T16 simple" => preg_match("/simple T16/i", $rh),
+            "T16 échangeur" => preg_match("/échangeur T16/i", $rh),
+            "T16 casse pression" => preg_match("/casse pression T16/i", $rh),
+            
+        ];
+
         $path = "Appoint/";
-    
+
         $this->addImage($path . "raccord Appoint",$position['raccord']);
-    
-        if ($this->_formulaire['RDH_appoint1'] === "on")
-            $value = $value . "RDH_app1";
-    
-        if ($this->_formulaire['RDH_appoint2'] === "on" && $this->_formulaire['locAppoint2'] === "cascade")
-            $value = $value . "RDH_app2";
 
-        if ($value === "Appoint double") $this->addImage($path . 'double sur', $position['base']);
-        
-
-        foreach ($list_str as $str) {
-            if (strpos($value, $str) !== false){
-                if ($str == "réchauffeur de boucle")
-                    $str = $str . " " . $this->_formulaire['Gauche_droite'];
-    
-                $this->addImage($path . $str, $position['base']);
-                $value = str_replace($str, "", $value);
+        foreach($mapping as $image_name => $is_matched){
+            if ($is_matched){
+                $this->addImage($path . $image_name, $position['base']);
             }
-        }
-        
+
+        }  
 
     }
 
