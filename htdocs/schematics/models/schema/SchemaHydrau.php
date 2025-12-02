@@ -73,6 +73,7 @@ class SchemaHydrau extends Schema{
         $rdh1 = $this->_formulaire['RDH_appoint1'];
         $rdh2 = $this->_formulaire['RDH_appoint2'];
         $loc_app2 = $this->_formulaire['locAppoint2'];
+        $gauche_droite = $this->_formulaire['Gauche_droite'];
 
         # $mapping is a dict where key represent the image_name and the value represent a boolean
         # which is TRUE if the image need to be added
@@ -89,7 +90,8 @@ class SchemaHydrau extends Schema{
             "T16 simple" => preg_match("/simple T16/i", $rh),
             "T16 échangeur" => preg_match("/échangeur T16/i", $rh),
             "T16 casse pression" => preg_match("/casse pression T16/i", $rh),
-            
+            "réchauffeur de boucle Droite" => (preg_match("/réchauffeur de boucle/i", $rh) && $gauche_droite == "Droite"),
+            "réchauffeur de boucle Gauche" => (preg_match("/réchauffeur de boucle/i", $rh) && $gauche_droite == "Gauche")
         ];
 
         $path = "Appoint/";
@@ -241,16 +243,16 @@ class SchemaHydrau extends Schema{
     private function setImageDivers($DATA_DIVERS){
         $divers = $this->_formulaire['divers'];
 
-        if ($this->_formulaire['D5'] === "on") {
+        if ($this->_formulaire['D3'] === "on") {
             $this->addImage("divers/comptage energétique utile solaire D3", $DATA_DIVERS["comptage energétique utile solaire D3"]);
         }
-        if ($this->_formulaire['D3'] === "on") {
+        if ($this->_formulaire['D5'] === "on") {
             $this->addImage("divers/comptage energétique utile appoint D5", $DATA_DIVERS["comptage energétique utile appoint D5"]);
         }
         if (strstr($divers, "pompe")) {
             $this->addImage("divers/" . $divers, $DATA_DIVERS[$divers]);
-        } else if ($divers == "deshu sur appoint 1") {
-            $this->addImage("divers/deshu sur appoint 1", $DATA_DIVERS["deshu sur appoint 1"]);
+        } else if ($divers == "deshu sur appoint 1" || $divers == "radiateur sur appoint 1") {
+            $this->addImage("divers/".$divers, $DATA_DIVERS[$divers]);
             if ($this->_formulaire['raccordementHydraulique'] == "En direct") {
                 $this->addImage("divers/appoint inde", $DATA_DIVERS["appoint inde"]);
             }

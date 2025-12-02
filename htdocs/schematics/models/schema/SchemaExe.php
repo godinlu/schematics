@@ -278,8 +278,8 @@ class SchemaExe extends Module{
         if ($this->_formulaire['D5'] === "on") $this->addImage("divers/comptage energétique utile appoint D5", $list_coord["comptage energétique utile appoint D5"]["coordImg"]);
         if (preg_match('/pompe/', $divers)) {
             $this->addImage("divers/" . $divers, $list_coord[$divers]["coordImg"]);
-        } else if ($divers == "deshu sur appoint 1") {
-            $this->addImage("divers/deshu sur appoint 1", $list_coord["deshu sur appoint 1"]["coordImg"]);
+        } else if ($divers == "deshu sur appoint 1" || $divers == "radiateur sur appoint 1") {
+            $this->addImage("divers/".$divers, $list_coord[$divers]["coordImg"]);
             if ($this->_formulaire['raccordementHydraulique'] == "En direct") {
                 $this->addImage("divers/appoint inde", $list_coord["appoint inde"]["coordImg"]);
             }
