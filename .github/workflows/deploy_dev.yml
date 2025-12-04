@@ -1,0 +1,35 @@
+name: Deploy to Gandi dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Add Remote
+        run: git remote add gandi-dev git+ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}/dev.solisart.fr.git || true
+
+      - name: Push to Gandi dev
+        run: git push gandi-dev dev -f
+      - name: Deploy on Gandi dev
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} deploy dev.solisart.fr.git dev
