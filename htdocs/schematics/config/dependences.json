@@ -73,18 +73,11 @@
                 "client/fiche_prog.js"
             ],
             "Devis": [
-                "devis/Devis.class.js",
-                "public/menuDeroulant.js",
-                "devis/utils.class.js",
-                "devis/VisualDevis.class.js",
-                "devis/SC_part.js",
-                "devis/ballon_part.js",
-                "devis/capteur.class.js",
-                "devis/tubeInox_part.js",
-                "devis/elecAnode_part.js",
-                "devis/service_part.js",
-                "devis/articles_commentaires.js",
-                "devis/devis.js"
+                "devis/modal.class.js",
+                "devis/data_manager.class.js",
+                "devis/devis_row.class.js",
+                "devis/devis.class.js",
+                "devis/main.js"
             ],
             "Devis2":[
                 "../svelte/public/build/bundle.js"

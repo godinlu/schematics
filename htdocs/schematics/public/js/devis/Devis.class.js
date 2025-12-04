@@ -1,278 +1,242 @@
+/**
+ * @type {import('./data_manager.class').DataManager}
+ * @type {import('./devis_row.class').DevisRow}
+ * @type {import('./modal.class').Modal}
+ */
+
+
+/** 
+ * @property {DataManager} data_manager
+ * @property {Action[]} actions - Array to store actions
+ * @property {Map<string, DevisRow>} rows - Map to store articles
+ */
 class Devis{
-    
-    constructor(name){
-        this.name = name;
-        /**
-         * @type {Map<string, Article>}
-         */
-        this.lignes_devis = new Map();
-        this.categories = {
-            "Module de chauffage solaire et ballon ECS":["SC_part","ballon_part"],
-            "Capteurs solaires thermiques":["capteur_part","tubeInox_part"],
-            "Gestion de l'appoint PAC":["appoint_part"],
-            "Appoint électrique ecs en option":["elecAnode_part"],
-            "Services":["service_part"],
-            "Chaudière en option hors commande SolisArt":[null]
-            
-        };
-    }
-
-    get map(){
-        return this.lignes_devis;
-    }
-    set map(map){
-        this.lignes_devis = map;
-    }
-    /**
-     * ajoute une ligne au devis, la ligne est identifié par key 
-     * @param {string} key 
-     * @param {string[]} array [FAMILLE,REF,LABEL,PRIX,...]
-     */
-    add(key , array){
-        if (!array) throw new Error("array undefined for key : " + key);
-        //on récupère la catégorie à partir de la famille de l'article
-        const categ = (this.isCateg(array.famille))? array.famille : this.getCategByFamily(array.famille);
-        let article = new Article(array.ref , categ , array.label , array.prix);
-        this.lignes_devis.set(key, article);  
-    }
+    /** @type {Map<string, DevisRow>} */
+    #rows
 
     /**
      * 
-     * @param {string} key 
-     * @param {string} commentaire 
-     * @param {string} categ 
+     * @param {DataManager} data_manager - data manager
+     * @param {Action[]} [actions] - Optional array of actions
      */
-    addCommentaire(key, commentaire, categ, prix = 0){
-        let article = new Article('TEXT' , categ, commentaire , prix);
-        this.lignes_devis.set(key , article);
-    }
+    constructor(render_div, data_manager, actions = []){
+        this.render_div = render_div;
+        this.data_manager = data_manager;
+        this.actions = []; 
 
-    /**
-     * supprime une ligne du devis grâce à sa clé
-     * @param {string} key 
-     */
-    removeRow(key){
-        this.lignes_devis.delete(key);
-    }
+        this.#rows = new Map(); 
+        this.modal = new Modal();
 
-    /**
-     * 
-     * @param {string} key 
-     * @param {int} quantity 
-     */
-    updateQuantity(key, quantity){
-        var article = this.lignes_devis.get(key);
-        if (article === undefined) return false;
-        article.setQuantity(quantity);
-        this.lignes_devis.set(key,article);
-        return true;
-    }
-    /**
-     * met à jour le prix d'un article identifé par la clé de la map
-     * @param {string} key 
-     * @param {int} price 
-     */
-    updatePrice(key, price){
-        var newLine = this.lignes_devis.get(key);
-        newLine._price = price;
-        this.lignes_devis.set(key,newLine);
-    }
-
-    /**
-     * cette fonction tranforme la devis.map pour prendre en compte l'ordre et les différentes catégories
-     * pour l'ordre cette fonction utilise devis.ordre
-     * pour les catégorie cette fonction utilise les id des articles ainsi que VisualDevis.categories
-     * @returns {obj} objet avec comme clé les noms des catégories et comme valeur une liste des articles 
-     */
-    getDevisFormat(){
-            var obj = {};       //obj final que l'on rempli tout au long de la fonction
-            var arr = [];       //array intérmedière qui facilite la transformation (c'est lui qui va prendre en compte l'ordre)
-            var i = 0;
-            //on commence par créer un array où les articles sont ajouter dans leurs ordre 
-            this.map.forEach( (article , key) => {
-                arr.push( article.copie() );
-            });
-            this.enleverDoublon(arr);   
-            this.trierParPrix(arr);
-            //ensuite on boucle dans la variable VisualDevis.categories pour regrouper les articles selon leurs catégorie
-            this.getListCateg().forEach(categ =>{
-                obj[categ] = arr.filter(article => article.getCateg() === categ);
-            });
-            return obj;
-    }
-    /**
-     * renvoie le prix total hors taxe du devis
-     * @returns {float} total hors taxe 
-     */
-    getTotal(){
-        var res = 0;
-        this.map.forEach(article => {
-            res += article.getFinalPrice();
-        });
-        return res;
-    }
-
-    /**
-     * renvoie un tableau d'ojet avec les articles du devis
-     * chaque objet contient les informations suivantes :
-     * ref, qte 
-     * cette fonction est utilisé pour sauvegarder le devis dans la base de donnée
-     * @returns {Array}
-     */
-    getArticles(){
-        var arr = [];       //array intérmedière qui facilite la transformation (c'est lui qui va prendre en compte l'ordre)
-        var i = 0;
-        //on commence par créer un array où les articles sont ajouter dans leurs ordre 
-        this.map.forEach( (article , key) => {
-            arr.push( article.copie() );
-        });
-        this.enleverDoublon(arr);
-        arr.forEach( (article, i) => {
-            arr[i] = {ref : article.getRef() , qte : article.getQuantity()};
-        });
-        return arr;
-    }
-    
-    /**
-     * cette fonction modifie le tableau passé en paramètre pour enlever les doublons
-     * et ajouter +1 en quantité pour chaque doublon
-     * @param {Article[]} tableau 
-     */
-    enleverDoublon(tableau) {
-        const references = {}; // Objet pour stocker les références trouvées
-        for (let i = 0; i < tableau.length; i++) {
-          const article = tableau[i];
-          const ref = article.getRef();
-          if (ref === "TEXT") continue; 
-      
-          if (references[ref]) {
-            // Si la référence existe déjà, on supprime l'article et on incrémente la quantité
-            references[ref].setQuantity( references[ref].getQuantity() + article.getQuantity());
-            tableau.splice(i, 1);
-            i--; // Décrémente i pour compenser la suppression de l'élément
-          } else {
-            // Si la référence n'existe pas encore, on l'ajoute à l'article de références
-            references[ref] = article;
-          }
+        for (const action of actions){
+            this.submit_action(action);
         }
     }
 
     /**
-     * cette fonction trie le tableau passé en paramètre par ordre croissant de prix
-     * @param {Article[]} tableau 
+     * 
      */
-    trierParPrix(tableau) {
-        tableau.sort((a, b) => b.getUnitPrice() - a.getUnitPrice());
+    submit_action(action){
+        try {
+            if (action.type === "add"){
+                const art = this.data_manager.get_article(action.ref);
+                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+                let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
+                this.#rows.set(action.ref, devis_row);
+
+            }else if (action.type === "edit"){
+                const art = this.data_manager.get_article(action.new_ref);
+                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+
+                let new_row = new DevisRow({...art, base_categorie_id:base_categ.id});
+
+                // preserve the old priority
+                new_row.priority = this.#rows.get(action.old_ref).priority;
+
+                this.#rows.delete(action.old_ref);
+                this.#rows.set(action.new_ref, article);
+            }else if (action.type === "move"){
+                this.#move_article(action.ref, action.direction);
+
+            }else if (action.type === "remove"){
+                this.#rows.delete(action.ref);
+            }else{
+                throw new TypeError("submit_action expects an Action instance");
+            }
+            this.actions.push(action);
+        } catch (error){
+            console.log(`Warning : Can't submiting action : ${error}`);
+        }
     }
-    //constante de TVA pour le devis
-    get CODE_TVA(){ return 3; } 
-    get TAUX_TVA(){ return 20; }
 
     /**
-     * renvoie la liste des catégories
-     * @returns {string[]}
+     * Returns a list of articles filtered by their base_categorie_id
+     * and ordered by priority.
+     *
+     * @param {number} base_categorie_id
+     * @returns {DevisRow[]}
      */
-    getListCateg(){
-        return Object.keys(this.categories);
+    get_rows_ordered_by_categ(base_categorie_id) {
+        // Convert Map → Array, filter, sort
+        return [...this.#rows.values()]
+            .filter(a => a.base_categorie_id === base_categorie_id)
+            .sort((a, b) => a.priority - b.priority);
+
     }
+
     /**
-     * renvoie la catégorie de l'article par rapport à sa famille 
-     * ex : getCategByFamily("SC_part") -> "Module de chauffage solaire et ballon ECS"
-     * @param {string} famille 
-     * @return {string}
+     * Generate HTML element for this devis
+     * @returns {HTMLElement} The devis div element
      */
-    getCategByFamily(famille){
-        for (const categ in this.categories){
-            if (this.categories[categ].includes(famille)){
-                return categ;
+    render() {
+        this.render_div.innerHTML = "";
+        for (const categ of this.data_manager.get_childrens_categories(0)){
+            let categ_div = document.createElement("div");
+            categ_div.classList.add("devis-categ");
+            categ_div.appendChild(document.createElement("div")).innerText = categ.name;
+
+            let add_button = document.createElement("button");
+            add_button.innerHTML = '<i class="fa-solid fa-plus"></i>';
+            add_button.addEventListener("click", () => this.add_handler(categ.id));
+            categ_div.appendChild(add_button);
+
+            this.render_div.appendChild(categ_div);
+
+            for (const devis_row of this.get_rows_ordered_by_categ(categ.id)){
+                this.render_div.appendChild(devis_row.html_element(
+                    this.edit_handler, this.up_handler, this.down_handler, this.remove_handler
+                ));
             }
         }
-        return "inutiliser";
+    }
+    add_handler = (categorie_id) => {
+        console.log(categorie_id)
+    }
+
+    edit_handler = (ref) =>{
+        const devis_row = this.#rows.get(ref);
+
+        this.#set_modal_content({type:"edit"}, devis_row.categorie_id);
+        //this.modal.show();
+    }
+    up_handler = (ref) => {
+        this.submit_action({type: "move",ref: ref,  direction: -1});
+        this.render();
+    }
+    down_handler = (ref) => {
+        this.submit_action({type: "move", ref: ref, direction: 1});
+        this.render();
+    }
+
+    remove_handler = (ref) => {
+        this.submit_action({type: "remove", ref: ref});
+        this.render();
     }
 
     /**
-     * renvoie vrai si la famille passé en paramètre est une catégorie ex : 
-     * isCateg("Module de chauffage solaire et ballon ECS") -> true
-     * isCateg("SC_part") -> false
-     * @param {string} famille 
-     * @param {boolean}
+     * Move an article up or down within its base category by swapping priorities
+     * with the neighboring article in the requested direction.
+     *
+     * @param {string} ref - Reference of the article to move.
+     * @param {number} direction - Direction of the move: -1 (up) or +1 (down).
+     * @throws {Error} If the article is not found or cannot be moved.
      */
-    isCateg(famille){
-        return (this.getListCateg().includes(famille));
+    #move_article(ref, direction){
+        // Retrieve the article to move
+        let devis_row = this.#rows.get(ref);
+        if (!devis_row) throw new Error("row not found in devis");
+
+        // Get all articles from the same base category, ordered by priority
+        const rows = this.get_rows_ordered_by_categ(devis_row.base_categorie_id);
+
+        // Find the current index of the article in the ordered list
+        const index = rows.findIndex(a => a.ref === devis_row.ref);
+        if (index === -1) throw new Error("Article not found in ordered list");
+
+        // Compute the target index based on direction (−1 or +1)
+        const targetIndex = index + direction;
+
+        // Ensure the target index is within bounds
+        if (targetIndex < 0 || targetIndex >= rows.length) {
+            // Nothing to do — the article is already at the boundary
+            return;
+        }
+
+        // Retrieve the neighboring article that will swap priority
+        const swapped_row = this.#rows.get(rows[targetIndex].ref);
+        if (!swapped_row) {
+            throw new Error("Swapped article not found in the current map");
+        }
+
+        // Swap priorities between the two articles
+        const tmp_priority = devis_row.priority;
+        devis_row.priority = swapped_row.priority;
+        swapped_row.priority = tmp_priority;
     }
-    
+
+
+    #set_modal_content(action, categorie_id){
+        const sub_categs = this.data_manager.get_childrens_categories(categorie_id);
+
+        // reset the modal content
+        this.modal.content_div.innerHTML = "";
+
+        // add the breadcrumb trail
+        let breadcrumb = document.createElement("span");
+        breadcrumb.className = "breadcrumb";
+        breadcrumb.innerText = action.type + " : ";
+
+        for (const c of this.data_manager.get_parents_categories(categorie_id)){
+            let a = document.createElement("a");
+            a.href = "#";
+            a.addEventListener("click", () => this.#set_modal_content(action, c.id));
+            a.innerText = c.short_name;
+            breadcrumb.appendChild(a);
+        }
+        this.modal.content_div.appendChild(breadcrumb);
+
+        if (sub_categs.length > 0){
+
+        }else{
+            this.#set_modal_article_view(action, this.data_manager.get_articles_by_categorie_id(categorie_id));
+            // for (const art of this.data_manager.get_articles_by_categorie_id(categorie_id)){
+            //     let button = document.createElement("button");
+            //     button.innerText = art.label;
+            //     this.modal.content_div.appendChild(button);
+            // }
+        }
+
+        this.modal.show();
+    }
+
+    /**
+     * 
+     * @param {Object} action 
+     * @param {article_dict[]} articles 
+     */
+    #set_modal_article_view(action, articles){
+        let table = document.createElement("table");
+        table.classList.add("modal-articles");
+
+        // create the thead 
+        let thead = document.createElement("thead");
+        thead.innerHTML= '<tr><th>Ref</th><th>Désignation</th><th>Prix</th></tr>';
+
+        // create the tbody
+        let tbody = document.createElement("tbody");
+        for (const art of articles){
+            let tr = document.createElement("tr");
+            tr.innerHTML = `<td>${art.ref}</td><td>${art.label}</td><td>${art.prix} €</td>`;
+
+            tbody.appendChild(tr);
+        }
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        this.modal.content_div.appendChild(table);
+    }
 
 
 
 }
 
-class Article{
-    static discount = 0;
 
-    constructor(ref , categ , label , price , quantity = 1){
-        this._ref = ref;
-        this._categ = categ;
-        this._label = label;
-        this._price = price;
-        this._quantity = quantity;
-    }
-    /**
-     * set the discount with a verification of the integrity of the discount
-     * @param {string} discount 
-     */
-    static setDiscount(discount){
-        discount = parseInt(discount);
-        Article.discount = (!isNaN(discount))? discount : 0 ;
-    }
-
-    copie(){
-        return new Article(this._ref , this._categ , this._label , this._price , this._quantity);
-    }
-
-    getRef(){
-        return this._ref;
-    }
-    getCateg(){
-        return this._categ;
-    }
-    getLabel(){
-        return this._label;
-    }
-    getUnitPrice(){
-        return this._price;
-    }
-    /**
-     * return the discount of the article (always 0 for the services part)
-     * @returns {int} discount
-     */
-    getDiscount(){
-        if (this._categ === 'Services') return 0;
-        else return Article.discount;
-    }
-    /**
-     * return the unitary price with the discount
-     * @returns {float}
-     */
-    getDiscountUnitPrice(){
-        return this._price * (100 - this.getDiscount()) / 100
-        
-    }
-
-    /**
-     * return the final price with the discount and the quantity
-     * @returns {float} price
-     */
-    getFinalPrice(){
-        return this.getDiscountUnitPrice() * this._quantity;
-    }
-
-    getQuantity(){
-        return this._quantity;
-    }
-    /**
-     * @param {int} quantity 
-     */
-    setQuantity(quantity){
-        this._quantity = quantity;
-    }
-}

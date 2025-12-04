@@ -9,15 +9,18 @@ class CategorieManager extends Model{
     }
 }
 
-class ArticleCategorieManager extends Model{
-    public function get_article_categories(){
-        return $this->select("SELECT * FROM ArticleCategorie");
-    }
-}
-
 class TarifManager extends Model{
     public function get_articles(){
-        return $this->select("SELECT * FROM Tarif");
+        $query = "  SELECT 
+                        A.ref, 
+                        A.label, 
+                        A.prix, 
+                        A.categorie_id,
+                        ROW_NUMBER() OVER (ORDER BY C.parent_id ASC, C.priority ASC) AS priority
+                    FROM Article A
+                    JOIN Categorie C ON A.categorie_id = C.id
+                    ORDER BY C.parent_id ASC, C.priority ASC";
+        return $this->select($query);
     }
 }
 
@@ -45,13 +48,11 @@ class ControllerDevis
         exit;
       }
       $categorie_manager = new CategorieManager;
-      $article_categorie_manager = new ArticleCategorieManager;
       $tarif_manager = new TarifManager;
 
       $this->_view = new View('Devis');
       $this->_view->generate(array(
         "categories" => $categorie_manager->get_categories(),
-        "article_categories" => $article_categorie_manager->get_article_categories(),
         "articles" => $tarif_manager->get_articles()
       ));
     }
