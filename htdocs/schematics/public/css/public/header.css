@@ -4,7 +4,7 @@ body{
 }
 
 nav{
-    background-color: #000000;
+    background-color: white;
     padding: 0.5em;
     margin: 0;
     display: flex;
@@ -18,7 +18,6 @@ nav ul {
     display: flex;
     flex-wrap: wrap;
     padding: 0;
-    background-color: #222222;
 }
 
 nav li {
@@ -31,11 +30,9 @@ nav li a, .dropbtn{
     display: block;
     padding: 1em;
     text-decoration: none;
-    font-size: 16px;
-    color: #d9d9d9;
-    text-transform: uppercase;
+    font-size: 19px;
+    color: #000000;
     border: none;
-    font-weight: 600;
 }
 nav .jaune{
     background-color: #f6c437;
@@ -47,8 +44,7 @@ nav .bleue{
 }
 
 nav li a:hover, .dropdown:hover .dropbtn {
-    background-color:#000000;
-    color: #f6c437;
+    background-color:#f6c437;
 }
 
 nav li.dropdown {
@@ -126,10 +122,6 @@ display: block;
 
 }
 
-nav > div{
-    
-}
-  
 
 
 
