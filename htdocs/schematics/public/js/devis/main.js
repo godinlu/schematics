@@ -1,3 +1,8 @@
+
+/** @type {Devis} */
+let devis;
+
+
 // ---------------------------------------
 // Main entry point for the application
 // ---------------------------------------
@@ -20,19 +25,12 @@ function initApp() {
     initComponents();
 
     // Fetch data if needed
-    const {articles, categories} = loadInitialData();
+    const {articles, categories, actions_saved} = loadInitialData();
     const data_manager = new DataManager(articles, categories);
 
-    const actions = [
-        {type: "add", ref: "HYBX1MOD"},
-        {type: "add", ref: "S7 2,5-CS-45-6"},
-        {type: "add", ref: "MISE001"},
-        {type: "add", ref: "SC2BMOD"}
-    ]
     let render_div = document.getElementById("devis-container");
 
-    let devis = new Devis(render_div, data_manager, actions);
-    
+    devis = new Devis(render_div, data_manager, actions_saved);
     devis.render();
 }
 
@@ -40,7 +38,9 @@ function initApp() {
  * Register all event listeners
  */
 function registerEvents() {
-    // Example: button click
+    document.querySelectorAll(".saveForm").forEach(a =>{
+        a.addEventListener("click" , handle_save_form);
+    });
 }
 
 
@@ -58,10 +58,35 @@ function initComponents() {
 function loadInitialData() {
     try {
         const articles = JSON.parse(document.getElementById("data-articles").textContent); 
-        const categories = JSON.parse(document.getElementById("data-categories").textContent); 
-        return {articles: articles, categories: categories};
+        const categories = JSON.parse(document.getElementById("data-categories").textContent);
+        const actions_saved = JSON.parse(document.getElementById("data-actions-saved").textContent); 
+        return {articles, categories, actions_saved};
     } catch (error) {
         console.error("Error loading initial data:", error);
         return null;
     }
+}
+
+
+/**
+ * Prevent the default event to submit some form data :
+ * - action list
+ * - articles quantity
+ * @param {Event} event 
+ */
+function handle_save_form(event){
+    event.preventDefault();
+    
+    let form = document.getElementById('devis');
+
+    // add the action list in a hidden input
+    let action_list_input = document.createElement("input");
+    action_list_input.type = "hidden";
+    action_list_input.name = "actions";
+    action_list_input.value = JSON.stringify(devis.actions);
+    form.appendChild(action_list_input);
+
+    form.action = event.target.href
+    form.submit();
+
 }

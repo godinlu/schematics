@@ -2,59 +2,119 @@ div.main-content{
     display: flex;
 }
 
-div.devis-container{
-    display: flex;
-    flex-direction: column;
+/*==============================================================================
+rules for the class : articles-table used in for the devis and
+in the modal window when you select an article                                                                          
+==============================================================================*/
+table.articles-table{
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    border-collapse: collapse;
+}
+
+table.articles-table td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table.articles-table tr:nth-child(even){background-color: #f2f2f2;}
+
+table.articles-table tr:hover {background-color: #ddd;}
+
+table.articles-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+
+
+/*==============================================================================
+                            rules for the devis                                                                         
+==============================================================================*/
+
+.devis-container{
     width: 70%;
+    margin-left: 1em;
+    table-layout: fixed;
 }
 
-div.devis-categ{
-    display: flex;
+.devis-container th:nth-child(1),
+.devis-container td:nth-child(1) {
+    width: 15%; 
 }
 
-
-div.devis-article{
-    display: flex;
-    align-items: center;
+.devis-container th:nth-child(2),
+.devis-container td:nth-child(2) {
+    width: auto; 
 }
 
-div.devis-ref{
-    width: 15%;
+.devis-container th:nth-child(3),
+.devis-container td:nth-child(3) {
+    width: 7%; 
 }
 
-div.devis-label{
-    width: 60%;
+.devis-container th:nth-child(4),
+.devis-container td:nth-child(4) {
+    width: 7%; 
 }
-div.devis-prix{
-    width: 15%;
+.devis-container th:nth-child(5),
+.devis-container td:nth-child(5) {
+    width: 7%; 
 }
+
+.devis-container input[type="number"]{
+    width: 4em;
+}
+
+/* Display flex the edit section */
 div.devis-edit{
-    width: 10%;
+    display: flex;
 }
 
-div.devis-edit{
-    display: flex;
-    align-items: stretch;
-    justify-content: space-evenly;
+/* Add a margin beetween buttons */
+div.devis-edit > *{
+    margin: 2px;
 }
 
-/* div.devis-edit > button{
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-} */
-
+/* Set the column for the div of up down buttons */
 div.devis-edit div{
     display: flex;
     flex-direction: column;
 }
 
+/* Set the size for the up and down button */
+div.devis-edit div > button{
+    height: 15px;         
+    width: 30px;          
+    padding: 0;
+    display: flex;             
+    justify-content: center;   
+    align-items: center;       
+}
+
+/* Set the size for the edit and remove button */
+div.devis-edit > button {
+    height: 30px;         
+    width: 30px;          
+    padding: 0;           
+}
+
+/* Center the add button */
+table.devis-container td[colspan="5"]{
+    text-align: center;
+}
+
+/* increase the width of the add button */
+table.devis-container td[colspan="5"] button{
+    width: 25%;
+}
+
 
 
 /*==============================================================================
-                                        MODAL                                                                        
+                            RULES OF MODAL                                                                        
 ==============================================================================*/
 
 /* Le conteneur de la modale, invisible au départ */
@@ -84,28 +144,38 @@ div.devis-edit div{
     content: " / ";
 }
 
+div.modal-categorie {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
 
-table.modal-articles {
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
-    border-collapse: collapse;
+div.modal-content button{
+    width: 25vw;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+
+.modal-content div.table-scroll{
+    max-height: 60vh;
+    overflow-y: auto;    /* scroll vertical */
+    overflow-x: hidden;  /* pas de scroll horizontal */
+}
+
+.modal-content table.articles-table {
     width: max-content;
 }
 
-table.modal-articles td, th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-table.modal-articles tr:nth-child(even){background-color: #f2f2f2;}
-
-table.modal-articles tr:hover {background-color: #ddd;}
-
-table.modal-articles th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
+/* sticky thead */
+.modal-content div.table-scroll thead th {
+  position: sticky;
+  top: 0;
   background-color: #04AA6D;
   color: white;
+  z-index: 2;
 }
+
+
+
 

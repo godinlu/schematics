@@ -10,13 +10,14 @@ class DevisRow{
      * @param {number} options.priority
      * @param {number} options.base_categorie_id
      */
-    constructor({ref, label, prix, categorie_id, priority, base_categorie_id}){
+    constructor({ref, label, prix, categorie_id, priority, base_categorie_id, quantity = 1}){
         this.ref = ref;
         this.label = label;
         this.prix = prix;
         this.categorie_id = categorie_id;
         this.priority = priority;
         this.base_categorie_id = base_categorie_id;
+        this.quantity = quantity;
         
     }
 
@@ -24,33 +25,25 @@ class DevisRow{
      * Generate HTML element for this article
      * @returns {HTMLElement} The article div element
      */
-    html_element(edit_handler, up_handler, down_handler, remove_handler) {
+    html_element(edit_handler, up_handler, down_handler, remove_handler, update_qte_handler) {
         // Main container
-        let article_div = document.createElement("div");
-        article_div.classList.add("devis-article");
+        let tr = document.createElement("tr");
 
-        // Sub-divs
-        let ref_div = document.createElement("div");
-        let label_div = document.createElement("div");
-        let prix_div = document.createElement("div");
-        
-        // Set classes
-        ref_div.classList.add("devis-ref");
-        label_div.classList.add("devis-label");
-        prix_div.classList.add("devis-prix");
-        
-        // Set text content
-        ref_div.textContent = this.ref;
-        label_div.textContent = this.label;
-        prix_div.textContent = this.prix.toFixed(2) + " €";
+        tr.innerHTML = `<td>${this.ref}</td><td>${this.label}</td><td>${this.prix.toFixed(2)} €</td>`;
 
-        // Append sub-divs to main container
-        article_div.appendChild(ref_div);
-        article_div.appendChild(label_div);
-        article_div.appendChild(prix_div);
-        article_div.appendChild(this.#create_edit_div(edit_handler, up_handler, down_handler, remove_handler));
+        // create the quantity input
+        const input = document.createElement("input");
+        input.type = "number";
+        input.name = `${this.ref}-qte`;
+        input.value = this.quantity;
+        input.min = 1;
+        input.addEventListener("input", (event) => update_qte_handler(this.ref, parseInt(event.target.value)));
 
-        return article_div;
+        tr.appendChild(document.createElement("td")).appendChild(input);
+
+        tr.appendChild(this.#create_edit_div(edit_handler, up_handler, down_handler, remove_handler));
+        return tr
+
     }
 
     #create_edit_div(edit_handler, up_handler, down_handler, remove_handler){

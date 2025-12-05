@@ -47,13 +47,18 @@ class ControllerDevis
         header('Location: formulaire');
         exit;
       }
+      $devis_saved = $dataForm->getDevis();
+
+      $actions_saved = ($devis_saved["actions"])?? [];
+
       $categorie_manager = new CategorieManager;
       $tarif_manager = new TarifManager;
 
       $this->_view = new View('Devis');
       $this->_view->generate(array(
         "categories" => $categorie_manager->get_categories(),
-        "articles" => $tarif_manager->get_articles()
+        "articles" => $tarif_manager->get_articles(),
+        "actions_saved" => $actions_saved,
       ));
     }
 }

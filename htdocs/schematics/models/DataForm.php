@@ -47,16 +47,11 @@ class DataForm{
     }
 
 
-    public function saveDevis(array $devis){
-        //ici au moment de sauvegarder le devis on parcours chaque éléments pour décoder les champs multiples
-        foreach($devis as $key => $value){
-            if (!is_string($value)) continue;
-            $temp = json_decode($value);
-            if (isset($temp)){
-                $devis[$key] = $temp;
-            }
+    public function saveDevis(array $post_data){
+        if (isset($post_data["actions"])){
+            $post_data["actions"] = json_decode($post_data["actions"], true);
         }
-        $_SESSION[self::$DEVIS] = $devis;
+        $_SESSION[self::$DEVIS] = $post_data;
     }
 
     public function save_devis2(array $post_data){
@@ -66,9 +61,8 @@ class DataForm{
         $_SESSION[self::$DEVIS2] = $post_data;
     }
 
-    public function getDevis():DataDevis{
-        $devis_index = ($_SESSION[self::$DEVIS])?? null;
-        return new DataDevis($_SESSION[self::$FORMULAIRE] , $devis_index);
+    public function getDevis():?array{
+        return ($_SESSION[self::$DEVIS])?? null;
     }
 
     public function get_devis2() : ?array {
@@ -83,7 +77,6 @@ class DataForm{
             if (!isset($_SERVER['HTTP_REFERER'])) return;
             $url = explode('/', filter_var($_SERVER['HTTP_REFERER'], FILTER_SANITIZE_URL));
             $sender_name = $url[count($url) - 1];
-            
 
             if (strpos($sender_name , self::$FORMULAIRE) !== false){
                 $this->saveFormulaire($_POST);

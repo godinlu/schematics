@@ -20,4 +20,8 @@ class Modal{
     show(){
         this.modal_div.style.display = "flex";
     }
+
+    hide(){
+        this.modal_div.style.display = "none";
+    }
 }

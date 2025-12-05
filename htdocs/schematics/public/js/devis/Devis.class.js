@@ -12,7 +12,9 @@
  */
 class Devis{
     /** @type {Map<string, DevisRow>} */
-    #rows
+    rows
+
+    #qte_timers
 
     /**
      * 
@@ -20,11 +22,12 @@ class Devis{
      * @param {Action[]} [actions] - Optional array of actions
      */
     constructor(render_div, data_manager, actions = []){
-        this.render_div = render_div;
+        this.render_table = render_div;
         this.data_manager = data_manager;
         this.actions = []; 
+        this.#qte_timers = new Map();
 
-        this.#rows = new Map(); 
+        this.rows = new Map(); 
         this.modal = new Modal();
 
         for (const action of actions){
@@ -38,11 +41,14 @@ class Devis{
     submit_action(action){
         try {
             if (action.type === "add"){
-                const art = this.data_manager.get_article(action.ref);
-                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
-                let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
-                this.#rows.set(action.ref, devis_row);
-
+                if (this.rows.has(action.ref)){
+                    this.rows.get(action.ref).quantity += 1;
+                }else{
+                    const art = this.data_manager.get_article(action.ref);
+                    const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+                    let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
+                    this.rows.set(action.ref, devis_row);
+                }
             }else if (action.type === "edit"){
                 const art = this.data_manager.get_article(action.new_ref);
                 const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
@@ -50,15 +56,18 @@ class Devis{
                 let new_row = new DevisRow({...art, base_categorie_id:base_categ.id});
 
                 // preserve the old priority
-                new_row.priority = this.#rows.get(action.old_ref).priority;
+                new_row.priority = this.rows.get(action.old_ref).priority;
 
-                this.#rows.delete(action.old_ref);
-                this.#rows.set(action.new_ref, article);
+                this.rows.delete(action.old_ref);
+                this.rows.set(action.new_ref, new_row);
             }else if (action.type === "move"){
                 this.#move_article(action.ref, action.direction);
 
             }else if (action.type === "remove"){
-                this.#rows.delete(action.ref);
+                this.rows.delete(action.ref);
+            
+            }else if (action.type === "update_qte"){
+                this.rows.get(action.ref).quantity = parseInt(action.new_qte);
             }else{
                 throw new TypeError("submit_action expects an Action instance");
             }
@@ -77,7 +86,7 @@ class Devis{
      */
     get_rows_ordered_by_categ(base_categorie_id) {
         // Convert Map → Array, filter, sort
-        return [...this.#rows.values()]
+        return [...this.rows.values()]
             .filter(a => a.base_categorie_id === base_categorie_id)
             .sort((a, b) => a.priority - b.priority);
 
@@ -88,35 +97,44 @@ class Devis{
      * @returns {HTMLElement} The devis div element
      */
     render() {
-        this.render_div.innerHTML = "";
+        this.render_table.innerHTML = "";
+
+        let thead = document.createElement("thead");
+        thead.innerHTML = "<tr><th>Ref</th><th>Désignation</th><th>Prix</th><th>Quantité</th><th>Edition</th></tr>";
+
+        let tbody = document.createElement("tbody");
+
         for (const categ of this.data_manager.get_childrens_categories(0)){
-            let categ_div = document.createElement("div");
-            categ_div.classList.add("devis-categ");
-            categ_div.appendChild(document.createElement("div")).innerText = categ.name;
+            let categ_tr = document.createElement("tr");
+            tbody.appendChild(categ_tr).innerHTML = `<th colspan="5">${categ.name}</th>`
+
+            for (const devis_row of this.get_rows_ordered_by_categ(categ.id)){
+                tbody.appendChild(devis_row.html_element(
+                    this.edit_handler, this.up_handler, this.down_handler, this.remove_handler, this.update_qte_handler
+                ));
+            }
+
+            let td = document.createElement("td");
+            td.colSpan = "5";
 
             let add_button = document.createElement("button");
             add_button.innerHTML = '<i class="fa-solid fa-plus"></i>';
             add_button.addEventListener("click", () => this.add_handler(categ.id));
-            categ_div.appendChild(add_button);
 
-            this.render_div.appendChild(categ_div);
-
-            for (const devis_row of this.get_rows_ordered_by_categ(categ.id)){
-                this.render_div.appendChild(devis_row.html_element(
-                    this.edit_handler, this.up_handler, this.down_handler, this.remove_handler
-                ));
-            }
+            tbody.appendChild(document.createElement("tr")).appendChild(td).appendChild(add_button);
         }
+
+        this.render_table.appendChild(thead);
+        this.render_table.appendChild(tbody);
     }
+
     add_handler = (categorie_id) => {
-        console.log(categorie_id)
+        this.#set_modal_content({type:"add", ref: ""}, categorie_id);
     }
 
     edit_handler = (ref) =>{
-        const devis_row = this.#rows.get(ref);
-
-        this.#set_modal_content({type:"edit"}, devis_row.categorie_id);
-        //this.modal.show();
+        const devis_row = this.rows.get(ref);
+        this.#set_modal_content({type:"edit", old_ref: ref, new_ref:""}, devis_row.categorie_id);
     }
     up_handler = (ref) => {
         this.submit_action({type: "move",ref: ref,  direction: -1});
@@ -133,6 +151,34 @@ class Devis{
     }
 
     /**
+     * Handles quantity updates with a debounce mechanism to avoid logging excessive actions
+     * when a user rapidly modifies the quantity (typing, spinner, spam clicking, etc.).
+     *
+     * @param {string} ref - The article reference whose quantity is being updated.
+     * @param {number} new_qte - The new quantity value entered by the user.
+     */
+    update_qte_handler = (ref, new_qte) => {
+        const devis_row = this.rows.get(ref);
+
+        // If a pending timer exists for this article, cancel it
+        if (this.#qte_timers.has(ref)) {
+            clearTimeout(this.#qte_timers.get(ref));
+        }
+
+        // Create a new debounce timer
+        const timer = setTimeout(() => {
+            this.submit_action({type: "update_qte",ref,old_qte: devis_row.quantity, new_qte });
+
+            // Remove the timer once the action has been processed
+            this.#qte_timers.delete(ref);
+
+        }, 300); // Recommended debounce delay (300ms)
+
+        // Store the timer for this specific article reference
+        this.#qte_timers.set(ref, timer);
+    }
+
+    /**
      * Move an article up or down within its base category by swapping priorities
      * with the neighboring article in the requested direction.
      *
@@ -142,7 +188,7 @@ class Devis{
      */
     #move_article(ref, direction){
         // Retrieve the article to move
-        let devis_row = this.#rows.get(ref);
+        let devis_row = this.rows.get(ref);
         if (!devis_row) throw new Error("row not found in devis");
 
         // Get all articles from the same base category, ordered by priority
@@ -162,7 +208,7 @@ class Devis{
         }
 
         // Retrieve the neighboring article that will swap priority
-        const swapped_row = this.#rows.get(rows[targetIndex].ref);
+        const swapped_row = this.rows.get(rows[targetIndex].ref);
         if (!swapped_row) {
             throw new Error("Swapped article not found in the current map");
         }
@@ -195,17 +241,33 @@ class Devis{
         this.modal.content_div.appendChild(breadcrumb);
 
         if (sub_categs.length > 0){
-
+            this.#set_modal_categories_view(action, sub_categs);
         }else{
             this.#set_modal_article_view(action, this.data_manager.get_articles_by_categorie_id(categorie_id));
-            // for (const art of this.data_manager.get_articles_by_categorie_id(categorie_id)){
-            //     let button = document.createElement("button");
-            //     button.innerText = art.label;
-            //     this.modal.content_div.appendChild(button);
-            // }
         }
 
         this.modal.show();
+    }
+
+    /**
+     * 
+     * @param {object} action 
+     * @param {categorie_dict[]} categories 
+     */
+    #set_modal_categories_view(action, categories){
+        let div = document.createElement("div");
+        div.classList.add("modal-categorie");
+
+        // loop on categories to add corresponding button
+        for (const cat of categories){
+            let button = document.createElement("button");
+            button.innerText = cat.name;
+
+            button.addEventListener("click", () => this.#set_modal_content(action, cat.id));
+
+            div.appendChild(button);
+        }
+        this.modal.content_div.appendChild(div);
     }
 
     /**
@@ -214,8 +276,12 @@ class Devis{
      * @param {article_dict[]} articles 
      */
     #set_modal_article_view(action, articles){
+        // create a container div to able scrolling on table
+        let div = document.createElement("div");
+        div.classList.add("table-scroll");
+
         let table = document.createElement("table");
-        table.classList.add("modal-articles");
+        table.classList.add("articles-table");
 
         // create the thead 
         let thead = document.createElement("thead");
@@ -227,12 +293,22 @@ class Devis{
             let tr = document.createElement("tr");
             tr.innerHTML = `<td>${art.ref}</td><td>${art.label}</td><td>${art.prix} €</td>`;
 
+            let action_copy = {...action}; // copy the object to avoid artifact
+            if (action_copy.type === "edit") action_copy.new_ref = art.ref;
+            if (action_copy.type === "add") action_copy.ref = art.ref;
+
+            tr.addEventListener("click", () => {
+                this.submit_action(action_copy);
+                this.modal.hide();
+                this.render();
+            });
+
             tbody.appendChild(tr);
         }
 
         table.appendChild(thead);
         table.appendChild(tbody);
-        this.modal.content_div.appendChild(table);
+        this.modal.content_div.appendChild(div).appendChild(table);
     }
 
 
