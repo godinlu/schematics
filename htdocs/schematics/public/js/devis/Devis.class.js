@@ -19,16 +19,22 @@ class Devis{
     /**
      * 
      * @param {DataManager} data_manager - data manager
+     * @param {string[]} default_articles - Default article on the devis
      * @param {Action[]} [actions] - Optional array of actions
      */
-    constructor(render_div, data_manager, actions = []){
+    constructor(render_div, data_manager, default_articles_ref, actions = []){
         this.render_table = render_div;
         this.data_manager = data_manager;
         this.actions = []; 
+        this.default_articles_ref = default_articles_ref;
         this.#qte_timers = new Map();
 
         this.rows = new Map(); 
         this.modal = new Modal();
+
+        for (const ref of default_articles_ref){
+            this.insert_article(ref);
+        }
 
         for (const action of actions){
             this.submit_action(action);
@@ -41,14 +47,7 @@ class Devis{
     submit_action(action){
         try {
             if (action.type === "add"){
-                if (this.rows.has(action.ref)){
-                    this.rows.get(action.ref).quantity += 1;
-                }else{
-                    const art = this.data_manager.get_article(action.ref);
-                    const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
-                    let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
-                    this.rows.set(action.ref, devis_row);
-                }
+                this.insert_article(action.ref);
             }else if (action.type === "edit"){
                 const art = this.data_manager.get_article(action.new_ref);
                 const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
@@ -74,6 +73,25 @@ class Devis{
             this.actions.push(action);
         } catch (error){
             console.log(`Warning : Can't submiting action : ${error}`);
+        }
+    }
+
+
+    /**
+     * Inserts an article into the rows map.  
+     * If the article already exists, its quantity is incremented.  
+     * Otherwise, the article is retrieved from the data manager and a new DevisRow is created.
+     *
+     * @param {string} article_ref - The reference of the article to insert.
+     */
+    insert_article(article_ref){
+        if (this.rows.has(article_ref)){
+            this.rows.get(article_ref).quantity += 1;
+        }else{
+            const art = this.data_manager.get_article(article_ref);
+            const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+            let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
+            this.rows.set(article_ref, devis_row);
         }
     }
 

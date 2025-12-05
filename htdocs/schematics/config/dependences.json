@@ -77,7 +77,7 @@
                 "devis/data_manager.class.js",
                 "devis/devis_row.class.js",
                 "devis/devis.class.js",
-                "devis/main.js"
+                "devis/main_devis.js"
             ],
             "Devis2":[
                 "../svelte/public/build/bundle.js"

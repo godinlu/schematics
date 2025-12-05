@@ -29,8 +29,9 @@ function initApp() {
     const data_manager = new DataManager(articles, categories);
 
     let render_div = document.getElementById("devis-container");
+    const default_articles_ref = ["SC1BMOD", "S7 2,5-CM-2"];
 
-    devis = new Devis(render_div, data_manager, actions_saved);
+    devis = new Devis(render_div, data_manager,default_articles_ref, actions_saved);
     devis.render();
 }
 
