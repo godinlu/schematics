@@ -16,9 +16,9 @@ function toggleLegend(event){
     SchemaHydrauWithLegend.classList.toggle(HIDDEN);
 
     if (legend_active){
-        i.setAttribute("class" , "fa fa-check-square-o");
+        i.setAttribute("class" , "fa-regular fa-square-check");
     }else{
-        i.setAttribute("class" , "fa fa-square-o");
+        i.setAttribute("class" , "fa-regular fa-square");
     }
 }
 

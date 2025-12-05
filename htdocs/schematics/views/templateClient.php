@@ -8,10 +8,9 @@
     <!-- charge l'icon de solisart -->
     <link rel="icon" href="<?=$dependencyLoader->get_url()?>/public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
     <!-- charge font-awesome -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fontawesome/css/all.min.css">
     <!-- charge la police de charactère Comfortaa -->
-    <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
+    <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fonts/fonts.css">
     
 
     <!-- inclusion des feuilles de style -->

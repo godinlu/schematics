@@ -51,9 +51,9 @@ function toggleEtiquetage(){
     Etiquetage.classList.toggle(HIDDEN);
 
     if (etiquetage){
-        i.setAttribute("class" , "fa fa-check-square-o");
+        i.setAttribute("class" , "fa-regular fa-square-check");
     }else{
-        i.setAttribute("class" , "fa fa-square-o");
+        i.setAttribute("class" , "fa-regular fa-square");
     }
 }
 /**
