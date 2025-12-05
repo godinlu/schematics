@@ -10,7 +10,7 @@
     <!-- charge font-awesome -->
     <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fontawesome/css/all.min.css">
     <!-- charge la police de charactère Comfortaa -->
-    <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
+    <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fonts/fonts.css">
     
 
     <!-- inclusion des feuilles de style -->
