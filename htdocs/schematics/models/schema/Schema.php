@@ -202,10 +202,10 @@ abstract class Schema{
         }
     }
     private function getX(array $coord):int{
-        return $coord[0] + $this->_offset[0];
+        return (int) $coord[0] + $this->_offset[0];
     }
     private function getY(array $coord):int{
-        return $coord[1] + $this->_offset[1];
+        return (int) $coord[1] + $this->_offset[1];
     }
 
     /**
@@ -246,7 +246,7 @@ abstract class Schema{
         
             // Dessine la tête de la flèche avec l'épaisseur du trait originale
             imagesetthickness($this->_image, $arrow_width);
-            imagefilledpolygon($this->_image, [$point_b[0], $point_b[1], $arrow_point1[0], $arrow_point1[1], $arrow_point2[0], $arrow_point2[1]], 3, $color);
+            imagefilledpolygon($this->_image, [$point_b[0], $point_b[1], $arrow_point1[0], $arrow_point1[1], $arrow_point2[0], $arrow_point2[1]], $color);
     }
 
     

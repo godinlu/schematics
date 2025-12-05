@@ -9,9 +9,9 @@
 
   </div>
   <div id="sideBar">
-    <button type="button" id="btn_toggle_etiquetage">étiquetage module<i class="fa fa-square-o" aria-hidden="true"></i></button>
-    <button type="button" id="btn_download_png">télécharger (png)<i class="fa fa-file-image-o" aria-hidden="true"></i></button>
-    <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+    <button type="button" id="btn_toggle_etiquetage">étiquetage module<i class="fa-regular fa-square"></i></button>
+    <button type="button" id="btn_download_png">télécharger (png)<i class="fa-regular fa-file-image"></i></button>
+    <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa-regular fa-file-pdf"></i></button>
   </div>     
 </div>
 <script>
