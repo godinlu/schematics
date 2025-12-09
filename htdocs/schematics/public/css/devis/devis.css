@@ -1,8 +1,3 @@
-body{
-    background-color: #10B9B7;
-}
-
-
 /*
     partie responsable de la mise en forme du tableau du devis
 */
@@ -105,8 +100,7 @@ fieldset.filled legend{
     padding-left: 0.5em;
     padding-right: 0.5em;
     border-radius: 0.5em;
-    background-color: #222222;
-    border-color: #222222;
+    background-color: #ededed;
     width: fit-content;
 }
 .row i{
@@ -132,9 +126,8 @@ fieldset.filled legend{
 }
 /*partie pour le bouton d'ajout d'un élément*/
 .addButton{
-    color: #CFDBD5;
     background-color: inherit;
-    border: 1px solid #CFDBD5;
+    border: 1px solid black;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     text-transform: uppercase;
@@ -143,8 +136,7 @@ fieldset.filled legend{
     padding: 0.5em;
 }
 .addButton:hover{
-    border-color: #f6c437;
-    color: #f6c437;
+    background-color: #EAF205;
     cursor: pointer;
 }
 
