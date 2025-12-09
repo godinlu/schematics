@@ -5,11 +5,11 @@
     <img src="../api/getSchema.php?image=SchemaHydrauWithLegend" id="SchemaHydrauWithLegend" class="hidden" alt="Schéma hydraulique avec legend">
   </div> 
   
-  <div id="sideBar">
+  <aside>
     <button type="button" id="btn_legend">Légende<i class="fa-regular fa-square"></i></button>
     <button type="button" id="btn_download_png">télécharger (png)<i class="fa-regular fa-file-image"></i></button>
     <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa-regular fa-file-pdf"></i></button>
-  </div>     
+  </aside>    
 </div>
 <script>
   const formulaire = <?=json_encode($formulaire)?>;

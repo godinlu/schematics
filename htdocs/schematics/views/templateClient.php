@@ -26,9 +26,7 @@
     <header>
         <nav>
             <div>
-                <img src="<?=$dependencyLoader->get_url()?>/public/img/Solisart-menue.png" alt="logo solisart" width="200">
-                <br>
-                <a href="version">Version <?=VERSION?></a>
+                <img src="<?=$dependencyLoader->get_url()?>/public/img/Solisart-menue.jpg" alt="logo solisart" width="150">
             </div>
             
             <ul>

@@ -41,9 +41,9 @@
             </tbody>
         </table>
     </form>
-    <div id="sideBar">
-        <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
-    </div>  
+    <aside>
+       <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>                         
+    </aside>
     
 </div>
 

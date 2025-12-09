@@ -1,10 +1,5 @@
-html{
-  font-family: 'Comfortaa';
-  color: #CFDBD5;
-}
-
 #formulaire{
-  background-color: #10B9B7;
+  background-color: #ededed;
   padding: 2em;
 }
 #formulaire > *{
@@ -29,8 +24,8 @@ div.flex>*:nth-child(2){
 }
 
 div.rectangle{
-    background-color: #000000;
-    border-radius: 0.5em;
+    background-color: white;
+    /* border-radius: 0.5em; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -64,11 +59,11 @@ select{
 }
 select:enabled{cursor: pointer;}
 
-input[type=text],input[type=email]{
+/* input[type=text],input[type=email]{
   border-radius: 5px;
   margin:2px 0px 0px 0px;
   cursor: text;
-}
+} */
 select:disabled{
   opacity: 0.5!important;
   cursor: help !important;
@@ -82,7 +77,7 @@ option:disabled{
 .disabled{
   opacity: 0.5!important;
   cursor: help !important;
-  color: #CFDBD5 !important;
+  color: gray !important;
 }
 
 fieldset{

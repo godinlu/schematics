@@ -8,15 +8,12 @@
                 "public/form.css"
             ],
             "Schema_hydrau": [
-                "schema_hydrau/schema_hydrau.css",
-                "public/sideBar.css"
+                "schema_hydrau/schema_hydrau.css"
             ],
             "Schema_exe": [
-                "schema_exe/schema_exe.css",
-                "public/sideBar.css"
+                "schema_exe/schema_exe.css"
             ],
             "Fiche_prog": [
-                "public/sideBar.css",
                 "fiche_prog/fiche_prog.css"
             ],
             "Devis": [
@@ -33,11 +30,9 @@
                 "version/version.css"
             ],
             "public":[
-                "public/footer.css",
-                "public/header.css",
+                "public/public.css",
                 "public/popup.css",
                 "fiche_prog/tableau.css"
-                
             ]
         },
         "admin":{
