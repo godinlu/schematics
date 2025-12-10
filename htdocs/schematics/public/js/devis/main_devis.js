@@ -79,16 +79,25 @@ function loadInitialData() {
 function handle_save_form(event){
     event.preventDefault();
     
-    let form = document.getElementById('devis');
+    let form = document.getElementById('formulaire');
 
-    // add the action list in a hidden input
+    saveAllData(form);
+
+    form.action = event.target.href;
+    form.submit();
+
+}
+
+
+/**
+ * This function create hidden input in the form given to store all action done in the devis.
+ * This function is also called by `header.js` when the user save his config
+ * @param {HTMLElement} form 
+ */
+function saveAllData(form){
     let action_list_input = document.createElement("input");
     action_list_input.type = "hidden";
     action_list_input.name = "actions";
     action_list_input.value = JSON.stringify(devis.actions);
     form.appendChild(action_list_input);
-
-    form.action = event.target.href
-    form.submit();
-
 }

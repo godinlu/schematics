@@ -15,7 +15,7 @@
     $content = array(
         'formulaire' => $dataForm->getFormulaire(),
         'fiche_prog' => $dataForm->getFiche_prog(),
-        'devis' => $dataForm->getDevis()->getDevisIndex()
+        'devis' => $dataForm->getDevis()
     );
     //contenue du fichier
     $fileContent = json_encode($content , JSON_PRETTY_PRINT);

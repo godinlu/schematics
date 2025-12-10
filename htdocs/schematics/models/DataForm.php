@@ -48,7 +48,7 @@ class DataForm{
 
 
     public function saveDevis(array $post_data){
-        if (isset($post_data["actions"])){
+        if (isset($post_data["actions"]) && is_string($post_data["actions"])){
             $post_data["actions"] = json_decode($post_data["actions"], true);
         }
         $_SESSION[self::$DEVIS] = $post_data;

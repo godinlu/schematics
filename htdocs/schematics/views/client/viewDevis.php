@@ -4,7 +4,7 @@
     <aside id="sidebar">
     </aside>
 </div>
-<form id="devis" action="" method="post">
+<form id="formulaire" action="" method="post">
 </form>
 
 
