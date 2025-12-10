@@ -16,10 +16,10 @@ class TarifManager extends Model{
                         A.label, 
                         A.prix, 
                         A.categorie_id,
-                        ROW_NUMBER() OVER (ORDER BY C.parent_id ASC, C.priority ASC) AS priority
+                        ROW_NUMBER() OVER (ORDER BY C.path) AS priority
                     FROM Article A
-                    JOIN Categorie C ON A.categorie_id = C.id
-                    ORDER BY C.parent_id ASC, C.priority ASC";
+                    JOIN categorie_sorted C ON A.categorie_id = C.id
+                    ORDER BY C.path";
         return $this->select($query);
     }
 }
@@ -59,6 +59,7 @@ class ControllerDevis
         "categories" => $categorie_manager->get_categories(),
         "articles" => $tarif_manager->get_articles(),
         "actions_saved" => $actions_saved,
+        "formulaire" => $formulaire
       ));
     }
 }

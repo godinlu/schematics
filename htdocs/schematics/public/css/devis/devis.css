@@ -1,4 +1,4 @@
-div.main-content{
+div#main-content{
     display: flex;
 }
 
@@ -7,26 +7,22 @@ rules for the class : articles-table used in for the devis and
 in the modal window when you select an article                                                                          
 ==============================================================================*/
 table.articles-table{
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
     border-collapse: collapse;
 }
 
 table.articles-table td, th {
-  border: 1px solid #ddd;
+  border: 1px solid black;
   padding: 8px;
 }
 
 table.articles-table tr:nth-child(even){background-color: #f2f2f2;}
 
-table.articles-table tr:hover {background-color: #ddd;}
 
 table.articles-table th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #04AA6D;
-  color: white;
+  background-color: #ddd;
 }
 
 
@@ -36,7 +32,7 @@ table.articles-table th {
 
 .devis-container{
     width: 70%;
-    margin-left: 1em;
+    margin: 1em;
     table-layout: fixed;
 }
 
@@ -61,21 +57,26 @@ table.articles-table th {
 }
 .devis-container th:nth-child(5),
 .devis-container td:nth-child(5) {
-    width: 7%; 
+    width: 10%; 
 }
 
 .devis-container input[type="number"]{
     width: 4em;
 }
 
+.devis-container input[type="text"]{
+    width: 100%;
+}
+
+
+td:has(.devis-edit) {
+    padding: 0 !important;
+}
 /* Display flex the edit section */
 div.devis-edit{
     display: flex;
-}
-
-/* Add a margin beetween buttons */
-div.devis-edit > *{
-    margin: 2px;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 /* Set the column for the div of up down buttons */
@@ -104,11 +105,13 @@ div.devis-edit > button {
 /* Center the add button */
 table.devis-container td[colspan="5"]{
     text-align: center;
+    gap: 1em;
 }
 
 /* increase the width of the add button */
 table.devis-container td[colspan="5"] button{
     width: 25%;
+    margin: 0 0.5em;
 }
 
 
@@ -138,7 +141,12 @@ table.devis-container td[colspan="5"] button{
   width: min-content;
 }
 
-
+.breadcrumb {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: 1em;
+}
 
 .breadcrumb a + a::before {
     content: " / ";
@@ -152,8 +160,28 @@ div.modal-categorie {
 
 div.modal-content button{
     width: 25vw;
-    padding: 0.5em;
+    padding: 0.8em;
     cursor: pointer;
+
+    /* Retirer le style bouton */
+    background: none;
+    border: none;
+    text-align: left;
+
+    /* Aspect liste */
+    border-radius: 6px;
+    background-color: #ededed;
+    transition: 0.2s;
+}
+
+/* Hover */
+div.modal-content button:hover {
+    background-color: #EAF205;
+}
+
+/* Focus (accessibilité) */
+div.modal-content button:focus {
+    outline: 3px solid #bcd4ff;
 }
 
 
@@ -171,10 +199,19 @@ div.modal-content button{
 .modal-content div.table-scroll thead th {
   position: sticky;
   top: 0;
-  background-color: #04AA6D;
-  color: white;
+  background-color: #ddd;
   z-index: 2;
 }
+
+.modal-content table.articles-table tr{
+    transition: 0.2s;
+}
+
+.modal-content table.articles-table tr:hover {
+    background-color: #EAF205;
+    cursor: pointer;
+}
+
 
 
 

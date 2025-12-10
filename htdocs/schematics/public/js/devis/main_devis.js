@@ -25,12 +25,12 @@ function initApp() {
     initComponents();
 
     // Fetch data if needed
-    const {articles, categories, actions_saved} = loadInitialData();
+    const {articles, categories, actions_saved, formulaire} = loadInitialData();
     const data_manager = new DataManager(articles, categories);
 
     let render_div = document.getElementById("devis-container");
-    const default_articles_ref = ["SC1BMOD", "S7 2,5-CM-2"];
-
+    const default_articles_ref = get_default_articles_ref(formulaire);
+    
     devis = new Devis(render_div, data_manager,default_articles_ref, actions_saved);
     devis.render();
 }
@@ -61,7 +61,8 @@ function loadInitialData() {
         const articles = JSON.parse(document.getElementById("data-articles").textContent); 
         const categories = JSON.parse(document.getElementById("data-categories").textContent);
         const actions_saved = JSON.parse(document.getElementById("data-actions-saved").textContent); 
-        return {articles, categories, actions_saved};
+        const formulaire = JSON.parse(document.getElementById("data-formulaire").textContent); 
+        return {articles, categories, actions_saved, formulaire};
     } catch (error) {
         console.error("Error loading initial data:", error);
         return null;

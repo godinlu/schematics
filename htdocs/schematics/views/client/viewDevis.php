@@ -2,7 +2,6 @@
 <div id="main-content">
     <table id="devis-container" class="devis-container articles-table"></table>
     <aside id="sidebar">
-
     </aside>
 </div>
 <form id="devis" action="" method="post">
@@ -19,5 +18,9 @@
 
 <script id="data-actions-saved" type="application/json">
 <?= json_encode($actions_saved, JSON_UNESCAPED_UNICODE) ?>
+</script>
+
+<script id="data-formulaire" type="application/json">
+<?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
 </script>
 

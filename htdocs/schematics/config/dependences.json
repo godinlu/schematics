@@ -72,6 +72,7 @@
                 "devis/data_manager.class.js",
                 "devis/devis_row.class.js",
                 "devis/devis.class.js",
+                "devis/default_articles_ref.js",
                 "devis/main_devis.js"
             ],
             "Devis2":[

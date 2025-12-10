@@ -72,7 +72,7 @@ class DataManager{
     get_base_categorie_id(categorie_id){
         const cat = this.get_categorie(categorie_id);
         
-        if (cat.parent_id === 0 || cat.parent_id === null){
+        if (cat.parent_id === 1 || cat.parent_id === null){
             return cat;
         }else {
             return this.get_base_categorie_id(cat.parent_id);

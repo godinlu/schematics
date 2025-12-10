@@ -67,6 +67,19 @@ class Devis{
             
             }else if (action.type === "update_qte"){
                 this.rows.get(action.ref).quantity = parseInt(action.new_qte);
+
+            }else if (action.type === "add_text"){
+                let new_row = new DevisRow({
+                    ref: action.ref,
+                    label: "",
+                    prix: 0,
+                    categorie_id: action.base_categorie_id,
+                    priority: this.get_rows_ordered_by_categ(action.base_categorie_id).at(-1)?.priority + 1,
+                    base_categorie_id: action.base_categorie_id
+                });
+                this.rows.set(action.ref, new_row);
+            }else if (action.type === "edit_text"){
+                this.rows.get(action.ref).label = action.new_label;
             }else{
                 throw new TypeError("submit_action expects an Action instance");
             }
@@ -88,10 +101,14 @@ class Devis{
         if (this.rows.has(article_ref)){
             this.rows.get(article_ref).quantity += 1;
         }else{
-            const art = this.data_manager.get_article(article_ref);
-            const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
-            let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
-            this.rows.set(article_ref, devis_row);
+            try{
+                const art = this.data_manager.get_article(article_ref);
+                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+                let devis_row = new DevisRow({...art, base_categorie_id:base_categ.id});
+                this.rows.set(article_ref, devis_row);
+            }catch (error){
+                console.log(`Warning : Can't insert article : ${error}`);
+            }
         }
     }
 
@@ -122,7 +139,7 @@ class Devis{
 
         let tbody = document.createElement("tbody");
 
-        for (const categ of this.data_manager.get_childrens_categories(0)){
+        for (const categ of this.data_manager.get_childrens_categories(1)){
             let categ_tr = document.createElement("tr");
             tbody.appendChild(categ_tr).innerHTML = `<th colspan="5">${categ.name}</th>`
 
@@ -139,7 +156,15 @@ class Devis{
             add_button.innerHTML = '<i class="fa-solid fa-plus"></i>';
             add_button.addEventListener("click", () => this.add_handler(categ.id));
 
-            tbody.appendChild(document.createElement("tr")).appendChild(td).appendChild(add_button);
+            let comment_button = document.createElement("button");
+            comment_button.innerHTML = '<i class="fa-regular fa-comment"></i>';
+            comment_button.addEventListener("click", () => {
+                this.submit_action({type:"add_text",ref:"TEXT_"+Date.now(), base_categorie_id:categ.id});
+                this.render();
+            });
+
+            tbody.appendChild(document.createElement("tr")).appendChild(td).append(add_button, comment_button);
+            tbody.append()
         }
 
         this.render_table.appendChild(thead);
@@ -152,7 +177,13 @@ class Devis{
 
     edit_handler = (ref) =>{
         const devis_row = this.rows.get(ref);
-        this.#set_modal_content({type:"edit", old_ref: ref, new_ref:""}, devis_row.categorie_id);
+        if (ref.startsWith("TEXT")){
+            this.#edit_text({type:"edit_text", ref: ref, old_label:devis_row.label, new_label:""});
+        }else{
+            this.#set_modal_content({type:"edit", old_ref: ref, new_ref:""}, devis_row.categorie_id);
+        }
+
+        
     }
     up_handler = (ref) => {
         this.submit_action({type: "move",ref: ref,  direction: -1});
@@ -247,7 +278,6 @@ class Devis{
         // add the breadcrumb trail
         let breadcrumb = document.createElement("span");
         breadcrumb.className = "breadcrumb";
-        breadcrumb.innerText = action.type + " : ";
 
         for (const c of this.data_manager.get_parents_categories(categorie_id)){
             let a = document.createElement("a");
@@ -285,6 +315,7 @@ class Devis{
 
             div.appendChild(button);
         }
+
         this.modal.content_div.appendChild(div);
     }
 
@@ -327,6 +358,36 @@ class Devis{
         table.appendChild(thead);
         table.appendChild(tbody);
         this.modal.content_div.appendChild(div).appendChild(table);
+    }
+
+    /**
+     * 
+     * @param {Object} action 
+     */
+    #edit_text(action){
+        let label_td = document.getElementById(action.ref).children[1];
+        label_td.innerHTML = "";
+
+        let input_text = document.createElement("input");
+        input_text.type = "text";
+        input_text.value = action.old_label;
+
+        const finish_edit_handler = (value) => {
+            action.new_label = value;
+            this.submit_action(action);
+            this.render();
+        }
+
+        input_text.addEventListener("blur", (event) => {finish_edit_handler(event.target.value)});
+        input_text.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                finish_edit_handler(event.target.value);
+            }
+        });
+
+        label_td.appendChild(input_text);
+        input_text.focus();
+        
     }
 
 

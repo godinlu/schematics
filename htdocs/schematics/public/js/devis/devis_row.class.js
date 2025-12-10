@@ -28,8 +28,10 @@ class DevisRow{
     html_element(edit_handler, up_handler, down_handler, remove_handler, update_qte_handler) {
         // Main container
         let tr = document.createElement("tr");
+        tr.id = this.ref;
+        const ref_html = (this.ref.startsWith("TEXT_"))? "TEXT" : this.ref;
 
-        tr.innerHTML = `<td>${this.ref}</td><td>${this.label}</td><td>${this.prix.toFixed(2)} €</td>`;
+        tr.innerHTML = `<td>${ref_html}</td><td>${this.label}</td><td>${this.prix.toFixed(2)} €</td>`;
 
         // create the quantity input
         const input = document.createElement("input");
@@ -41,7 +43,7 @@ class DevisRow{
 
         tr.appendChild(document.createElement("td")).appendChild(input);
 
-        tr.appendChild(this.#create_edit_div(edit_handler, up_handler, down_handler, remove_handler));
+        tr.appendChild(document.createElement("td")).appendChild(this.#create_edit_div(edit_handler, up_handler, down_handler, remove_handler));
         return tr
 
     }
