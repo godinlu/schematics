@@ -11,16 +11,25 @@ class CategorieManager extends Model{
 
 class TarifManager extends Model{
     public function get_articles(){
-        $query = "  SELECT 
-                        A.ref, 
-                        A.label, 
-                        A.prix, 
-                        A.categorie_id,
-                        ROW_NUMBER() OVER (ORDER BY C.priority) AS priority
-                    FROM article A
-                    JOIN categorie C ON A.categorie_id = C.id
-                    ORDER BY C.priority";
-        return $this->select($query);
+        $query = "
+            SELECT
+                A.ref,
+                A.label,
+                A.prix,
+                A.categorie_id
+            FROM article A
+            JOIN categorie C ON A.categorie_id = C.id
+            ORDER BY C.priority
+        ";
+
+        $articles = $this->select($query);
+
+        $priority = 1;
+        foreach ($articles as &$article) {
+            $article['priority'] = $priority++;
+        }
+
+        return $articles;
     }
 }
 
