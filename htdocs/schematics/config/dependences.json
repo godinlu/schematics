@@ -22,10 +22,6 @@
                 "public/menuDeroulant.css",
                 "public/scrollTable.css"
             ],
-            "Devis2": [
-                "../svelte/public/build/bundle.css",
-                "../svelte/public/global.css"
-            ],
             "Version": [
                 "version/version.css"
             ],
@@ -76,9 +72,6 @@
                 "devis/default_articles_ref.js",
                 "devis/editable_devis.class.js",
                 "devis/main_devis.js"
-            ],
-            "Devis2":[
-                "../svelte/public/build/bundle.js"
             ],
             "public":[
                 "public/header.js",
