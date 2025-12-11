@@ -5,7 +5,7 @@ require_once ('models/DataForm.php');
 
 class CategorieManager extends Model{
     public function get_categories(){
-        return $this->select("SELECT * FROM categorie");
+        return $this->select("SELECT * FROM categorie ORDER BY priority");
     }
 }
 
@@ -16,10 +16,10 @@ class TarifManager extends Model{
                         A.label, 
                         A.prix, 
                         A.categorie_id,
-                        ROW_NUMBER() OVER (ORDER BY C.path) AS priority
-                    FROM Article A
-                    JOIN categorie_sorted C ON A.categorie_id = C.id
-                    ORDER BY C.path";
+                        ROW_NUMBER() OVER (ORDER BY C.priority) AS priority
+                    FROM article A
+                    JOIN categorie C ON A.categorie_id = C.id
+                    ORDER BY C.priority";
         return $this->select($query);
     }
 }
