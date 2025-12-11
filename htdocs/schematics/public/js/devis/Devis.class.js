@@ -4,7 +4,6 @@
  * @type {import('./modal.class').Modal}
  */
 
-
 /** 
  * @property {DataManager} data_manager
  * @property {Action[]} actions - Array to store actions
@@ -141,7 +140,7 @@ class Devis{
 
         for (const categ of this.data_manager.get_childrens_categories(1)){
             let categ_tr = document.createElement("tr");
-            tbody.appendChild(categ_tr).innerHTML = `<th colspan="5">${categ.name}</th>`
+            tbody.appendChild(categ_tr).innerHTML = `<th></th><th>${categ.name}</th><th></th><th></th><th></th>`;
 
             for (const devis_row of this.get_rows_ordered_by_categ(categ.id)){
                 tbody.appendChild(devis_row.html_element(
@@ -150,7 +149,7 @@ class Devis{
             }
 
             let td = document.createElement("td");
-            td.colSpan = "5";
+            td.classList.add("add-buttons");
 
             let add_button = document.createElement("button");
             add_button.innerHTML = '<i class="fa-solid fa-plus"></i>';
@@ -162,9 +161,14 @@ class Devis{
                 this.submit_action({type:"add_text",ref:"TEXT_"+Date.now(), base_categorie_id:categ.id});
                 this.render();
             });
-
-            tbody.appendChild(document.createElement("tr")).appendChild(td).append(add_button, comment_button);
-            tbody.append()
+            td.append(add_button, comment_button)
+            tbody.appendChild(document.createElement("tr")).append(
+                document.createElement("td"),
+                td,
+                document.createElement("td"),
+                document.createElement("td"),
+                document.createElement("td"),
+            );
         }
 
         this.render_table.appendChild(thead);

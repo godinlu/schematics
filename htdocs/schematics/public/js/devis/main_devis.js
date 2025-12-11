@@ -2,6 +2,9 @@
 /** @type {Devis} */
 let devis;
 
+/** @type {DevisHeader} */
+let devis_header;
+
 
 // ---------------------------------------
 // Main entry point for the application
@@ -25,12 +28,15 @@ function initApp() {
     initComponents();
 
     // Fetch data if needed
-    const {articles, categories, actions_saved, formulaire} = loadInitialData();
+    const {articles, categories, actions_saved, header_actions_saved, formulaire} = loadInitialData();
     const data_manager = new DataManager(articles, categories);
 
-    let render_div = document.getElementById("devis-container");
+    let render_div = document.getElementById("devis-articles");
     const default_articles_ref = get_default_articles_ref(formulaire);
     
+    let header_div = document.querySelector("#editable-devis .devis-header");
+    devis_header = new DevisHeader(header_div, formulaire, header_actions_saved);
+
     devis = new Devis(render_div, data_manager,default_articles_ref, actions_saved);
     devis.render();
 }
@@ -61,8 +67,9 @@ function loadInitialData() {
         const articles = JSON.parse(document.getElementById("data-articles").textContent); 
         const categories = JSON.parse(document.getElementById("data-categories").textContent);
         const actions_saved = JSON.parse(document.getElementById("data-actions-saved").textContent); 
+        const header_actions_saved = JSON.parse(document.getElementById("data-header-actions-saved").textContent); 
         const formulaire = JSON.parse(document.getElementById("data-formulaire").textContent); 
-        return {articles, categories, actions_saved, formulaire};
+        return {articles, categories, actions_saved, header_actions_saved, formulaire};
     } catch (error) {
         console.error("Error loading initial data:", error);
         return null;
@@ -99,5 +106,11 @@ function saveAllData(form){
     action_list_input.type = "hidden";
     action_list_input.name = "actions";
     action_list_input.value = JSON.stringify(devis.actions);
-    form.appendChild(action_list_input);
+
+    let header_action_list_input = document.createElement("input");
+    header_action_list_input.type = "hidden";
+    header_action_list_input.name = "header-actions";
+    header_action_list_input.value = JSON.stringify(devis_header.actions);
+
+    form.append(action_list_input, header_action_list_input);
 }

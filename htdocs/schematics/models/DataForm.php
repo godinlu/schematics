@@ -51,6 +51,9 @@ class DataForm{
         if (isset($post_data["actions"]) && is_string($post_data["actions"])){
             $post_data["actions"] = json_decode($post_data["actions"], true);
         }
+        if (isset($post_data["header-actions"]) && is_string($post_data["header-actions"])){
+            $post_data["header-actions"] = json_decode($post_data["header-actions"], true);
+        }
         $_SESSION[self::$DEVIS] = $post_data;
     }
 

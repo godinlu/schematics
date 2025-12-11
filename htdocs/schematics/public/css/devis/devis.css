@@ -2,72 +2,110 @@ div#main-content{
     display: flex;
 }
 
+#editable-devis{
+    width: 70%;
+    margin: 1em;
+    background-color: white;
+    padding: 1em;
+    font-size: smaller;
+}
+
+/*==============================================================================
+                    rules for the header of the devis                                                                        
+==============================================================================*/
+.devis-header{
+    margin-bottom: 1em;
+}
+
+.devis-header > div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.devis-header > div > *{
+    flex: 1;
+}
+
+.devis-header table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.devis-header table td,
+.devis-header table th{
+    border: 1px solid black;
+    text-align: center;
+}
+
 /*==============================================================================
 rules for the class : articles-table used in for the devis and
 in the modal window when you select an article                                                                          
 ==============================================================================*/
 table.articles-table{
     border-collapse: collapse;
+    border: 1px solid black;
 }
 
-table.articles-table td, th {
-  border: 1px solid black;
-  padding: 8px;
+table.articles-table thead{
+    border: 1px solid black;
 }
 
-table.articles-table tr:nth-child(even){background-color: #f2f2f2;}
-
-
-table.articles-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #ddd;
+table.articles-table thead th{
+    text-align: center;
+    background-color: darkgray;
 }
+
+table.articles-table td,
+table.articles-table th{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0.5em 0.4em 0.5em 0.4em;
+    text-align: start;
+
+}
+
 
 
 /*==============================================================================
-                            rules for the devis                                                                         
+                            rules for editable devis                                                                       
 ==============================================================================*/
 
-.devis-container{
-    width: 70%;
-    margin: 1em;
-    table-layout: fixed;
+#editable-devis textarea{
+    width: 100%;
+    height: 100%;   
+    box-sizing: border-box; /* important */
+    padding: 0;             /* optionnel */
+    margin: 0;              /* optionnel */
+    border: none;           /* si tu veux qu’il colle vraiment aux bords */
+    resize: none; 
 }
 
-.devis-container th:nth-child(1),
-.devis-container td:nth-child(1) {
-    width: 15%; 
-}
 
-.devis-container th:nth-child(2),
-.devis-container td:nth-child(2) {
-    width: auto; 
-}
-
-.devis-container th:nth-child(3),
-.devis-container td:nth-child(3) {
-    width: 7%; 
-}
-
-.devis-container th:nth-child(4),
-.devis-container td:nth-child(4) {
-    width: 7%; 
-}
-.devis-container th:nth-child(5),
-.devis-container td:nth-child(5) {
-    width: 10%; 
-}
-
-.devis-container input[type="number"]{
-    width: 4em;
-}
-
-.devis-container input[type="text"]{
+#devis-articles{
     width: 100%;
 }
 
+#devis-articles td:nth-child(2){
+    width: 55%;
+}
+
+#devis-articles .add-buttons{
+    text-align: center;
+}
+
+#devis-articles .add-buttons button{
+    width: 20%;
+    margin: 0 1em;
+}
+
+
+#devis-articles input[type="number"]{
+    width: 4em;
+}
+
+#devis-articles input[type="text"]{
+    width: 100%;
+}
 
 td:has(.devis-edit) {
     padding: 0 !important;
@@ -87,8 +125,8 @@ div.devis-edit div{
 
 /* Set the size for the up and down button */
 div.devis-edit div > button{
-    height: 15px;         
-    width: 30px;          
+    height: 13px;         
+    width: 26px;          
     padding: 0;
     display: flex;             
     justify-content: center;   
@@ -97,8 +135,8 @@ div.devis-edit div > button{
 
 /* Set the size for the edit and remove button */
 div.devis-edit > button {
-    height: 30px;         
-    width: 30px;          
+    height: 26px;         
+    width: 26px;          
     padding: 0;           
 }
 
