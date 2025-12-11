@@ -9,8 +9,10 @@ class DevisRow{
      * @param {number} options.categorie_id
      * @param {number} options.priority
      * @param {number} options.base_categorie_id
+     * @param {number} options.quantity
+     * @param {number} options.remise
      */
-    constructor({ref, label, prix, categorie_id, priority, base_categorie_id, quantity = 1}){
+    constructor({ref, label, prix, categorie_id, priority, base_categorie_id, quantity = 1, remise = 0}){
         this.ref = ref;
         this.label = label;
         this.prix = prix;
@@ -18,6 +20,7 @@ class DevisRow{
         this.priority = priority;
         this.base_categorie_id = base_categorie_id;
         this.quantity = quantity;
+        this.remise = remise;
         
     }
 
@@ -31,7 +34,22 @@ class DevisRow{
         tr.id = this.ref;
         const ref_html = (this.ref.startsWith("TEXT_"))? "TEXT" : this.ref;
 
-        tr.innerHTML = `<td>${ref_html}</td><td>${this.label}</td><td>${this.prix.toFixed(2)} €</td>`;
+        const prix_formatte = this.prix.toLocaleString('fr-FR', {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1
+        });
+
+
+        tr.innerHTML = `<td>${ref_html}</td><td>${this.label}</td><td>${prix_formatte} €</td>`;
+
+        // create the remise input
+        let remise_input = document.createElement("input");
+        remise_input.classList.add("remise");
+        remise_input.type = "number";
+        remise_input.value = this.remise;
+        remise_input.min = 0;
+        remise_input.max = 30;
+        tr.appendChild(document.createElement("td")).appendChild(remise_input);
 
         // create the quantity input
         const input = document.createElement("input");
@@ -39,6 +57,7 @@ class DevisRow{
         input.name = `${this.ref}-qte`;
         input.value = this.quantity;
         input.min = 1;
+        input.max = 9999;
         input.addEventListener("input", (event) => update_qte_handler(this.ref, parseInt(event.target.value)));
 
         tr.appendChild(document.createElement("td")).appendChild(input);

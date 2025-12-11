@@ -58,7 +58,6 @@ class ControllerDevis
       }
       $devis_saved = $dataForm->getDevis();
 
-      $header_actions_saved = ($devis_saved["header-actions"])?? [];
       $actions_saved = ($devis_saved["actions"])?? [];
 
       $categorie_manager = new CategorieManager;
@@ -69,7 +68,6 @@ class ControllerDevis
         "categories" => $categorie_manager->get_categories(),
         "articles" => $tarif_manager->get_articles(),
         "actions_saved" => $actions_saved,
-        "header_actions_saved" => $header_actions_saved,
         "formulaire" => $formulaire
       ));
     }

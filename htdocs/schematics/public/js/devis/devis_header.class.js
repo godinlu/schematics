@@ -11,21 +11,19 @@ class DevisHeader{
     header_div
 
     /** @type {HeaderAction[]} */
-    actions
+    action_list
 
     /**
      * 
      * @param {HTMLDivElement} header_div 
      * @param {object} formulaire
-     * @param {HeaderAction[]} actions
+     * @param {HeaderAction[]} action_list
      */
-    constructor(header_div, formulaire, actions = []){
+    constructor(header_div, formulaire, action_list){
         this.header_div = header_div;
-        this.actions = [];
+        this.action_list = action_list;
         this.#init_fields(formulaire);
         this.#init_event_listener();
-
-        actions.forEach(act => this.submit_action(act));
     }
 
     /**
@@ -44,7 +42,7 @@ class DevisHeader{
             }else{
                 throw new TypeError("unrecognize action.");
             }
-
+            this.action_list.push(action);
         }catch (error){
             console.warn(`Can't submit action ${action} : ${error}`);
         }
@@ -83,7 +81,7 @@ class DevisHeader{
             el.addEventListener("input", () => {
                 clearTimeout(timer);
                 timer = setTimeout(() =>{
-                    this.actions.push({type:"header-edit", field: el.name, old_value: el._old_value, new_value: el.value});
+                    this.action_list.push({type:"header-edit", field: el.name, old_value: el._old_value, new_value: el.value});
                     el._old_value = el.value;
                 }, 300);
             });

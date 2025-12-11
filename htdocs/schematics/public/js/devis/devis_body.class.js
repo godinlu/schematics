@@ -9,7 +9,7 @@
  * @property {Action[]} actions - Array to store actions
  * @property {Map<string, DevisRow>} rows - Map to store articles
  */
-class Devis{
+class DevisBody{
     /** @type {Map<string, DevisRow>} */
     rows
 
@@ -17,14 +17,15 @@ class Devis{
 
     /**
      * 
+     * @param {HTMLTableElement} render_table
      * @param {DataManager} data_manager - data manager
      * @param {string[]} default_articles - Default article on the devis
-     * @param {Action[]} [actions] - Optional array of actions
+     * @param {Object[]} action_list - Optional array of actions
      */
-    constructor(render_div, data_manager, default_articles_ref, actions = []){
-        this.render_table = render_div;
+    constructor(render_table, data_manager, default_articles_ref, action_list){
+        this.render_table = render_table;
         this.data_manager = data_manager;
-        this.actions = []; 
+        this.action_list = action_list; 
         this.default_articles_ref = default_articles_ref;
         this.#qte_timers = new Map();
 
@@ -35,9 +36,6 @@ class Devis{
             this.insert_article(ref);
         }
 
-        for (const action of actions){
-            this.submit_action(action);
-        }
     }
 
     /**
@@ -45,9 +43,9 @@ class Devis{
      */
     submit_action(action){
         try {
-            if (action.type === "add"){
+            if (action.type === "body-add"){
                 this.insert_article(action.ref);
-            }else if (action.type === "edit"){
+            }else if (action.type === "body-edit"){
                 const art = this.data_manager.get_article(action.new_ref);
                 const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
 
@@ -58,16 +56,16 @@ class Devis{
 
                 this.rows.delete(action.old_ref);
                 this.rows.set(action.new_ref, new_row);
-            }else if (action.type === "move"){
+            }else if (action.type === "body-move"){
                 this.#move_article(action.ref, action.direction);
 
-            }else if (action.type === "remove"){
+            }else if (action.type === "body-remove"){
                 this.rows.delete(action.ref);
             
-            }else if (action.type === "update_qte"){
+            }else if (action.type === "body-update_qte"){
                 this.rows.get(action.ref).quantity = parseInt(action.new_qte);
 
-            }else if (action.type === "add_text"){
+            }else if (action.type === "body-add_text"){
                 let new_row = new DevisRow({
                     ref: action.ref,
                     label: "",
@@ -77,12 +75,12 @@ class Devis{
                     base_categorie_id: action.base_categorie_id
                 });
                 this.rows.set(action.ref, new_row);
-            }else if (action.type === "edit_text"){
+            }else if (action.type === "body-edit_text"){
                 this.rows.get(action.ref).label = action.new_label;
             }else{
                 throw new TypeError("submit_action expects an Action instance");
             }
-            this.actions.push(action);
+            this.action_list.push(action);
         } catch (error){
             console.log(`Warning : Can't submiting action : ${error}`);
         }
@@ -134,7 +132,7 @@ class Devis{
         this.render_table.innerHTML = "";
 
         let thead = document.createElement("thead");
-        thead.innerHTML = "<tr><th>Ref</th><th>Désignation</th><th>Prix</th><th>Quantité</th><th>Edition</th></tr>";
+        thead.innerHTML = "<tr><th>Ref</th><th>Désignation</th><th>Prix</th><th>Remise</th><th>Quantité</th><th>Edition</th></tr>";
 
         let tbody = document.createElement("tbody");
 
@@ -158,7 +156,7 @@ class Devis{
             let comment_button = document.createElement("button");
             comment_button.innerHTML = '<i class="fa-regular fa-comment"></i>';
             comment_button.addEventListener("click", () => {
-                this.submit_action({type:"add_text",ref:"TEXT_"+Date.now(), base_categorie_id:categ.id});
+                this.submit_action({type:"body-add_text",ref:"TEXT_"+Date.now(), base_categorie_id:categ.id});
                 this.render();
             });
             td.append(add_button, comment_button)
@@ -176,30 +174,30 @@ class Devis{
     }
 
     add_handler = (categorie_id) => {
-        this.#set_modal_content({type:"add", ref: ""}, categorie_id);
+        this.#set_modal_content({type:"body-add", ref: ""}, categorie_id);
     }
 
     edit_handler = (ref) =>{
         const devis_row = this.rows.get(ref);
         if (ref.startsWith("TEXT")){
-            this.#edit_text({type:"edit_text", ref: ref, old_label:devis_row.label, new_label:""});
+            this.#edit_text({type:"body-edit_text", ref: ref, old_label:devis_row.label, new_label:""});
         }else{
-            this.#set_modal_content({type:"edit", old_ref: ref, new_ref:""}, devis_row.categorie_id);
+            this.#set_modal_content({type:"body-edit", old_ref: ref, new_ref:""}, devis_row.categorie_id);
         }
 
         
     }
     up_handler = (ref) => {
-        this.submit_action({type: "move",ref: ref,  direction: -1});
+        this.submit_action({type: "body-move",ref: ref,  direction: -1});
         this.render();
     }
     down_handler = (ref) => {
-        this.submit_action({type: "move", ref: ref, direction: 1});
+        this.submit_action({type: "body-move", ref: ref, direction: 1});
         this.render();
     }
 
     remove_handler = (ref) => {
-        this.submit_action({type: "remove", ref: ref});
+        this.submit_action({type: "body-remove", ref: ref});
         this.render();
     }
 
@@ -220,7 +218,7 @@ class Devis{
 
         // Create a new debounce timer
         const timer = setTimeout(() => {
-            this.submit_action({type: "update_qte",ref,old_qte: devis_row.quantity, new_qte });
+            this.submit_action({type: "body-update_qte",ref,old_qte: devis_row.quantity, new_qte });
 
             // Remove the timer once the action has been processed
             this.#qte_timers.delete(ref);
@@ -344,11 +342,13 @@ class Devis{
         let tbody = document.createElement("tbody");
         for (const art of articles){
             let tr = document.createElement("tr");
-            tr.innerHTML = `<td>${art.ref}</td><td>${art.label}</td><td>${art.prix} €</td>`;
+
+            const prix_format = art.prix.toLocaleString('fr-FR', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+            tr.innerHTML = `<td>${art.ref}</td><td>${art.label}</td><td>${prix_format} €</td>`;
 
             let action_copy = {...action}; // copy the object to avoid artifact
-            if (action_copy.type === "edit") action_copy.new_ref = art.ref;
-            if (action_copy.type === "add") action_copy.ref = art.ref;
+            if (action_copy.type === "body-edit") action_copy.new_ref = art.ref;
+            if (action_copy.type === "body-add") action_copy.ref = art.ref;
 
             tr.addEventListener("click", () => {
                 this.submit_action(action_copy);

@@ -64,7 +64,9 @@ table.articles-table th{
 
 }
 
-
+table.articles-table td:nth-child(3) {
+    text-align: right;
+}
 
 /*==============================================================================
                             rules for editable devis                                                                       
@@ -81,29 +83,33 @@ table.articles-table th{
 }
 
 
-#devis-articles{
+#editable-devis .devis-body{
     width: 100%;
 }
 
-#devis-articles td:nth-child(2){
+#editable-devis .devis-body td:nth-child(2){
     width: 55%;
 }
 
-#devis-articles .add-buttons{
+#editable-devis .devis-body .add-buttons{
     text-align: center;
 }
 
-#devis-articles .add-buttons button{
+#editable-devis .devis-body .add-buttons button{
     width: 20%;
     margin: 0 1em;
 }
 
 
-#devis-articles input[type="number"]{
+#editable-devis .devis-body input[type="number"]{
     width: 4em;
 }
 
-#devis-articles input[type="text"]{
+#editable-devis .devis-body input[type="number"].remise{
+    width: 3em;
+}
+
+#editable-devis .devis-body input[type="text"]{
     width: 100%;
 }
 
@@ -141,17 +147,16 @@ div.devis-edit > button {
 }
 
 /* Center the add button */
-table.devis-container td[colspan="5"]{
+#editable-devis table.devis-body td[colspan="5"]{
     text-align: center;
     gap: 1em;
 }
 
 /* increase the width of the add button */
-table.devis-container td[colspan="5"] button{
+#editable-devis table.devis-body td[colspan="5"] button{
     width: 25%;
     margin: 0 0.5em;
 }
-
 
 
 /*==============================================================================
@@ -230,14 +235,13 @@ div.modal-content button:focus {
 }
 
 .modal-content table.articles-table {
-    width: max-content;
+    width: 50vw;
 }
 
 /* sticky thead */
 .modal-content div.table-scroll thead th {
   position: sticky;
   top: 0;
-  background-color: #ddd;
   z-index: 2;
 }
 
