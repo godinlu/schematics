@@ -5,7 +5,7 @@ require_once ('models/DataForm.php');
 
 class CategorieManager extends Model{
     public function get_categories(){
-        return $this->select("SELECT * FROM Categorie");
+        return $this->select("SELECT * FROM categorie");
     }
 }
 
