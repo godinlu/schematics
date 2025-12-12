@@ -122,6 +122,18 @@ class DevisModel{
     }
 
     /**
+     * return the total price of all articles with remise
+     * @returns {number}
+     */
+    get_total_price(){
+        let total = 0
+        for (const art of this.article_rows.values()){
+            total += (art.prix * art.quantity) * (1 - (art.remise / 100));
+        }
+        return total;
+    }
+
+    /**
      * Move an article up or down within its base category by swapping priorities
      * with the neighboring article in the requested direction.
      *
@@ -179,6 +191,9 @@ class DevisModel{
         this.header_fields.set("header-installateur", this.formulaire["Prénom/nom"]);
 
     }
+
+
+    
 }
 
 

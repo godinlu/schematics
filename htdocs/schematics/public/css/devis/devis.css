@@ -70,6 +70,38 @@ table.articles-table td:nth-child(3) {
 }
 
 /*==============================================================================
+                    rules for the footer of the devis                                                                        
+==============================================================================*/
+div.devis-footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 1em;
+    
+}
+
+div.devis-footer table{
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+div.devis-footer table:first-child td{
+    border: 1px solid black;
+    padding: 0.6em;
+}
+
+div.devis-footer table:last-child td{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding: 0.6em;
+}
+
+div.devis-footer table:last-child th{
+    border: 1px solid black;
+    padding: 0.6em;
+}
+
+/*==============================================================================
                             rules for editable devis                                                                       
 ==============================================================================*/
 

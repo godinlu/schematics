@@ -177,6 +177,7 @@ class DevisController{
                 new_value: parseInt(input.value)
             });
             this.#timers.delete(input);
+            this.view.render_footer(this.model);
         },300));        
     }
 
@@ -194,6 +195,7 @@ class DevisController{
                 new_value: parseInt(input.value)
             });
             this.#timers.delete(input);
+            this.view.render_footer(this.model);
         },300)); 
     }
 

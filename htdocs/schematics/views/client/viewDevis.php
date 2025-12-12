@@ -42,6 +42,8 @@
             </table>
         </div>
         <table class="devis-body articles-table"></table>
+        <div class="devis-footer">
+        </div>
     </div>
     
     <aside id="sidebar">
