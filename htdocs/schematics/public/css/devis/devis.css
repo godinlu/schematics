@@ -7,7 +7,7 @@ div#main-content{
     margin: 1em;
     background-color: white;
     padding: 1em;
-    font-size: smaller;
+    font-size: 0.8rem;
 }
 
 /*==============================================================================
@@ -44,6 +44,7 @@ in the modal window when you select an article
 table.articles-table{
     border-collapse: collapse;
     border: 1px solid black;
+    font-size: 0.8rem;
 }
 
 table.articles-table thead{
@@ -182,18 +183,46 @@ div.devis-edit > button {
   padding: 20px;
   border-radius: 8px;
   width: min-content;
+  height: 60vh;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .breadcrumb {
-    width: 100%;
-    display: inline-block;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
     margin-bottom: 1em;
 }
 
-.breadcrumb a + a::before {
-    content: " / ";
+.breadcrumb button {
+    background: none;
+    border: none;
+    color: #0077cc;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+.breadcrumb button:hover {
+    background-color: rgba(0, 119, 204, 0.1);
+}
+
+.breadcrumb button::after {
+    content: ">";
+    margin-left: 0.4rem;
+    color: #888;
+}
+
+.breadcrumb button:last-child::after {
+    content: "";
+}
+
+.breadcrumb button:last-child{
+    font-weight: bold;
+}
+
 
 div.modal-categorie {
     display: flex;
@@ -201,7 +230,7 @@ div.modal-categorie {
     gap: 0.5em;
 }
 
-div.modal-content button{
+div.modal-categorie button{
     width: 25vw;
     padding: 0.8em;
     cursor: pointer;
@@ -218,18 +247,20 @@ div.modal-content button{
 }
 
 /* Hover */
-div.modal-content button:hover {
+div.modal-categorie button:hover {
     background-color: #EAF205;
 }
 
 /* Focus (accessibilité) */
-div.modal-content button:focus {
+div.modal-categorie button:focus {
     outline: 3px solid #bcd4ff;
 }
 
 
 .modal-content div.table-scroll{
-    max-height: 60vh;
+    /* max-height: 60vh; */
+    flex: 1 1 auto;       /* ← prend l’espace restant */
+    min-height: 0;        /* ← SUPER IMPORTANT pour éviter le débordement */
     overflow-y: auto;    /* scroll vertical */
     overflow-x: hidden;  /* pas de scroll horizontal */
 }

@@ -66,11 +66,11 @@
             "Devis": [
                 "devis/modal.class.js",
                 "devis/data_manager.class.js",
-                "devis/devis_row.class.js",
-                "devis/devis_body.class.js",
-                "devis/devis_header.class.js",
                 "devis/default_articles_ref.js",
-                "devis/editable_devis.class.js",
+                "devis/devis_model.class.js",
+                "devis/devis_view.class.js",
+                "devis/modal_view.class.js",
+                "devis/devis_controller.class.js",
                 "devis/main_devis.js"
             ],
             "public":[

@@ -1,10 +1,10 @@
 
 /**
- * @type {import('./editable_devis.class').EditableDevis}
+ * @type {import('./devis_controller.class').DevisController}
  */
 
-/** @type {EditableDevis} */
-let editable_devis;
+/** @type {DevisModel} */
+let devis_model;
 
 
 
@@ -26,17 +26,17 @@ function initApp() {
     // Register event listeners
     registerEvents();
 
-    // Initialize components
-    initComponents();
-
     // Fetch data if needed
     const {articles, categories, actions_saved, formulaire} = loadInitialData();
     const data_manager = new DataManager(articles, categories);
 
     let editable_devis_div = document.getElementById("editable-devis");
-    
-    editable_devis = new EditableDevis(editable_devis_div, data_manager, formulaire, actions_saved);
-}
+
+    devis_model = new DevisModel(data_manager, formulaire, actions_saved);
+    let devis_view = new DevisView(editable_devis_div);
+
+    let devis_controller = new DevisController(devis_model, devis_view);
+    }
 
 /**
  * Register all event listeners
@@ -47,14 +47,6 @@ function registerEvents() {
     });
 }
 
-
-/**
- * Initialize reusable UI components
- */
-function initComponents() {
-    // Example: sidebar, modals, dropdowns, etc.
-    // initSidebar();
-}
 
 /**
  * Load initial 
@@ -101,7 +93,7 @@ function saveAllData(form){
     let action_list_input = document.createElement("input");
     action_list_input.type = "hidden";
     action_list_input.name = "actions";
-    action_list_input.value = JSON.stringify(editable_devis.action_list);
+    action_list_input.value = JSON.stringify(devis_model.action_list);
 
     form.appendChild(action_list_input);
 }

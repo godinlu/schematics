@@ -8,21 +8,21 @@
                     <p>220, voie Aristide Bergès<br>73800 SAINTE-HELENE DU LAC<br>Tél: 04 79 60 42 06 <br> Email : contact@solisart.fr </p>
                     <p>
                         <strong>
-                            <span>Objet : <input type="text" name="devis-objet"></span>
+                            <span>Objet : <input type="text" data-field_name="header-objet"></span>
                             <br>
-                            <span>Affaire : <input type="text" name="devis-affaire"></span>
+                            <span>Affaire : <input type="text" data-field_name="header-affaire"></span>
                         </strong>
                     </p>
                 </div>
                 <div>
                     <table>
                         <tr><th>CHIFFRAGE ESTIMATIF</th></tr>
-                        <tr><td><input type="date" name="devis-date"></td></tr>
+                        <tr><td><input type="date" data-field_name="header-date"></td></tr>
                     </table>
                     <p>
-                        Mail: <input type="text" name="devis-mail">
+                        Mail: <input type="text"  data-field_name="header-mail">
                         <br>
-                        A l'attention de <input type="text" name="devis-installateur">
+                        A l'attention de <input type="text" data-field_name="header-installateur">
                     </p>
                 </div>
             </div>
@@ -34,10 +34,10 @@
                     <td>Délai</td>
                 </tr>
                 <tr>
-                    <td><textarea name="devis-field1" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea name="devis-field2" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea name="devis-field3" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea name="devis-field4" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-field1" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-field2" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-field3" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-field4" rows="2" placeholder="texte…"></textarea></td>
                 </tr>
             </table>
         </div>
