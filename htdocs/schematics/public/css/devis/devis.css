@@ -191,6 +191,71 @@ div.devis-edit > button {
     margin: 0 0.5em;
 }
 
+/*==============================================================================
+                            rules for pdf devis       
+All of these rules are just to manage properly tables for html2pdf                                                                
+==============================================================================*/
+#devis-pdf{
+    font-size: 0.7rem;
+}
+#devis-pdf .articles-table{
+    font-size: 0.7rem;
+}
+
+#devis-pdf table{
+    border: 1px solid black;
+}
+
+#devis-pdf tr{
+    border: none;
+    border-bottom: 1px solid black;
+}
+
+#devis-pdf tr:last-child{
+    border: none;
+}
+
+#devis-pdf td,
+#devis-pdf th
+{
+    border: none;
+    border-right: 1px solid black;
+}
+
+#devis-pdf td:last-child,
+#devis-pdf th:last-child
+{
+    border: none;
+}
+
+#devis-pdf .devis-body{
+    width: 100%;
+}
+
+#devis-pdf .devis-body td:nth-child(4),
+#devis-pdf .devis-body td:nth-child(5),
+#devis-pdf .devis-body td:nth-child(6),
+#devis-pdf .devis-body td:nth-child(7)
+{
+    text-align: right;
+}
+
+#devis-pdf .devis-body tr{
+    border: none;
+}
+
+#devis-pdf .devis-body thead th{
+    border-bottom: 1px solid black;
+}
+
+#devis-pdf .devis-footer table:last-child tr:first-child{
+    border: none;
+}
+
+#devis-pdf .devis-header > table tr:last-child td{
+    height: 30px;
+}
+
 
 /*==============================================================================
                             RULES OF MODAL                                                                        

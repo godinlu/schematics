@@ -47,12 +47,11 @@
     </div>
     
     <aside id="sidebar">
+        <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
     </aside>
 </div>
 <form id="formulaire" action="" method="post">
 </form>
-
-
 <script id="data-articles" type="application/json">
 <?= json_encode($articles, JSON_UNESCAPED_UNICODE) ?>
 </script>

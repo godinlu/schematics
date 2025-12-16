@@ -17,10 +17,7 @@
                 "fiche_prog/fiche_prog.css"
             ],
             "Devis": [
-                "devis/devis.css",
-                "public/form.css",
-                "public/menuDeroulant.css",
-                "public/scrollTable.css"
+                "devis/devis.css"
             ],
             "Version": [
                 "version/version.css"
@@ -64,6 +61,7 @@
                 "client/fiche_prog.js"
             ],
             "Devis": [
+                "../assets/html2pdf/html2pdf.bundle.min.js",
                 "devis/modal.class.js",
                 "devis/data_manager.class.js",
                 "devis/default_articles_ref.js",
@@ -86,12 +84,5 @@
         
     },
     "cdn": {
-        "Devis": [
-            "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
-            "https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js",
-            "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-
-        ]
     }
 }

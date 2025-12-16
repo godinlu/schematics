@@ -17,6 +17,9 @@ class DevisModel{
         this.article_rows = new Map();
         this.action_list = [];
 
+        this.tva_code = 3;
+        this.tva_percent = 20;
+
         // insert all default ref from the installation
         get_default_articles_ref(formulaire).forEach(ref => this.insert_article(ref));
 
@@ -122,16 +125,25 @@ class DevisModel{
     }
 
     /**
-     * return the total price of all articles with remise
+     * return the total price of all articles with remise and quantity
      * @returns {number}
      */
     get_total_price(){
         let total = 0
         for (const art of this.article_rows.values()){
-            total += (art.prix * art.quantity) * (1 - (art.remise / 100));
+            total += art.get_price();
         }
         return total;
     }
+
+    /**
+     * return the total price of tva of all articles
+     * @returns {number}
+     */
+    get_total_tva(){
+        return this.get_total_price() * (this.tva_percent / 100);
+    }
+
 
     /**
      * Move an article up or down within its base category by swapping priorities
@@ -186,9 +198,12 @@ class DevisModel{
         this.header_fields.set("header-objet", header_objet);
 
         this.header_fields.set("header-affaire", this.formulaire.installateur);
-        this.header_fields.set("header-field1", this.formulaire.commercial);
         this.header_fields.set("header-mail", this.formulaire.adresse_mail);
         this.header_fields.set("header-installateur", this.formulaire["Prénom/nom"]);
+        this.header_fields.set("header-field1", this.formulaire.commercial);
+        this.header_fields.set("header-field2", "");
+        this.header_fields.set("header-field3", "");
+        this.header_fields.set("header-field4", "");
 
     }
 
@@ -198,7 +213,7 @@ class DevisModel{
 
 
 class ArticleRow{
-       /**
+    /**
      * Create a DevisRow
      * @param {Object} options - DevisRow properties
      * @param {string} options.ref
@@ -217,5 +232,21 @@ class ArticleRow{
         this.base_categorie_id = base_categorie_id;
         this.quantity = 1;
         this.remise = 0;
+    }
+
+    /**
+     * return the unitary price with the remise
+     * @returns {number}
+     */
+    get_unitary_price(){
+        return this.prix * ( 1 - this.remise / 100);
+    }
+
+    /**
+     * return the total price with quantity and remise
+     * @returns {number}
+     */
+    get_price(){
+        return this.get_unitary_price() * this.quantity;
     }
 }

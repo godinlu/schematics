@@ -89,8 +89,8 @@ class DevisView{
      * @param {DevisModel} model 
      */
     render_footer(model){
-        const total_ttc = model.get_total_price();
-        const tva = 0.2;
+        const total_ht = model.get_total_price();
+        const total_tva = model.get_total_tva();
         this.footer_div.innerHTML = `
         <table>
             <tr>
@@ -101,25 +101,25 @@ class DevisView{
                 <td>Montant TTC</td>
             </tr>
             <tr>
-                <td>3</td>
-                <td>${format_number(total_ttc * (1 - tva))} €</td>
-                <td>${format_number(tva * 100)} %</td>
-                <td>${format_number(total_ttc * tva)} €</td>
-                <td>${format_number(total_ttc)} €</td>
+                <td>${model.tva_code}</td>
+                <td>${format_number(total_ht)} €</td>
+                <td>${format_number(model.tva_percent)} %</td>
+                <td>${format_number(total_tva)} €</td>
+                <td>${format_number(total_ht + total_tva)} €</td>
             </tr>
         </table>
         <table>
             <tr>
                 <td>Montant HT</td>
-                <td>${format_number(total_ttc * (1 - tva))} €</td>
+                <td>${format_number(total_ht)} €</td>
             </tr>
             <tr>
                 <td>Montant TVA</td>
-                <td>${format_number(total_ttc * tva)} €</td>
+                <td>${format_number(total_tva)} €</td>
             </tr>
             <tr>
                 <th>Total TTC</th>
-                <th>${format_number(total_ttc)} €</th>
+                <th>${format_number(total_ht + total_tva)} €</th>
             </tr>
         </table>
         `;
@@ -165,14 +165,144 @@ class DevisView{
 
 }
 
+
+/**
+ * return a html string to create the devis that will be downloaded in pdf
+ * @param {DevisModel} model 
+ * @returns {string}
+ */
+function generate_HTML_for_devis_pdf(model){
+    const total_ht = model.get_total_price();
+    const total_tva = model.get_total_tva();
+    return `
+    <div class="devis-header">
+        <div>
+            <div>
+                <img src="../public/img/Solisart-menue.jpg" alt="logo solisart" width="200">
+                <p>220, voie Aristide Bergès<br>73800 SAINTE-HELENE DU LAC<br>Tél: 04 79 60 42 06 <br> Email : contact@solisart.fr </p>
+                <p>
+                    <strong>
+                        <span>Objet : ${model.header_fields.get("header-objet")}</span>
+                        <br>
+                        <span>Affaire : ${model.header_fields.get("header-affaire")}</span>
+                    </strong>
+                </p>
+            </div>
+            <div>
+                <table cellspacing="0">
+                    <tr><th>CHIFFRAGE ESTIMATIF</th></tr>
+                    <tr><td>${model.header_fields.get("header-date")}</td></tr>
+                </table>
+                <p>
+                    Mail: ${model.header_fields.get("header-mail")}
+                    <br>
+                    A l'attention de ${model.header_fields.get("header-installateur")}
+                </p>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <td>Affaire suivie par</td>
+                <td>Mode de règlement</td>
+                <td>Validité</td>
+                <td>Délai</td>
+            </tr>
+            <tr>
+                <td>${model.header_fields.get("header-field1")}</td>
+                <td>${model.header_fields.get("header-field2")}</td>
+                <td>${model.header_fields.get("header-field3")}</td>
+                <td>${model.header_fields.get("header-field4")}</td>
+            </tr>
+        </table>
+    </div>
+    <table class="devis-body articles-table" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Ref</th>
+                <th>Désignation</th>
+                <th>Qté</th>
+                <th>Prix tarif</th>
+                <th>Remise</th>
+                <th>P.U HT</th>
+                <th>Montant HT</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${model.data_manager.get_childrens_categories(1).map(categ => {
+                const rows = model.get_rows_ordered_by_categ(categ.id);
+                if (rows.length === 0) return "";
+
+                return `
+                    <tr>
+                        <th></th>
+                        <th>${categ.name}</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    ${rows.map(row => `
+                        <tr>
+                            <td>${row.ref}</td>
+                            <td>${row.label}</td>
+                            <td>${row.quantity}</td>
+                            <td>${format_number(row.prix, 2)}</td>
+                            <td>${row.remise} %</td>
+                            <td>${format_number(row.get_unitary_price(), 2)}</td>
+                            <td>${format_number(row.get_price(), 2)}</td>
+                        </tr>
+                    `).join("")}
+                `;
+            }).join("")}
+        </tbody>
+    </table>
+    <div class="devis-footer">
+        <table>
+            <tr>
+                <td>Code TVA</td>
+                <td>Base HT</td>
+                <td>Taux TVA</td>
+                <td>Montant TVA</td>
+                <td>Montant TTC</td>
+            </tr>
+            <tr>
+                <td>${model.tva_code}</td>
+                <td>${format_number(total_ht, 2)} €</td>
+                <td>${format_number(model.tva_percent, 2)} %</td>
+                <td>${format_number(total_tva, 2)} €</td>
+                <td>${format_number(total_ht + total_tva, 2)} €</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Montant HT</td>
+                <td>${format_number(total_ht, 2)} €</td>
+            </tr>
+            <tr>
+                <td>Montant TVA</td>
+                <td>${format_number(total_tva, 2)} €</td>
+            </tr>
+            <tr>
+                <th>Total TTC</th>
+                <th>${format_number(total_ht + total_tva, 2)} €</th>
+            </tr>
+        </table>
+    </div>
+    `;
+}
+
+
+
+
 /**
  * 
  * @param {number} number 
  * @returns {string}
  */
-function format_number(number){
+function format_number(number, digit = 1){
     return number.toLocaleString("fr-FR", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1
+        minimumFractionDigits: digit,
+        maximumFractionDigits: digit
     });
 }

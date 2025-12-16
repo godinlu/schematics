@@ -45,6 +45,21 @@ function registerEvents() {
     document.querySelectorAll(".saveForm").forEach(a =>{
         a.addEventListener("click" , handle_save_form);
     });
+
+    document.getElementById("download-devis-pdf").addEventListener("click", ()=>{
+        let div = document.createElement("div");
+        const filename = "devis" + devis_model.formulaire["nom_affaire"] + ".pdf";
+        div.id = "devis-pdf";
+        div.innerHTML = generate_HTML_for_devis_pdf(devis_model);
+
+        html2pdf().set({
+                margin: 5,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).from(div).save();  
+    });
 }
 
 
