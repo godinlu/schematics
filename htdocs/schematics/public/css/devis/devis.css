@@ -321,13 +321,13 @@ All of these rules are just to manage properly tables for html2pdf
 }
 
 
-div.modal-categorie {
+div.modal-category {
     display: flex;
     flex-direction: column;
     gap: 0.5em;
 }
 
-div.modal-categorie button{
+div.modal-category button{
     width: 25vw;
     padding: 0.8em;
     cursor: pointer;
@@ -344,12 +344,12 @@ div.modal-categorie button{
 }
 
 /* Hover */
-div.modal-categorie button:hover {
+div.modal-category button:hover {
     background-color: #EAF205;
 }
 
 /* Focus (accessibilité) */
-div.modal-categorie button:focus {
+div.modal-category button:focus {
     outline: 3px solid #bcd4ff;
 }
 

@@ -3,6 +3,9 @@
  */
 
 class DevisModel{
+    /** @type {Map<string, ArticleRow>} */
+    article_rows
+
     /**
      * 
      * @param {DataManager} data_manager 
@@ -40,9 +43,9 @@ class DevisModel{
                 this.insert_article(action.ref);
             }else if (action.type === "body-edit"){
                 const art = this.data_manager.get_article(action.new_ref);
-                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
+                const base_categ = this.data_manager.get_base_category_id(art.category_id);
 
-                let new_row = new ArticleRow({...art, base_categorie_id:base_categ.id});
+                let new_row = new ArticleRow({...art, base_category_id:base_categ.id});
 
                 // preserve the old priority
                 new_row.priority = this.article_rows.get(action.old_ref).priority;
@@ -65,9 +68,9 @@ class DevisModel{
                     ref: action.ref,
                     label: "",
                     prix: 0,
-                    categorie_id: action.base_categorie_id,
-                    priority: this.get_rows_ordered_by_categ(action.base_categorie_id).at(-1)?.priority + 1,
-                    base_categorie_id: action.base_categorie_id
+                    category_id: action.base_category_id,
+                    priority: this.get_rows_ordered_by_categ(action.base_category_id).at(-1)?.priority + 1,
+                    base_category_id: action.base_category_id
                 });
                 this.article_rows.set(action.ref, new_row);
             }else if (action.type === "body-edit-text"){
@@ -100,8 +103,8 @@ class DevisModel{
         }else{
             try{
                 const art = this.data_manager.get_article(article_ref);
-                const base_categ = this.data_manager.get_base_categorie_id(art.categorie_id);
-                let devis_row = new ArticleRow({...art, base_categorie_id:base_categ.id});
+                const base_categ = this.data_manager.get_base_category_id(art.category_id);
+                let devis_row = new ArticleRow({...art, base_category_id:base_categ.id});
                 this.article_rows.set(article_ref, devis_row);
             }catch (error){
                 console.log(`Warning : Can't insert article : ${error}`);
@@ -110,16 +113,16 @@ class DevisModel{
     }
 
      /**
-     * Returns a list of articles filtered by their base_categorie_id
+     * Returns a list of articles filtered by their base_category_id
      * and ordered by priority.
      *
-     * @param {number} base_categorie_id
+     * @param {string} base_category_id
      * @returns {ArticleRow[]}
      */
-    get_rows_ordered_by_categ(base_categorie_id) {
+    get_rows_ordered_by_categ(base_category_id) {
         // Convert Map → Array, filter, sort
         return [...this.article_rows.values()]
-            .filter(a => a.base_categorie_id === base_categorie_id)
+            .filter(a => a.base_category_id === base_category_id)
             .sort((a, b) => a.priority - b.priority);
 
     }
@@ -159,7 +162,7 @@ class DevisModel{
         if (!devis_row) throw new Error("row not found in devis");
 
         // Get all articles from the same base category, ordered by priority
-        const rows = this.get_rows_ordered_by_categ(devis_row.base_categorie_id);
+        const rows = this.get_rows_ordered_by_categ(devis_row.base_category_id);
 
         // Find the current index of the article in the ordered list
         const index = rows.findIndex(a => a.ref === devis_row.ref);
@@ -201,9 +204,11 @@ class DevisModel{
         this.header_fields.set("header-mail", this.formulaire.adresse_mail);
         this.header_fields.set("header-installateur", this.formulaire["Prénom/nom"]);
         this.header_fields.set("header-field1", this.formulaire.commercial);
-        this.header_fields.set("header-field2", "");
-        this.header_fields.set("header-field3", "");
-        this.header_fields.set("header-field4", "");
+        this.header_fields.set("header-field2", "Défini par l'ouverture de compte");
+        this.header_fields.set("header-field3", "2 mois");
+
+        const delay = (this.formulaire.typeInstallation.includes("K"))? "3 mois" : "1 mois";
+        this.header_fields.set("header-field4", delay);
 
     }
 
@@ -219,17 +224,17 @@ class ArticleRow{
      * @param {string} options.ref
      * @param {string} options.label
      * @param {number} options.prix
-     * @param {number} options.categorie_id
+     * @param {string} options.category_id
      * @param {number} options.priority
-     * @param {number} options.base_categorie_id
+     * @param {string} options.base_category_id
      */
-    constructor({ref, label, prix, categorie_id, priority, base_categorie_id}){
+    constructor({ref, label, prix, category_id, priority, base_category_id}){
         this.ref = ref;
         this.label = label;
         this.prix = prix;
-        this.categorie_id = categorie_id;
+        this.category_id = category_id;
         this.priority = priority;
-        this.base_categorie_id = base_categorie_id;
+        this.base_category_id = base_category_id;
         this.quantity = 1;
         this.remise = 0;
     }

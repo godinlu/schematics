@@ -3,31 +3,36 @@ require_once ('views/View.php');
 require_once ('models/ArticleManager.php');
 require_once ('models/DataForm.php');
 
-class CategorieManager extends Model{
-    public function get_categories(){
-        return $this->select("SELECT * FROM categorie ORDER BY priority");
+class CatalogueManager extends Model {
+
+    /**
+     * Retourne les catégories avec une priorité absolue
+     */
+    public function get_categories() {
+        return $this->select("SELECT * FROM category ORDER BY priority");
     }
-}
 
-class TarifManager extends Model{
-    public function get_articles(){
-        $query = "
-            SELECT
-                A.ref,
-                A.label,
-                A.prix,
-                A.categorie_id
-            FROM article A
-            JOIN categorie C ON A.categorie_id = C.id
-            ORDER BY C.priority
-        ";
-
-        $articles = $this->select($query);
+    /**
+     * Retourne les articles triés selon la priorité absolue
+     * de leur catégorie
+     */
+    public function get_articles() {
+        $articles = $this->select("
+            SELECT a.ref, a.label, a.prix, a.category_id
+            FROM article a
+            INNER JOIN category c
+                ON a.category_id = c.id
+            ORDER BY c.priority
+        ");
 
         $priority = 1;
+
         foreach ($articles as &$article) {
-            $article['priority'] = $priority++;
+            $article['priority'] = $priority;
+            $priority++;
         }
+
+        unset($article); // bonne pratique avec les références
 
         return $articles;
     }
@@ -60,13 +65,12 @@ class ControllerDevis
 
       $actions_saved = ($devis_saved["actions"])?? [];
 
-      $categorie_manager = new CategorieManager;
-      $tarif_manager = new TarifManager;
+      $catalogue_manager = new CatalogueManager;
 
       $this->_view = new View('Devis');
       $this->_view->generate(array(
-        "categories" => $categorie_manager->get_categories(),
-        "articles" => $tarif_manager->get_articles(),
+        "categories" => $catalogue_manager->get_categories(),
+        "articles" => $catalogue_manager->get_articles(),
         "actions_saved" => $actions_saved,
         "formulaire" => $formulaire
       ));

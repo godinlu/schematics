@@ -54,7 +54,7 @@ class DevisView{
             </tr>
         </thead>
         <tbody>
-            ${model.data_manager.get_childrens_categories(1).map(categ => 
+            ${model.data_manager.get_childrens_categories('articles').map(categ => 
                 `
                 <tr>
                     <th></th>
@@ -71,7 +71,7 @@ class DevisView{
                             <i class="fa-solid fa-plus"></i>
                         </button>
                         <button data-handler="body-add-text" data-categ="${categ.id}">
-                            <i class="fa-regular fa-comment"></i>
+                            TEXT
                         </button>
                     </td>
                     <td></td>
@@ -132,17 +132,23 @@ class DevisView{
      * @returns {string}
      */
     #render_article_row(article_row){
-        const ref_html = article_row.ref.startsWith("TEXT_") ? "TEXT" : article_row.ref;
+        const is_text = article_row.ref.startsWith("TEXT_");
         return `
             <tr>
-                <td>${ref_html}</td>
+                <td>${(is_text)? "TEXT" : article_row.ref}</td>
                 <td>${article_row.label}</td>
-                <td>${format_number(article_row.prix)} €</td>
-                <td><input class="remise" data-handler="remise-input" data-ref="${article_row.ref}" type="number" min="0" max="30" value="${article_row.remise}"></td>
-                <td><input class="qte-input" data-handler="qte-input" data-ref="${article_row.ref}" type="number" min="1" max="9999" value="${article_row.quantity}"></td>
+                <td>${(is_text)? "" : format_number(article_row.prix) + " €"}</td>
+                <td>
+                    ${(is_text)? "" : 
+                    `<input class="remise" data-handler="remise-input" data-ref="${article_row.ref}" type="number" min="0" max="30" value="${article_row.remise}">`}
+                </td>
+                <td>
+                    ${(is_text)? "" : 
+                    `<input class="qte-input" data-handler="qte-input" data-ref="${article_row.ref}" type="number" min="-9999" max="9999" value="${article_row.quantity}">`} 
+                </td>
                 <td>
                     <div class="devis-edit">
-                        <button data-handler="body-edit" data-ref="${article_row.ref}" data-categ="${article_row.categorie_id}">
+                        <button data-handler="body-edit" data-ref="${article_row.ref}" data-categ="${article_row.category_id}">
                             <i class="fa-regular fa-pen-to-square"></i>
                         </button>
                         <div class="move-buttons">
@@ -228,7 +234,7 @@ function generate_HTML_for_devis_pdf(model){
             </tr>
         </thead>
         <tbody>
-            ${model.data_manager.get_childrens_categories(1).map(categ => {
+            ${model.data_manager.get_childrens_categories("articles").map(categ => {
                 const rows = model.get_rows_ordered_by_categ(categ.id);
                 if (rows.length === 0) return "";
 
@@ -244,7 +250,7 @@ function generate_HTML_for_devis_pdf(model){
                     </tr>
                     ${rows.map(row => `
                         <tr>
-                            <td>${row.ref}</td>
+                            <td>${(row.ref.startsWith("TEXT_")? "TEXT": row.ref)}</td>
                             <td>${row.label}</td>
                             <td>${row.quantity}</td>
                             <td>${format_number(row.prix, 2)}</td>

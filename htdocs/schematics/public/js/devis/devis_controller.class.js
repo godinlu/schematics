@@ -101,7 +101,7 @@ class DevisController{
      * @param {HTMLButtonElement} btn 
      */
     #handler_body_add(btn){
-        this.modal_view.open(this.model, {type:"body-add", ref:""}, parseInt(btn.dataset.categ));
+        this.modal_view.open(this.model, {type:"body-add", ref:""}, btn.dataset.categ);
     }
 
     /**
@@ -109,9 +109,9 @@ class DevisController{
      * @param {HTMLButtonElement} btn 
      */
     #handler_body_add_text(btn){
-        const base_categorie_id = parseInt(btn.dataset.categ);
+        const base_category_id = btn.dataset.categ;
         const ref = "TEXT_"+Date.now();
-        this.model.submit_action({type: "body-add-text", ref, base_categorie_id});
+        this.model.submit_action({type: "body-add-text", ref, base_category_id});
         this.view.render(this.model);
     }
 
@@ -158,7 +158,7 @@ class DevisController{
             // set the cursor to the end of the text not at the start
             input.setSelectionRange(input.value.length, input.value.length);
         }else{
-            this.modal_view.open(this.model, {type:"body-edit", old_ref, new_ref:""}, parseInt(btn.dataset.categ));
+            this.modal_view.open(this.model, {type:"body-edit", old_ref, new_ref:""}, btn.dataset.categ);
         }
         
     }
@@ -200,13 +200,13 @@ class DevisController{
     }
 
     /**
-     * This handler is called when the user click on a categorie on the modal
+     * This handler is called when the user click on a category on the modal
      * @param {HTMLButtonElement} btn 
      */
     #handler_click_modal_categ(btn){
         const action = JSON.parse(btn.dataset.action);
-        const categorie_id = parseInt(btn.dataset.categ);
-        this.modal_view.open(this.model, action, categorie_id);
+        const category_id = btn.dataset.categ;
+        this.modal_view.open(this.model, action, category_id);
     }
 
     /**

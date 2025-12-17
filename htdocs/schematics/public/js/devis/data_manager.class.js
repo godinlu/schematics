@@ -3,34 +3,32 @@
  * @property {string} ref
  * @property {string} label
  * @property {float} prix
- * @property {number} categorie_id
+ * @property {string} category_id
  * @property {number} priority
  */
 /**
- * @typedef {Object} categorie_dict
- * @property {number} id
+ * @typedef {Object} category_dict
+ * @property {string} id
  * @property {string} name
- * @property {string} short_name
- * @property {string} type
- * @property {number} priority
  * @property {?number} parent_id
+ * @property {number} priority
  */
 
 
 class DataManager{
     /** @type {article_dict[]} */
     #articles;
-    /** @type {categorie_dict[]} */
+    /** @type {category_dict[]} */
     #categories;
     /** @type {Map<string, article_dict>} */
     #articles_map;
-    /** @type {Map<number, categorie_dict>} */
+    /** @type {Map<string, category_dict>} */
     #categories_map;
 
     /**
      * 
      * @param {article_dict[]} articles 
-     * @param {categorie_dict[]} categories 
+     * @param {category_dict[]} categories 
      */
     constructor(articles, categories){
         this.#articles = articles;
@@ -53,57 +51,57 @@ class DataManager{
     }
 
     /**
-     * return the Categorie identify by it's ID.
-     * @param {number} categorie_id 
-     * @returns {categorie_dict}
+     * return the Category identify by it's ID.
+     * @param {string} category_id 
+     * @returns {category_dict}
      */
-    get_categorie(categorie_id){
-        const categorie_dict = this.#categories_map.get(categorie_id);
-        if (!categorie_dict) throw new Error(`Category with id ${categorie_id} does not exist.`);
-        return categorie_dict
+    get_category(category_id){
+        const category_dict = this.#categories_map.get(category_id);
+        if (!category_dict) throw new Error(`Category with id ${category_id} does not exist.`);
+        return category_dict
     }
 
 
     /**
      * Return the base category (level 1 categ)
-     * @param {number} categorie_id 
-     * @returns {categorie_dict} 
+     * @param {string} category_id 
+     * @returns {category_dict} 
      */
-    get_base_categorie_id(categorie_id){
-        const cat = this.get_categorie(categorie_id);
+    get_base_category_id(category_id){
+        const cat = this.get_category(category_id);
         
-        if (cat.parent_id === 1 || cat.parent_id === null){
+        if (cat.parent_id === 'articles' || cat.parent_id === null){
             return cat;
         }else {
-            return this.get_base_categorie_id(cat.parent_id);
+            return this.get_base_category_id(cat.parent_id);
         }
     }
 
     /**
-     * return all childrens categ id of the categorie given
-     * @param {number} categorie_id 
-     * @returns {categorie_dict[]}
+     * return all childrens categ id of the category given
+     * @param {string} category_id 
+     * @returns {category_dict[]}
      */
-    get_childrens_categories(categorie_id){
-        return this.#categories.filter(cat => cat.parent_id === categorie_id);
+    get_childrens_categories(category_id){
+        return this.#categories.filter(cat => cat.parent_id === category_id);
     }
 
     /**
-     * Return a list of article_dict which are in the categorie given.
-     * @param {number} categorie_id 
+     * Return a list of article_dict which are in the category given.
+     * @param {string} category_id 
      * @returns {article_dict[]}
      */
-    get_articles_by_categorie_id(categorie_id){
-        return this.#articles.filter(a => a.categorie_id === categorie_id);
+    get_articles_by_category_id(category_id){
+        return this.#articles.filter(a => a.category_id === category_id);
     }
 
     /**
-     * return the list of parent categorie, the last item will alway be the categorie given.
-     * @param {number} categorie_id 
-     * @returns {categorie_dict[]}
+     * return the list of parent category, the last item will alway be the category given.
+     * @param {string} category_id 
+     * @returns {category_dict[]}
      */
-    get_parents_categories(categorie_id){
-        const cat = this.get_categorie(categorie_id);
+    get_parents_categories(category_id){
+        const cat = this.get_category(category_id);
         
         if (cat.parent_id === null){
             return [cat];
