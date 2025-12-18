@@ -322,6 +322,10 @@ All of these rules are just to manage properly tables for html2pdf
 
 
 div.modal-category {
+    flex: 1 1 auto;       /* ← prend l’espace restant */
+    min-height: 0;        /* ← SUPER IMPORTANT pour éviter le débordement */
+    overflow-y: auto;    /* scroll vertical */
+    overflow-x: hidden;  /* pas de scroll horizontal */
     display: flex;
     flex-direction: column;
     gap: 0.5em;

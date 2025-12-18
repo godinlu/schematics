@@ -22,7 +22,7 @@ class CatalogueManager extends Model {
             FROM article a
             INNER JOIN category c
                 ON a.category_id = c.id
-            ORDER BY c.priority
+            ORDER BY c.priority, a.prix
         ");
 
         $priority = 1;
