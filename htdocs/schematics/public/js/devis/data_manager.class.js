@@ -109,4 +109,39 @@ class DataManager{
             return [...this.get_parents_categories(cat.parent_id), cat];
         }
     }
+
+    /**
+     * Return all descendant categories of a given category (recursive).
+     * @param {string} category_id
+     * @returns {category_dict[]}
+     */
+    #get_all_childrens_categories(category_id) {
+        const directChildren = this.get_childrens_categories(category_id);
+
+        return directChildren.flatMap(child => [
+            child,
+            ...this.#get_all_childrens_categories(child.id)
+        ]);
+    }
+
+    /**
+     * Return all articles belonging to the given category
+     * and ALL its children categories.
+     * @param {string} category_id
+     * @returns {article_dict[]}
+     */
+    get_articles_by_category_tree(category_id) {
+        // include the category itself
+        const categories = [
+            this.get_category(category_id),
+            ...this.#get_all_childrens_categories(category_id)
+        ];
+
+        const categoryIds = new Set(categories.map(c => c.id));
+
+        return this.#articles.filter(
+            art => categoryIds.has(art.category_id)
+        );
+    }
+
 }

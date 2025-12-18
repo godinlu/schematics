@@ -48,7 +48,7 @@ class DevisView{
                 <th>Ref</th>
                 <th>Désignation</th>
                 <th>Prix</th>
-                <th>Remise</th>
+                <th>Remise %</th>
                 <th>Quantité</th>
                 <th>Edition</th>
             </tr>

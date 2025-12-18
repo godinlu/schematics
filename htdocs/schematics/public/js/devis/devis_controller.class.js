@@ -7,6 +7,8 @@
 class DevisController{
     #timers
 
+    #filters
+
     /**
      * 
      * @param {DevisModel} model 
@@ -24,6 +26,7 @@ class DevisController{
         this.setup_modal_events();
 
         this.#timers = new WeakMap();
+        this.#filters = {ref:"", label:""};
     }
 
     setup_header_events(){
@@ -68,6 +71,7 @@ class DevisController{
             const btn = event.target.closest("button");
             if (btn){
                 if (btn.dataset.handler === "click_modal_categ") this.#handler_click_modal_categ(btn);
+                else if (btn.dataset.handler === "click_modal_all_article") this.#handler_click_modal_all_article(btn);
             }
                         
             const tr = event.target.closest("tr");
@@ -75,6 +79,13 @@ class DevisController{
                 if (tr.dataset.handler === "click_modal_article") this.#handler_click_modal_article(tr);
             }
             
+        });
+
+        this.modal_view.modal.content_div.addEventListener("input", (event) =>{
+            const input = event.target;
+            if (input.dataset.handler === "filter-articles"){
+                this.#handler_input_filter_articles(input);
+            } 
         });
     }
 
@@ -101,7 +112,7 @@ class DevisController{
      * @param {HTMLButtonElement} btn 
      */
     #handler_body_add(btn){
-        this.modal_view.open(this.model, {type:"body-add", ref:""}, btn.dataset.categ);
+        this.#render_modal({type:"body-add", ref:""}, btn.dataset.categ);
     }
 
     /**
@@ -158,7 +169,7 @@ class DevisController{
             // set the cursor to the end of the text not at the start
             input.setSelectionRange(input.value.length, input.value.length);
         }else{
-            this.modal_view.open(this.model, {type:"body-edit", old_ref, new_ref:""}, btn.dataset.categ);
+            this.#render_modal({type:"body-edit", old_ref, new_ref:""}, btn.dataset.categ);
         }
         
     }
@@ -206,7 +217,21 @@ class DevisController{
     #handler_click_modal_categ(btn){
         const action = JSON.parse(btn.dataset.action);
         const category_id = btn.dataset.categ;
-        this.modal_view.open(this.model, action, category_id);
+        this.#render_modal(action, category_id);
+    }
+
+    /**
+     * This handler is called when the user click on the all articles of the current categories
+     * @param {HTMLButtonElement} btn 
+     */
+    #handler_click_modal_all_article(btn){
+        const action = JSON.parse(btn.dataset.action);
+        const parents_categ = this.model.data_manager.get_parents_categories(btn.dataset.categ); 
+        const articles = this.model.data_manager.get_articles_by_category_tree(btn.dataset.categ);
+
+        this.#filters = {ref:"", label:""};
+        this.modal_view.render_articles_shell(parents_categ, action);
+        this.modal_view.render_articles_rows(articles, action);
     }
 
     /**
@@ -238,6 +263,44 @@ class DevisController{
                 new_label: input.value
         });
         this.view.render(this.model);
+    }
+
+    /**
+     * This handler is called when the user update a filter input field on the modal article view.
+     * @param {HTMLInputElement} input 
+     */
+    #handler_input_filter_articles(input){
+        const action = JSON.parse(input.dataset.action);
+        // update of global filters
+        this.#filters[input.dataset.type] = input.value;
+
+        // get all articles of the category
+        let articles = this.model.data_manager.get_articles_by_category_tree(input.dataset.categ);
+
+        articles = articles.filter((art) => art.ref.toLowerCase().includes(this.#filters.ref));
+        articles = articles.filter((art) => art.label.toLowerCase().includes(this.#filters.label));
+        this.modal_view.render_articles_rows(articles, action);
+    }
+
+    /**
+     * 
+     * @param {Object} action 
+     * @param {string} category_id 
+     */
+    #render_modal(action, category_id){
+        const sub_categs = this.model.data_manager.get_childrens_categories(category_id);
+        const parents_categ = this.model.data_manager.get_parents_categories(category_id); 
+
+        if (sub_categs.length > 0){
+            this.modal_view.render_category_view(parents_categ, sub_categs, action);
+        }else{
+            let articles = this.model.data_manager.get_articles_by_category_id(category_id);
+            this.#filters = {ref:"", label:""};
+            this.modal_view.render_articles_shell(parents_categ, action);
+            this.modal_view.render_articles_rows(articles, action);
+        }
+
+        this.modal_view.show();
     }
 
     
