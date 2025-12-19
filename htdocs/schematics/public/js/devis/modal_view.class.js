@@ -47,11 +47,87 @@ class ModalView{
                     <thead>
                         <tr>
                             <th>Ref <input type="text" 
+                                            placeholder="Filtrer par réf."
                                             data-handler="filter-articles" 
                                             data-type="ref" 
                                             data-categ="${categ_id}"
                                             data-action=${JSON.stringify(action)}></th>
                             <th>Désignation <input type="text" 
+                                            placeholder="Filtrer par désignation."
+                                            data-handler="filter-articles" 
+                                            data-type="label" 
+                                            data-categ="${categ_id}"
+                                            data-action=${JSON.stringify(action)}></th>
+                            <th>Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody data-zone="articles-body"></tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    render_capteurs_shell(parents_categ, action){
+        const categ_id = parents_categ.at(-1).id;
+        this.modal.content_div.innerHTML = `
+            ${this.#breadcrumb_view(parents_categ, action)}
+            <table>
+                <tr>
+                    <td>Type</td>
+                    <td>Type de pose</td>
+                    <td>Type toiture</td>
+                    <td>Inclinaison</td>
+                </tr>
+                <tr>
+                    <td>
+                        <select>
+                            <option>Capteurs S7 2,5 portrait</option>
+                            <option>Capteurs intégrés SID 2,5 m2</option>
+                            <option>Capteurs SH 2,5 paysage</option>
+                            <option>Capteurs S7 2,5 cadre noir portrait</option>
+                            <option>Capteurs S7 2,0 portrait</option>
+                            <option>Capteurs SH 2,0 paysage</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            <option>Chassis murale</option>
+                            <option>Chassis au sol</option>
+                            <option>Chassis de toit</option>
+                            <option>Surtoiture</option>
+                            <option>Verticale</option>
+                            <option>Intégration</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            <option>Ardoise</option>
+                            <option>Tuile romane ou forte ondulation</option>
+                            <option>Tuiles mécanique</option>
+                            <option>Tôle ondulée</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            <option>Pose à 45°</option>
+                            <option>Pose à 60°</option>
+                            <option>Pose à 70°</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>                
+            <div class="table-scroll">
+                <table class="articles-table">
+                    <thead>
+                        <tr>
+                            <th>Ref <input type="text" 
+                                            placeholder="Filtrer par réf."
+                                            data-handler="filter-articles" 
+                                            data-type="ref" 
+                                            data-categ="${categ_id}"
+                                            data-action=${JSON.stringify(action)}></th>
+                            <th>Désignation <input type="text" 
+                                            placeholder="Filtrer par désignation."
                                             data-handler="filter-articles" 
                                             data-type="label" 
                                             data-categ="${categ_id}"

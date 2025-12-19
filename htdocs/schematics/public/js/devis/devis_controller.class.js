@@ -296,7 +296,11 @@ class DevisController{
         }else{
             let articles = this.model.data_manager.get_articles_by_category_id(category_id);
             this.#filters = {ref:"", label:""};
-            this.modal_view.render_articles_shell(parents_categ, action);
+            if (category_id !== "capteurs"){
+                this.modal_view.render_articles_shell(parents_categ, action);
+            }else{
+                this.modal_view.render_capteurs_shell(parents_categ, action);
+            }
             this.modal_view.render_articles_rows(articles, action);
         }
 

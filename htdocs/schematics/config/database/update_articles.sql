@@ -131,22 +131,22 @@ UPDATE article SET category_id = 'bal tamp inox' WHERE ref in ("BAL0094", "BAL00
 -- #####################################################################
 
 -- capteurs SID2,5
-UPDATE article SET category_id = 'SID 2,5' WHERE ref REGEXP '^SID2,5-(A|T)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^SID2,5-(A|T)';
 
 -- capteurs S7 2,5
-UPDATE article SET category_id = 'S7 2,5' WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|V)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|V)';
 
 -- capteurs SH 2,5
-UPDATE article SET category_id = 'SH 2,5' WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|V)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|V)';
 
 -- capteurs S7 2,5 black frame
-UPDATE article SET category_id = 'S7 2,5B' WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|V)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|V)';
 
 -- capteurs S7 2 portrait
-UPDATE article SET category_id = 'S7 2,0' WHERE ref REGEXP '^S7-(ST|CT|CS|V)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^S7-(ST|CT|CS|V)';
 
 -- capteurs S7 2 paysage
-UPDATE article SET category_id = 'SH 2,0' WHERE ref REGEXP '^SH 2-(ST|CT|CS|V)';
+UPDATE article SET category_id = 'capteurs' WHERE ref REGEXP '^SH 2-(ST|CT|CS|V)';
 
 -- #####################################################################
 --                          BITUBE / MONOTUBE / KIT DE RACCORDEMENT
