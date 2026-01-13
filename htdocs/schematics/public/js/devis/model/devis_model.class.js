@@ -1,6 +1,5 @@
-/**
- * @type {import('./data_manager.class').DataManager}
- */
+import {DataManager} from "./data_manager.class.js";
+import {get_default_articles_ref} from "./default_articles_ref.js";
 
 class DevisModel{
     /** @type {Map<string, ArticleRow>} */
@@ -255,3 +254,5 @@ class ArticleRow{
         return this.get_unitary_price() * this.quantity;
     }
 }
+
+export {DevisModel};

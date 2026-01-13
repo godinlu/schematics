@@ -62,14 +62,19 @@
             ],
             "Devis": [
                 "../assets/html2pdf/html2pdf.bundle.min.js",
-                "devis/modal.class.js",
-                "devis/data_manager.class.js",
-                "devis/default_articles_ref.js",
-                "devis/devis_model.class.js",
-                "devis/devis_view.class.js",
-                "devis/modal_view.class.js",
-                "devis/devis_controller.class.js",
-                "devis/main_devis.js"
+                "devis/model/data_manager.class.js",
+                "devis/model/default_articles_ref.js",
+                "devis/store/devis_store.js",
+                "devis/components/devis_app.js",
+                "devis/components/devis_header.js",
+                "devis/components/devis_body.js",
+                "devis/components/devis_footer.js",
+                "devis/components/devis_category.js",
+                "devis/components/devis_row.js",
+                "devis/components/devis_modal.js",
+                "devis/components/devis_pdf.js",
+                "devis/utils.js",
+                "devis/index.js"
             ],
             "public":[
                 "public/header.js",

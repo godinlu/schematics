@@ -1,4 +1,4 @@
-class Modal{
+class AbstractModal{
     constructor(){
         let body = document.querySelector("body");
         this.modal_div = document.createElement("div");

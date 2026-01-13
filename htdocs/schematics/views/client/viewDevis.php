@@ -1,5 +1,4 @@
-
-<div id="main-content">
+<div id="devis-app">   
     <div id="editable-devis">
         <div class="devis-header">
             <div>
@@ -20,7 +19,7 @@
                         <tr><td><input type="date" data-field_name="header-date"></td></tr>
                     </table>
                     <p>
-                        Mail: <input type="text"  data-field_name="header-mail">
+                        Mail: <input type="text" data-field_name="header-mail">
                         <br>
                         A l'attention de <input type="text" data-field_name="header-installateur">
                     </p>
@@ -41,15 +40,36 @@
                 </tr>
             </table>
         </div>
-        <table class="devis-body articles-table"></table>
+            
+        
+        <table class="devis-body articles-table">
+            <thead>
+                <tr>
+                    <th>Ref</th>
+                    <th>Désignation</th>
+                    <th>Prix</th>
+                    <th>Remise %</th>
+                    <th>Quantité</th>
+                    <th>Edition</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        
         <div class="devis-footer">
         </div>
+        <devis-footer>
+        </devis-footer>
+
     </div>
-    
     <aside id="sidebar">
         <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
     </aside>
-</div>
+</div> 
+
+
 <form id="formulaire" action="" method="post">
 </form>
 <script id="data-articles" type="application/json">
@@ -67,4 +87,3 @@
 <script id="data-formulaire" type="application/json">
 <?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
 </script>
-
