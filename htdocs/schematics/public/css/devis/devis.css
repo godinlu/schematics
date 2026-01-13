@@ -146,6 +146,10 @@ div.devis-footer table:last-child th{
     width: 100%;
 }
 
+#editable-devis .devis-header input[type="text"]{
+    width: 70%;
+}
+
 td:has(.devis-edit) {
     padding: 0 !important;
 }

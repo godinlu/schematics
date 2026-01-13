@@ -2,10 +2,15 @@
  * @type {import('../store/devis_store').devisStore}
  */
 
+/**
+ * class to manage the devis header with all fields editing
+ */
 class DevisHeader{
+    /**@type {Map<string, string>} */
+    fields
+
     constructor(formulaire){
         this.fields = new Map();
-        this._debounceTimers = new Map();
 
         this.fields.set("header-date", new Date().toISOString().split("T")[0]);
 
@@ -25,7 +30,8 @@ class DevisHeader{
     }
 
     /**
-     * 
+     * mount the devis header manager to the div by adding event listeners
+     * editing actions are saved with the blur action
      * @param {HTMLElement} div 
      */
     mount(div){
@@ -34,33 +40,32 @@ class DevisHeader{
         });
 
         div.querySelectorAll('[data-field_name]').forEach(input => {
-            input.addEventListener('input', (event) => {
+            input.addEventListener('blur', (event) => {
                 const field = input.dataset.field_name;
+                const new_value = event.target.value;
+                const old_value = this.fields.get(field);
 
-                clearTimeout(this._debounceTimers.get(field));
-
-                // Set new timeout
-                this._debounceTimers.set(field, setTimeout(() => {
+                if (old_value !== new_value){
                     this.submit_action({
-                        type:"header-edit-field",
+                        type: "header-edit-field",
                         field,
-                        old_value:"",
-                        new_value: event.target.value
+                        old_value,
+                        new_value
                     });
-                    this._debounceTimers.delete(field); // cleanup
-                }, 300)); // 300 ms debounce
+                    console.log(devisStore.action_history);
+                }
             });
         });
     }
 
     /**
-     * 
+     * Submit an header action and add the action to the devisStore.action_history only 
+     * if the action can be done correctly.
      * @param {Object} action 
      */
     submit_action(action){
         if (action?.type !== "header-edit-field") return;
 
-        if (action.old_value === "") action.old_value = this.fields.get(action.field);
         if (action.old_value !== this.fields.get(action.field)){
             console.warn("Old value doesn't match with the reel value");
             return;
@@ -68,4 +73,17 @@ class DevisHeader{
         this.fields.set(action.field, action.new_value);
         devisStore.action_history.push(action);
     }
+
+    /**
+     * Get header-date in French format DD/MM/YYYY
+     * @returns {string}
+     */
+    get_date_fr_format() {
+        const dateStr = this.fields.get("header-date");
+        if (!dateStr) return "";
+
+        const [year, month, day] = dateStr.split("-");
+        return `${day}/${month}/${year}`;
+    }
+
 }

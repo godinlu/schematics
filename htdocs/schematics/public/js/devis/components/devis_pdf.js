@@ -66,7 +66,7 @@ class DevisPdf{
                 <div>
                     <table cellspacing="0">
                         <tr><th>CHIFFRAGE ESTIMATIF</th></tr>
-                        <tr><td>${this.devis_header.fields.get("header-date")}</td></tr>
+                        <tr><td>${this.devis_header.get_date_fr_format()}</td></tr>
                     </table>
                     <p>
                         Mail: ${this.devis_header.fields.get("header-mail")}
