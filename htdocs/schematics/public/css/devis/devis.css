@@ -235,7 +235,6 @@ fieldset{
 #panel_article > div{
     margin: 1em 0.5em 1em 0.5em;
     border-radius: 0.5em;
-    background-color: #222222;
 }
 #panel_article > div:first-child{
     flex-basis: 0;

@@ -4,7 +4,7 @@
     height: 20em;
     overflow: scroll;
     border-radius: 0.5em;
-    background-color: #222222;
+    background-color: white;
 }
 
 .scroll-container table{
@@ -28,5 +28,5 @@
 }
 
 .scroll-container tbody tr:nth-child(odd) {
-    background-color: #515151;
+    background-color: #ededed;
 }
