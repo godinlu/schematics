@@ -2,11 +2,12 @@
  * @type {import('./devis_body.js').DevisBody}
  * @type {import('./devis_footer.js').DevisFooter}
  * @type {import('./devis_header.js').DevisHeader}
+ * @type {import('../utils.js').format_number}
  */
 
 
 /**
- * 
+ * This class is used to create the final static devis to be downloaded in pdf 
  */
 class DevisPdf{
     /**@type {DevisHeader} */
@@ -38,6 +39,7 @@ class DevisPdf{
         div.innerHTML = `
         ${this.#devis_header_html()}
         ${this.#devis_body()}
+        ${this.#devis_footer()}
         `;
     }
 
@@ -93,6 +95,7 @@ class DevisPdf{
 
     /**
      * return the HTML string of the devis body for pdf
+     * Loop into every non empty categories and for each categories loop into every devis row
      * @returns {string}
      */
     #devis_body(){
@@ -122,38 +125,68 @@ class DevisPdf{
                     <th></th>
                     <th></th>
                 </tr>
-                ${devis_categ.get_rows_ordered().map().join("")}
-                `;
-            }).join("")}
-            ${model.data_manager.get_childrens_categories("articles").map(categ => {
-                const rows = model.get_rows_ordered_by_categ(categ.id);
-                if (rows.length === 0) return "";
-
-                return `
+                ${devis_categ.get_rows_ordered().map(devis_row => `
                     <tr>
-                        <th></th>
-                        <th>${categ.name}</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <td>${(devis_row.ref.startsWith("TEXT_")? "TEXT": devis_row.ref)}</td>
+                        <td>${devis_row.label}</td>
+                        <td>${devis_row.quantity}</td>
+                        <td>${format_number(devis_row.prix, 2)}</td>
+                        <td>${devis_row.remise} %</td>
+                        <td>${format_number(devis_row.prix * (1 - (devis_row.remise / 100)), 2)}</td>
+                        <td>${format_number(devis_row.get_price(), 2)}</td>
                     </tr>
-                    ${rows.map(row => `
-                        <tr>
-                            <td>${(row.ref.startsWith("TEXT_")? "TEXT": row.ref)}</td>
-                            <td>${row.label}</td>
-                            <td>${row.quantity}</td>
-                            <td>${format_number(row.prix, 2)}</td>
-                            <td>${row.remise} %</td>
-                            <td>${format_number(row.get_unitary_price(), 2)}</td>
-                            <td>${format_number(row.get_price(), 2)}</td>
-                        </tr>
-                    `).join("")}
+                `).join("")}
                 `;
             }).join("")}
         </tbody>
     </table>
     `;
     }
+
+
+    /**
+     * return the HTML string of the devis footer with total price HT and TTC
+     * @returns {string} - HTML string of the footer
+     */
+    #devis_footer(){
+        const total_ht = this.devis_body.get_price();
+        const total_tva = total_ht * (this.devis_footer.tva_percent / 100);
+
+        return `
+        <div class="devis-footer">
+            <table>
+                <tr>
+                    <td>Code TVA</td>
+                    <td>Base HT</td>
+                    <td>Taux TVA</td>
+                    <td>Montant TVA</td>
+                    <td>Montant TTC</td>
+                </tr>
+                <tr>
+                    <td>${this.devis_footer.tva_code}</td>
+                    <td>${format_number(total_ht, 2)} €</td>
+                    <td>${format_number(this.devis_footer.tva_percent, 2)} %</td>
+                    <td>${format_number(total_tva, 2)} €</td>
+                    <td>${format_number(total_ht + total_tva, 2)} €</td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Montant HT</td>
+                    <td>${format_number(total_ht, 2)} €</td>
+                </tr>
+                <tr>
+                    <td>Montant TVA</td>
+                    <td>${format_number(total_tva, 2)} €</td>
+                </tr>
+                <tr>
+                    <th>Total TTC</th>
+                    <th>${format_number(total_ht + total_tva, 2)} €</th>
+                </tr>
+            </table>
+        </div>
+        `;
+    }
+
+
 }

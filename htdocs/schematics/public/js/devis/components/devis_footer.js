@@ -15,7 +15,7 @@ class DevisFooter{
      * @param {number} total_ht 
      */
     mount(div, total_ht){
-        const total_tva = total_ht * (this.tva_percent / 100)
+        const total_tva = total_ht * (this.tva_percent / 100);
 
         div.innerHTML = `
             <table>

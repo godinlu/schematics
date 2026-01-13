@@ -8,6 +8,20 @@
  * 
  */
 class DevisRow{
+    /**@type {string} */
+    ref
+    /**@type {string} */
+    label
+    /**@type {number} */
+    prix
+    /**@type {string} */
+    category_id
+    /**@type {number} */
+    priority
+    /**@type {number} */
+    remise
+    /**@type {number} */
+    quantity
 
     constructor({ref, label, prix, category_id, priority}){
         this.ref = ref;
