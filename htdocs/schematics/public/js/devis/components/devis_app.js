@@ -55,6 +55,21 @@ class DevisApp{
         document.querySelector("#download-devis-pdf").addEventListener("click", () => this.#download_devis_pdf());
         document.querySelector("#undo").addEventListener("click", () => devisStore.undo());
         document.querySelector("#redo").addEventListener("click", () => devisStore.redo());
+
+        // Ctrl + z and Ctrl + y
+        document.addEventListener("keydown", (e) => {
+            if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === "z") {
+                e.preventDefault(); // prevent the default action of the nav
+                devisStore.undo();
+            }
+
+            // Ctrl+Y or Ctrl+Shift+Z for redo
+            if ((e.ctrlKey && e.key.toLowerCase() === "y") ||
+                (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "z")) {
+                e.preventDefault();
+                devisStore.redo();
+            }
+        });
     }
 
     #register_store_events(){
@@ -64,6 +79,11 @@ class DevisApp{
             this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
         });
         devisStore.subscribe("show-modal", (context) => this.devis_modal.set_content(context));
+
+        devisStore.subscribe("history-update", ({can_undo, can_redo}) => {
+            document.querySelector("#undo").disabled = !can_undo;
+            document.querySelector("#redo").disabled = !can_redo;
+        });
     }
 
     /**

@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 
 
 /**
@@ -95,6 +95,8 @@ const devisStore = {
                     console.log(this.action_history);
                     console.log(this.history_cursor);
                 }
+
+                this._update_history_button();
             } 
         }catch (error){
             console.warn(`can't submitting action ${JSON.stringify(action)} : ${error}`);
@@ -117,6 +119,9 @@ const devisStore = {
 
         // 3. force a full render
         this.dispatch("render");
+
+        // Dispatch history update here
+        this._update_history_button();
 
     },
 
@@ -151,5 +156,16 @@ const devisStore = {
 
         this.rebuild();
     },
+
+
+    /**
+     * update history button to inform if we can undo or redo
+     */
+    _update_history_button(){
+        this.dispatch("history-update", {
+            can_undo: this.history_cursor >= 0,
+            can_redo: this.history_cursor < this.action_history.length - 1
+        });
+    }
 
 };

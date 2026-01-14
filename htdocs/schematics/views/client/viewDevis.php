@@ -65,8 +65,11 @@
 
     </div>
     <aside id="sidebar">
-        <button id="undo">undo</button>
-        <button id="redo">redo</button>
+        <div id="undo-redo">
+            <button id="undo" title="Ctrl + z">Annuler <i class="fa-solid fa-rotate-left"></i></button>
+            <button id="redo" title="Ctrl + y">Rétablir <i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+        
         <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
     </aside>
 </div> 

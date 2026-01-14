@@ -187,7 +187,14 @@ aside button{
     transition: 0.2s;
 } 
 
-aside button:hover{
+aside button:not(:disabled):hover{
     transform: translateY(-2px);
     opacity: 0.5;
+}
+
+/* Disabled state */
+aside button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
 }
