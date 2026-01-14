@@ -54,7 +54,7 @@ class DevisCategory{
      */
     get_price(){
         let res = 0;
-        this.rows.forEach((devis_row) => {res += devis_row.get_price()});
+        this.rows.forEach((devis_row) => {res += devis_row.total_amount});
         return res;
     }
 

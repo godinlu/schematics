@@ -77,12 +77,29 @@ class DevisRow{
         tbody.appendChild(tr);
     }
 
+
     /**
-     * Returns the final price of the row by multiplying the base price with quantity and with remise
+     * Returns True if the row is a text row
+     * @returns {boolean} 
+     */
+    get is_text(){
+        return this.ref.startsWith("TEXT_");
+    }
+
+    /**
+     * Returns the total amount of the row by multiplying the unit price by the quantity
      * @returns {number} - final price of the row
      */
-    get_price(){
-        return this.prix * (1 - this.remise / 100) * this.quantity;
+    get total_amount(){
+        return this.unit_price * this.quantity;
+    }
+
+    /**
+     * Returns the unit price of the row
+     * @returns {number} - unit price
+     */
+    get unit_price(){
+        return this.prix * (1 - this.remise / 100);
     }
 
     /**

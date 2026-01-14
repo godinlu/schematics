@@ -125,15 +125,15 @@ class DevisPdf{
                     <th></th>
                     <th></th>
                 </tr>
-                ${devis_categ.get_rows_ordered().map(devis_row => `
+                ${devis_categ.get_rows_ordered().map(devis_row =>`
                     <tr>
-                        <td>${(devis_row.ref.startsWith("TEXT_")? "TEXT": devis_row.ref)}</td>
+                        <td>${(devis_row.is_text? "TEXT": devis_row.ref)}</td>
                         <td>${devis_row.label}</td>
-                        <td>${devis_row.quantity}</td>
-                        <td>${format_number(devis_row.prix, 2)}</td>
-                        <td>${devis_row.remise} %</td>
-                        <td>${format_number(devis_row.prix * (1 - (devis_row.remise / 100)), 2)}</td>
-                        <td>${format_number(devis_row.get_price(), 2)}</td>
+                        <td>${devis_row.is_text? "": devis_row.quantity}</td>
+                        <td>${devis_row.is_text? "": format_number(devis_row.prix, 2)}</td>
+                        <td>${devis_row.is_text? "": devis_row.remise + " %"}</td>
+                        <td>${devis_row.is_text? "": format_number(devis_row.unit_price, 2)}</td>
+                        <td>${devis_row.is_text? "": format_number(devis_row.total_amount, 2)}</td>
                     </tr>
                 `).join("")}
                 `;
