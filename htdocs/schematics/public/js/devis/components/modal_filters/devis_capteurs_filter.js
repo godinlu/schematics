@@ -90,6 +90,7 @@ class DevisCapteurFilter{
                             <option value="A">ardoise</option>
                             <option value="R">Tuile romane ou forte ondulation</option>
                             <option value="T">Autre</option>
+                            <option value=""></option>
                         </select>
                     </td>
                 </tr>
@@ -138,6 +139,7 @@ class DevisCapteurFilter{
 
                     // Filter articles based on the current select
                     articles_filtered = articles_filtered.filter(article => article.filters[filter_name] === value); 
+                    console.log(articles_filtered);
 
                     // If there is a next select, update its available options
                     if (j+1 < selects.length){ 
