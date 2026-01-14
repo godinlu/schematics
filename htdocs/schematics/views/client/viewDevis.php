@@ -65,6 +65,8 @@
 
     </div>
     <aside id="sidebar">
+        <button id="undo">undo</button>
+        <button id="redo">redo</button>
         <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
     </aside>
 </div> 
@@ -80,10 +82,10 @@
 <?= json_encode($categories, JSON_UNESCAPED_UNICODE) ?>
 </script>
 
-<script id="data-actions-saved" type="application/json">
-<?= json_encode($actions_saved, JSON_UNESCAPED_UNICODE) ?>
-</script>
-
 <script id="data-formulaire" type="application/json">
 <?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
+</script>
+
+<script id="data-devis-saved" type="application/json">
+<?= json_encode($devis_saved, JSON_UNESCAPED_UNICODE) ?>
 </script>

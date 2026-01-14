@@ -156,9 +156,9 @@ class DevisModal{
             const tr = event.target.closest("tr");
             if (!tr) return;
             let action = {...this.pending_action};
-            if (action.type === "body-add") action.ref = tr.dataset.ref;
-            if (action.type === "body-edit") action.new_ref = tr.dataset.ref;
-            devisStore.dispatch("submit-action", action);
+            if (action.type === "body-add") action.payload.ref = tr.dataset.ref;
+            if (action.type === "body-edit") action.payload.new_ref = tr.dataset.ref;
+            devisStore.submit_action(action);
             devisStore.dispatch("render");
             this.hide();
         });

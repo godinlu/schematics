@@ -11,21 +11,30 @@ class DevisHeader{
 
     constructor(formulaire){
         this.fields = new Map();
+        this.formulaire = formulaire;
 
+        devisStore.subscribe("reset", () => this.reset());
+    }
+
+    /**
+     * reset the devis header to the initial state with default values for all fields
+     * this function will be called at each reset
+     */
+    reset(){
         this.fields.set("header-date", new Date().toISOString().split("T")[0]);
 
-        const full_name = [formulaire.nom_client?.toUpperCase(), formulaire.prenom_client].filter(Boolean).join(" ");
-        const header_objet = [full_name, formulaire.typeInstallation].filter(Boolean).join(" - ");
+        const full_name = [this.formulaire.nom_client?.toUpperCase(), this.formulaire.prenom_client].filter(Boolean).join(" ");
+        const header_objet = [full_name, this.formulaire.typeInstallation].filter(Boolean).join(" - ");
         this.fields.set("header-objet", header_objet);
 
-        this.fields.set("header-affaire", formulaire.installateur);
-        this.fields.set("header-mail", formulaire.adresse_mail);
-        this.fields.set("header-installateur", formulaire["Prénom/nom"]);
-        this.fields.set("header-field1", formulaire.commercial);
+        this.fields.set("header-affaire", this.formulaire.installateur);
+        this.fields.set("header-mail", this.formulaire.adresse_mail);
+        this.fields.set("header-installateur", this.formulaire["Prénom/nom"]);
+        this.fields.set("header-field1", this.formulaire.commercial);
         this.fields.set("header-field2", "Défini par l'ouverture de compte");
         this.fields.set("header-field3", "2 mois");
 
-        const delay = (formulaire.typeInstallation.includes("K"))? "3 mois" : "1 mois";
+        const delay = (this.formulaire.typeInstallation.includes("K"))? "3 mois" : "1 mois";
         this.fields.set("header-field4", delay);
     }
 
@@ -46,13 +55,10 @@ class DevisHeader{
                 const old_value = this.fields.get(field);
 
                 if (old_value !== new_value){
-                    this.submit_action({
-                        type: "header-edit-field",
-                        field,
-                        old_value,
-                        new_value
+                    devisStore.submit_action({
+                        type:"header-edit-field",
+                        payload: {field, old_value, new_value}
                     });
-                    console.log(devisStore.action_history);
                 }
             });
         });
@@ -64,14 +70,17 @@ class DevisHeader{
      * @param {Object} action 
      */
     submit_action(action){
-        if (action?.type !== "header-edit-field") return;
-
-        if (action.old_value !== this.fields.get(action.field)){
-            console.warn("Old value doesn't match with the reel value");
-            return;
+        const payload = action.payload;
+        switch (action.type){
+            case "header-edit-field":
+                if (payload.old_value !== this.fields.get(payload.field)){
+                    throw new Error("Old value doesn't match with the real value");
+                }
+                this.fields.set(payload.field, payload.new_value);
+                break;
+            default:
+                throw new Error("Unrecognized action type");
         }
-        this.fields.set(action.field, action.new_value);
-        devisStore.action_history.push(action);
     }
 
     /**

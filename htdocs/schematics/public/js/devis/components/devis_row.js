@@ -8,8 +8,8 @@
  * 
  */
 class DevisRow{
-    /**@type {string} */
-    ref
+    // /**@type {string} */
+    // ref
     /**@type {string} */
     label
     /**@type {number} */
@@ -117,20 +117,23 @@ class DevisRow{
                     this.#edit_text_row(tr);
                 }else{
                     // normal action edit an article
-                    const pending_action = {type: "body-edit", old_ref: this.ref, new_ref: "", base_category_id: this.base_category_id};
+                    const pending_action = {
+                        type: "body-edit",
+                        payload: {old_ref: this.ref, new_ref: "", base_category_id: this.base_category_id} 
+                    };
                     devisStore.dispatch("show-modal", {category_id: this.category_id, pending_action});
                 }
                 
             }
             else if (btn.dataset.handler === "remove"){
-                const action = {type: "body-remove", ref: this.ref, base_category_id: this.base_category_id}
-                devisStore.dispatch("submit-action", action);
+                const action = {type: "body-remove", payload:{ref: this.ref, base_category_id: this.base_category_id}};
+                devisStore.submit_action(action);
                 devisStore.dispatch("render");
             }
             else if (btn.dataset.handler === "move"){
                 const direction = btn.dataset.direction;
-                const action = {type: "body-move", ref: this.ref, base_category_id: this.base_category_id, direction};
-                devisStore.dispatch("submit-action", action);
+                const action = {type: "body-move", payload: {ref: this.ref, base_category_id: this.base_category_id, direction}};
+                devisStore.submit_action(action);
                 devisStore.dispatch("render");
             }
         });
@@ -138,13 +141,19 @@ class DevisRow{
         // create a debounceHandler for both input to avoid spamming action
         const debouncedHandler = debounce((input) => {
             if (input.dataset.handler === "remise-input") {
-                const action = {type:"body-edit-remise", ref:this.ref, old_value: this.remise, new_value: input.value, base_category_id: this.base_category_id};
-                devisStore.dispatch("submit-action", action);
+                const action = {
+                    type:"body-edit-remise", 
+                    payload:{ref:this.ref, old_value: this.remise, new_value: input.value, base_category_id: this.base_category_id}
+                };
+                devisStore.submit_action(action);
                 devisStore.dispatch("render-footer", action);
             }
             if (input.dataset.handler === "qte-input") {
-                const action = {type:"body-edit-qte", ref:this.ref, old_value: this.quantity, new_value: input.value, base_category_id: this.base_category_id};
-                devisStore.dispatch("submit-action", action);
+                const action = {
+                    type:"body-edit-qte",
+                    payload:{ref:this.ref, old_value: this.quantity, new_value: input.value, base_category_id: this.base_category_id} 
+                };
+                devisStore.submit_action(action);
                 devisStore.dispatch("render-footer", action);
             }
         }, 300);
@@ -172,8 +181,11 @@ class DevisRow{
         input.focus();
 
         const finish_editing = () => {
-            const action = {type:"body-edit-text", ref: this.ref, old_value: this.label, new_value: input.value, base_category_id: this.base_category_id};
-            devisStore.dispatch("submit-action", action);
+            const action = {
+                type:"body-edit-text", 
+                payload: {ref: this.ref, old_value: this.label, new_value: input.value, base_category_id: this.base_category_id}
+            };
+            devisStore.submit_action(action);
             devisStore.dispatch("render");
         };
 

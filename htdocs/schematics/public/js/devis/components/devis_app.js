@@ -15,9 +15,8 @@ class DevisApp{
     /**
      * 
      * @param {Object} formulaire 
-     * @param {Object[]} action_history 
      */
-    constructor(formulaire, action_history){
+    constructor(formulaire){
         this.formulaire = formulaire;
 
         this.devis_header = new DevisHeader(formulaire);
@@ -26,49 +25,43 @@ class DevisApp{
 
         this.devis_modal = new DevisModal();        
 
-        this.btn_dl_pdf = document.querySelector("#download-devis-pdf");
-
         this.#register_store_events();
         this.#attach_event_listeners();
-
-        // submit all saved action
-        action_history.forEach((action) =>{
-            this.submit_action(action);
-        });
     }
 
     mount(){
         this.devis_header.mount(document.querySelector(".devis-header"));
         this.devis_body.mount(document.querySelector(".devis-body tbody"));
-        this.devis_footer.mount(document.querySelector(".devis-footer"), this.get_price());
+        this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
     }
 
     submit_action(action){
-        if (action?.type.startsWith("header")){
+        if (action.type.startsWith("header")){
             this.devis_header.submit_action(action);
         }
-        if (action?.type.startsWith("body")){
+        if (action.type.startsWith("body")){
             this.devis_body.submit_action(action);
         }
     }
 
     /**
-     * return the total price of the devis
-     * @returns {number} - total price of the devis
+     * return the total amount of the devis before taxes
      */
-    get_price(){
-        return this.devis_body.get_price();
+    get total_amount(){
+        return this.devis_body.total_amount;
     }
 
     #attach_event_listeners(){
-        this.btn_dl_pdf.addEventListener("click", () => this.#download_devis_pdf());
+        document.querySelector("#download-devis-pdf").addEventListener("click", () => this.#download_devis_pdf());
+        document.querySelector("#undo").addEventListener("click", () => devisStore.undo());
+        document.querySelector("#redo").addEventListener("click", () => devisStore.redo());
     }
 
     #register_store_events(){
         devisStore.subscribe("submit-action", action => this.submit_action(action));
         devisStore.subscribe("render", () => this.mount());
         devisStore.subscribe("render-footer", () => {
-            this.devis_footer.mount(document.querySelector(".devis-footer"), this.get_price());
+            this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
         });
         devisStore.subscribe("show-modal", (context) => this.devis_modal.set_content(context));
     }

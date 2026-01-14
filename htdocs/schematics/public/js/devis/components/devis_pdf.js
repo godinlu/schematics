@@ -149,7 +149,7 @@ class DevisPdf{
      * @returns {string} - HTML string of the footer
      */
     #devis_footer(){
-        const total_ht = this.devis_body.get_price();
+        const total_ht = this.devis_body.total_amount;
         const total_tva = total_ht * (this.devis_footer.tva_percent / 100);
 
         return `

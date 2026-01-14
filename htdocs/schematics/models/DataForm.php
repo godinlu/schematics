@@ -5,7 +5,6 @@ class DataForm{
     private static string $FORMULAIRE = "formulaire";
     private static string $FICHE_PROG = "fiche_prog";
     private static string $DEVIS = "devis";
-    private static string $DEVIS2 = "devis2";
 
     public function __construct(){
         if (session_status() !== PHP_SESSION_ACTIVE){
@@ -32,10 +31,6 @@ class DataForm{
         unset($_SESSION[self::$FORMULAIRE]);
     }
 
-    public function clear_devis2(){
-        unset($_SESSION[self::$DEVIS2]);
-    }
-
     public function saveFiche_Prog(array $fiche_prog){
         $_SESSION[self::$FICHE_PROG] = $fiche_prog;
     }
@@ -48,26 +43,17 @@ class DataForm{
 
 
     public function saveDevis(array $post_data){
-        if (isset($post_data["actions"]) && is_string($post_data["actions"])){
-            $post_data["actions"] = json_decode($post_data["actions"], true);
+        if (isset($post_data["action_history"]) && is_string($post_data["action_history"])){
+            $post_data["action_history"] = json_decode($post_data["action_history"], true);
         }
         $_SESSION[self::$DEVIS] = $post_data;
     }
 
-    public function save_devis2(array $post_data){
-        if (isset($post_data["actions"])){
-            $post_data["actions"] = json_decode($post_data["actions"], true);
-        }
-        $_SESSION[self::$DEVIS2] = $post_data;
-    }
 
     public function getDevis():?array{
         return ($_SESSION[self::$DEVIS])?? null;
     }
 
-    public function get_devis2() : ?array {
-        return ($_SESSION[self::$DEVIS2])?? null;
-    }
     public function clearDevis(){
         unset($_SESSION[self::$DEVIS]);
     }
@@ -82,8 +68,6 @@ class DataForm{
                 $this->saveFormulaire($_POST);
             }else if (strpos($sender_name , self::$FICHE_PROG) !== false){
                 $this->saveFiche_Prog($_POST);
-            }else if (strpos($sender_name , self::$DEVIS2) !== false){
-                $this->save_devis2($_POST);
             }else if (strpos($sender_name , self::$DEVIS) !== false){
                 $this->saveDevis($_POST);
             }

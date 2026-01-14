@@ -10,15 +10,15 @@ document.addEventListener("DOMContentLoaded", () =>{
 
 
 function init_app(){
-    const {articles, categories, actions_saved, formulaire} = loadInitialData();
+    const {articles, categories, devis_saved, formulaire} = loadInitialData();
 
     const data_manager = new DataManager(articles, categories);
-    // const devis_model = new DevisModel(data_manager, formulaire, actions_saved);
 
-    devisStore.init(data_manager, actions_saved);
+    devisStore.init(data_manager, devis_saved);
 
-    const devis_app = new DevisApp(formulaire, actions_saved);
-    devis_app.mount();
+    const devis_app = new DevisApp(formulaire);
+
+    devisStore.rebuild();
 
     // register all events
     register_events();
@@ -32,9 +32,10 @@ function loadInitialData() {
     try {
         const articles = JSON.parse(document.getElementById("data-articles").textContent); 
         const categories = JSON.parse(document.getElementById("data-categories").textContent);
-        const actions_saved = JSON.parse(document.getElementById("data-actions-saved").textContent); 
         const formulaire = JSON.parse(document.getElementById("data-formulaire").textContent); 
-        return {articles, categories, actions_saved, formulaire};
+
+        const devis_saved = JSON.parse(document.getElementById("data-devis-saved").textContent);
+        return {articles, categories, devis_saved, formulaire};
     } catch (error) {
         console.error("Error loading initial data:", error);
         return null;
@@ -70,12 +71,20 @@ function handle_save_form(event){
  * @param {HTMLElement} form 
  */
 function saveAllData(form){
-    let action_list_input = document.createElement("input");
-    action_list_input.type = "hidden";
-    action_list_input.name = "actions";
-    action_list_input.value = JSON.stringify(devisStore.action_history);
+    form.innerHTML = ''; // clear previous hidden inputs
 
-    form.appendChild(action_list_input);
+    const inputHistory = document.createElement("input");
+    inputHistory.type = "hidden";
+    inputHistory.name = "action_history";
+    inputHistory.value = JSON.stringify(devisStore.action_history);
+
+    const inputCursor = document.createElement("input");
+    inputCursor.type = "hidden";
+    inputCursor.name = "history_cursor";
+    inputCursor.value = String(devisStore.history_cursor);
+
+    form.appendChild(inputHistory);
+    form.appendChild(inputCursor);
 }
 
 

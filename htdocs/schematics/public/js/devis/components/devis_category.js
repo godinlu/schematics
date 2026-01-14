@@ -1,6 +1,7 @@
 /**
  * @type {import('../store/devis_store.js').devisStore}
  * @type {import('./devis_row.js').DevisRow}
+ * @type {import('../model/data_manager.class.js').category_dict}
  */
 
 /**
@@ -9,9 +10,24 @@
 class DevisCategory{
     /** @type {Map<string, DevisRow>} */
     rows
+    /** @type {category_dict} */
+    categ
 
+    /**
+     * 
+     * @param {category_dict} categ 
+     */
     constructor(categ){
         this.categ = categ;
+        this.rows = new Map();
+
+    }
+
+    /**
+     * reset the instance by emptying rows
+     * this method will be called at each reset by the devis_body
+     */
+    reset(){
         this.rows = new Map();
     }
 
@@ -49,10 +65,10 @@ class DevisCategory{
     }
 
     /**
-     * return the price of all rows of the category
-     * @returns {number} - price of all row in this categ
+     * return the total amount of all rows of the category
+     * @returns {number}
      */
-    get_price(){
+    get total_amount(){
         let res = 0;
         this.rows.forEach((devis_row) => {res += devis_row.total_amount});
         return res;
@@ -62,7 +78,7 @@ class DevisCategory{
      * return true if the category is empty
      * @returns {boolean} - true if the category is empty
      */
-    is_empty(){
+    get is_empty(){
         return this.rows.size === 0;
     }
 
@@ -75,55 +91,65 @@ class DevisCategory{
             const btn = e.target.closest("button");
             if (!btn) return;
             if (btn.dataset.action === "add-article"){
-                const pending_action = {type: "body-add", ref:"", base_category_id: this.categ.id};
+                const pending_action = {type: "body-add", payload: {ref:"", base_category_id: this.categ.id}};
                 devisStore.dispatch("show-modal", {category_id: this.categ.id, pending_action});
             }else if (btn.dataset.action === "add-text"){
-                const action = {type:"body-add-text", ref: "TEXT_"+Date.now(), base_category_id: this.categ.id};
-                devisStore.dispatch("submit-action", action);
+                const action = {
+                    type:"body-add-text", 
+                    payload: {ref: "TEXT_"+Date.now(), base_category_id: this.categ.id}
+                };
+                devisStore.submit_action(action);
                 devisStore.dispatch("render");
             }
-            
         });
     }
 
     /**
      * 
-     * @param {Object} action 
+     * @param {{
+     *  type: string,
+     *  payload: Object,
+     *  timestamp?: number
+     * }} action  
      */
     submit_action(action){
-        try{
-            if (action.type === "body-add"){
-                this.insert_row(action.ref);
-            }else if (action.type === "body-remove"){
-                this.rows.delete(action.ref);
-            }else if (action.type === "body-move"){
-                this.#move_row(action.ref, parseInt(action.direction));
-            }else if(action.type === "body-edit"){
-                this.#edit_row(action.old_ref, action.new_ref);
-            }else if (action.type === "body-add-text"){
+        const payload = action.payload;
+        switch (action.type){
+            case "body-add":
+                this.insert_row(payload.ref);
+                break;
+            case "body-remove":
+                this.rows.delete(payload.ref);
+                break;
+            case "body-move":
+                this.#move_row(payload.ref, parseInt(payload.direction));
+                break;
+            case "body-edit":
+                this.#edit_row(payload.old_ref, payload.new_ref);
+                break;
+            case "body-add-text":
                 let new_row = new DevisRow({
-                    ref: action.ref,
+                    ref: payload.ref,
                     label: "",
                     prix: 0,
-                    category_id: action.base_category_id,
+                    category_id: payload.base_category_id,
                     priority: this.get_rows_ordered().at(-1)?.priority + 1,
-                    base_category_id: action.base_category_id
+                    base_category_id: payload.base_category_id
                 });
-                this.rows.set(action.ref, new_row);
-            }else if (action.type === "body-edit-text"){
-                this.rows.get(action.ref).label = action.new_value;
-            }else if (action.type === "body-edit-qte"){
-                this.rows.get(action.ref).quantity = parseInt(action.new_value);
-            }else if(action.type === "body-edit-remise"){
-                this.rows.get(action.ref).remise = parseInt(action.new_value);
-            }else{
-                throw new Error(`Unrecognized action : ${action}`);
-            }
-            devisStore.action_history.push(action);
-        } catch (error){
-            console.warn(`Warning : Can't submiting action : ${error}`)
+                this.rows.set(payload.ref, new_row);
+                break;
+            case "body-edit-text":
+                this.rows.get(payload.ref).label = payload.new_value;
+                break;
+            case "body-edit-qte":
+                this.rows.get(payload.ref).quantity = parseInt(payload.new_value);
+                break;
+            case "body-edit-remise":
+                this.rows.get(payload.ref).remise = parseInt(payload.new_value);
+                break;
+            default:
+                throw new Error(`Unrecognized action.`);
         }
-        
     }
 
     /**

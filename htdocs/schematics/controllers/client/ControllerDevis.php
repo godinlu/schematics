@@ -61,9 +61,6 @@ class ControllerDevis
         header('Location: formulaire');
         exit;
       }
-      $devis_saved = $dataForm->getDevis();
-
-      $actions_saved = ($devis_saved["actions"])?? [];
 
       $catalogue_manager = new CatalogueManager;
 
@@ -71,8 +68,8 @@ class ControllerDevis
       $this->_view->generate(array(
         "categories" => $catalogue_manager->get_categories(),
         "articles" => $catalogue_manager->get_articles(),
-        "actions_saved" => $actions_saved,
-        "formulaire" => $formulaire
+        "formulaire" => $formulaire,
+        "devis_saved" => $dataForm->getDevis()
       ));
     }
 }
