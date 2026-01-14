@@ -72,6 +72,7 @@
                 "devis/components/devis_category.js",
                 "devis/components/devis_row.js",
                 "devis/components/devis_modal.js",
+                "devis/components/modal_filters/devis_capteurs_filter.js",
                 "devis/components/devis_pdf.js",
                 "devis/utils.js",
                 "devis/index.js"

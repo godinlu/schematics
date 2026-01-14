@@ -1,6 +1,7 @@
 /**
  * @type {import('../utils.js').format_number}
  * @type {import('../store/devis_store.js').devisStore}
+ * @type {import('./modal_filters/devis_capteurs_filter.js').DevisCapteurFilter}
  */
 
 /**
@@ -43,7 +44,13 @@ class DevisModal{
         this.content_div.appendChild(this.#breadcrumb_div(category_id));
         if (force_articles || sub_categs.length === 0){
             const articles = devisStore.data_manager.get_articles_by_category_tree(category_id);
-            this.content_div.appendChild(this.#articles_table(articles));
+            if (category_id === "capteurs"){
+                this.content_div.appendChild((new DevisCapteurFilter(this, articles)).HTML_div_element());
+
+            }else{
+                this.content_div.appendChild(this.articles_table(articles));
+            }
+            
         }else{
             this.content_div.appendChild(this.#category_div(category_id, sub_categs));
         }
@@ -89,9 +96,8 @@ class DevisModal{
     /**
      * 
      * @param {import("../model/data_manager.class.js").article_dict[]} articles 
-     * @param {Object} pending_action 
      */
-    #articles_table(articles, pending_action){
+    articles_table(articles){
         let div = document.createElement("div");
         div.classList.add("table-scroll");
 
@@ -122,10 +128,10 @@ class DevisModal{
                 art.ref.toLowerCase().includes(filters.ref.toLowerCase()) && 
                 art.label.toLowerCase().includes(filters.label.toLowerCase())
             );
-            this.#mount_articles(tbody, filtered_articles);
+            this.mount_articles(tbody, filtered_articles);
         });
         let tbody = div.querySelector("tbody");
-        this.#mount_articles(tbody, articles);
+        this.mount_articles(tbody, articles);
         return div;
     }
 
@@ -134,7 +140,7 @@ class DevisModal{
      * @param {HTMLTableElement} tbody 
      * @param {import("../model/data_manager.class.js").article_dict[]} articles 
      */
-    #mount_articles(tbody, articles){
+    mount_articles(tbody, articles){
         tbody.innerHTML = articles.map(art => `
             <tr data-ref="${art.ref}">
                 <td>${art.ref}</td>

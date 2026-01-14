@@ -362,12 +362,21 @@ div.modal-category button:focus {
 }
 
 
+.modal-content .table-wrapper {
+  flex: 1 1 auto;   /* prend tout l’espace restant */
+  min-height: 0;    /* essentiel pour éviter que le scroll déborde */
+  display: flex;
+  flex-direction: row;
+  gap: 1em;         /* espace entre filtres et tableau */
+}
+
+
 .modal-content div.table-scroll{
     /* max-height: 60vh; */
     flex: 1 1 auto;       /* ← prend l’espace restant */
     min-height: 0;        /* ← SUPER IMPORTANT pour éviter le débordement */
     overflow-y: auto;    /* scroll vertical */
-    overflow-x: hidden;  /* pas de scroll horizontal */
+    overflow-x: visible;  /*pas de scroll horizontal*/
 }
 
 .modal-content table.articles-table {
@@ -390,6 +399,12 @@ div.modal-category button:focus {
     cursor: pointer;
 }
 
+.table-wrapper table.filters{
+    white-space: nowrap;
+}
+.table-wrapper table.filters select{
+    width: 100px;
+}
 
 
 
