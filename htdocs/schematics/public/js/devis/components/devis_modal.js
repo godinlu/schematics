@@ -132,6 +132,7 @@ class DevisModal{
         });
         let tbody = div.querySelector("tbody");
         this.mount_articles(tbody, articles);
+        this.add_events_to_articles(tbody);
         return div;
     }
 
@@ -152,6 +153,16 @@ class DevisModal{
         // add the click event listener on each article tr
         // the click will submit the pending action with the clicked article ref
         // then hide the modal and rerender the devis
+        
+    }
+
+    /**
+     * add the click event listener on each article tr
+     * the click will submit the pending action with the clicked article ref 
+     * then hide the modal and rerender the devis
+     * @param {HTMLTableElement} tbody 
+     */
+    add_events_to_articles(tbody){
         tbody.addEventListener("click", (event) =>{
             const tr = event.target.closest("tr");
             if (!tr) return;

@@ -110,6 +110,7 @@ class DevisCapteurFilter{
             </div>
         `;
         this.#attach_event_listeners(div);
+
         return div;
     }
 
@@ -176,6 +177,8 @@ class DevisCapteurFilter{
 
         // init filter by simulate a change of the first select
         selects[0].dispatchEvent(new Event("change"));
+
+        this.devis_modal.add_events_to_articles(div.querySelector(".articles-table tbody"));
     }
 
 
