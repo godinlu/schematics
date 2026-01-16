@@ -31,7 +31,7 @@ class DevisApp{
 
     mount(){
         this.devis_header.mount(document.querySelector(".devis-header"));
-        this.devis_body.mount(document.querySelector(".devis-body tbody"));
+        this.devis_body.mount(document.querySelector("table.devis-body"));
         this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
     }
 

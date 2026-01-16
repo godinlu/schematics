@@ -20,6 +20,7 @@ class DevisCategory{
     constructor(categ){
         this.categ = categ;
         this.rows = new Map();
+        this._global_remise = 0;
 
     }
 
@@ -29,6 +30,7 @@ class DevisCategory{
      */
     reset(){
         this.rows = new Map();
+        this._global_remise = 0;
     }
 
     /**
@@ -91,7 +93,7 @@ class DevisCategory{
             const btn = e.target.closest("button");
             if (!btn) return;
             if (btn.dataset.action === "add-article"){
-                const pending_action = {type: "body-add", payload: {ref:"", base_category_id: this.categ.id}};
+                const pending_action = {type: "body-add", payload: {ref:"", base_category_id: ""}};
                 devisStore.dispatch("show-modal", {category_id: this.categ.id, pending_action});
             }else if (btn.dataset.action === "add-text"){
                 const action = {
@@ -179,6 +181,16 @@ class DevisCategory{
                 console.log(`Warning : Can't insert article : ${error}`);
             }
         }
+        this.rows.get(ref).remise = this._global_remise;
+    }
+
+    /**
+     * Set remise for all articles in rows to the new value given
+     * @param {number} new_value 
+     */
+    set_global_remise(new_value){
+        this._global_remise = new_value;
+        this.rows.forEach(devis_row => devis_row.remise = new_value);
     }
 
     /**
@@ -192,6 +204,7 @@ class DevisCategory{
         this.rows.delete(old_ref);
         this.insert_row(new_ref);
         this.rows.get(new_ref).priority = old_row.priority;
+        this.rows.get(new_ref).quantity = old_row.quantity;
     }
 
 

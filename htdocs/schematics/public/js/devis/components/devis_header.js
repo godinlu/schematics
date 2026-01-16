@@ -48,20 +48,26 @@ class DevisHeader{
             div.querySelector(`[data-field_name="${field_name}"]`).value = value;
         });
 
-        div.querySelectorAll('[data-field_name]').forEach(input => {
-            input.addEventListener('blur', (event) => {
-                const field = input.dataset.field_name;
-                const new_value = event.target.value;
-                const old_value = this.fields.get(field);
+        // avoid stacking handlers on re-render
+        if (!this.add_handlers){
+            this.add_handlers = true;
 
-                if (old_value !== new_value){
-                    devisStore.submit_action({
-                        type:"header-edit-field",
-                        payload: {field, old_value, new_value}
-                    });
-                }
+            div.querySelectorAll('[data-field_name]').forEach(input => {
+                input.addEventListener('blur', (event) => {
+                    const field = input.dataset.field_name;
+                    const new_value = event.target.value;
+                    const old_value = this.fields.get(field);
+
+                    if (old_value !== new_value){
+                        devisStore.submit_action({
+                            type:"header-edit-field",
+                            payload: {field, old_value, new_value}
+                        });
+                    }
+                });
             });
-        });
+        }
+        
     }
 
     /**

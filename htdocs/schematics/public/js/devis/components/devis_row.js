@@ -107,23 +107,26 @@ class DevisRow{
      * @param {HTMLTableRowElement} tr 
      */
     #attach_event_listeners(tr){
+        const edit_row = () => {
+            if (this.ref.startsWith("TEXT")){
+                // edit a text row
+                this.#edit_text_row(tr);
+            }else{
+                // normal action edit an article
+                const pending_action = {
+                    type: "body-edit",
+                    payload: {old_ref: this.ref, new_ref: "", base_category_id: this.base_category_id} 
+                };
+                devisStore.dispatch("show-modal", {category_id: this.category_id, pending_action});
+            }
+        };
+
         tr.addEventListener("click", (event) =>{
             const btn = event.target.closest("button");
             if (!btn) return;
 
             if (btn.dataset.handler === "edit"){
-                if (this.ref.startsWith("TEXT")){
-                    // edit a text row
-                    this.#edit_text_row(tr);
-                }else{
-                    // normal action edit an article
-                    const pending_action = {
-                        type: "body-edit",
-                        payload: {old_ref: this.ref, new_ref: "", base_category_id: this.base_category_id} 
-                    };
-                    devisStore.dispatch("show-modal", {category_id: this.category_id, pending_action});
-                }
-                
+                edit_row();
             }
             else if (btn.dataset.handler === "remove"){
                 const action = {type: "body-remove", payload:{ref: this.ref, base_category_id: this.base_category_id}};
@@ -135,6 +138,13 @@ class DevisRow{
                 const action = {type: "body-move", payload: {ref: this.ref, base_category_id: this.base_category_id, direction}};
                 devisStore.submit_action(action);
                 devisStore.dispatch("render");
+            }
+        });
+
+        tr.addEventListener("dblclick", (event) =>{
+            const td = event.target.closest("td");
+            if (Array.from(td.parentElement.children).indexOf(td) === 1 ){
+                edit_row();
             }
         });
 
@@ -181,12 +191,17 @@ class DevisRow{
         input.focus();
 
         const finish_editing = () => {
-            const action = {
-                type:"body-edit-text", 
-                payload: {ref: this.ref, old_value: this.label, new_value: input.value, base_category_id: this.base_category_id}
-            };
-            devisStore.submit_action(action);
+            // submit the action only if the value change to avoid spamming the history
+            if (this.label !== input.value){
+                const action = {
+                    type:"body-edit-text", 
+                    payload: {ref: this.ref, old_value: this.label, new_value: input.value, base_category_id: this.base_category_id}
+                };
+                devisStore.submit_action(action);
+                
+            }
             devisStore.dispatch("render");
+            
         };
 
         // attach event listeners to it
@@ -196,7 +211,7 @@ class DevisRow{
             }
         });
 
-        input.addEventListener("blur", (event) =>{
+        input.addEventListener("blur", () =>{
             finish_editing();
         })
     }

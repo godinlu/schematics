@@ -2,6 +2,7 @@
  * @type {import('../utils.js').format_number}
  * @type {import('../store/devis_store.js').devisStore}
  * @type {import('./modal_filters/devis_capteurs_filter.js').DevisCapteurFilter}
+ * @type {import("../model/data_manager.class.js").article_dict}
  */
 
 /**
@@ -44,6 +45,7 @@ class DevisModal{
         this.content_div.appendChild(this.#breadcrumb_div(category_id));
         if (force_articles || sub_categs.length === 0){
             const articles = devisStore.data_manager.get_articles_by_category_tree(category_id);
+            this._add_events = false; // ensure to add only once article events
             if (category_id === "capteurs"){
                 this.content_div.appendChild((new DevisCapteurFilter(this, articles)).HTML_div_element());
 
@@ -132,47 +134,43 @@ class DevisModal{
         });
         let tbody = div.querySelector("tbody");
         this.mount_articles(tbody, articles);
-        this.add_events_to_articles(tbody);
         return div;
     }
 
     /**
      * 
      * @param {HTMLTableElement} tbody 
-     * @param {import("../model/data_manager.class.js").article_dict[]} articles 
+     * @param {article_dict[]} articles 
      */
     mount_articles(tbody, articles){
         tbody.innerHTML = articles.map(art => `
-            <tr data-ref="${art.ref}">
+            <tr data-ref="${art.ref}" data-category_id="${art.category_id}">
                 <td>${art.ref}</td>
                 <td>${art.label}</td>
                 <td>${format_number(art.prix)} €</td>
             </tr>
         `).join("");
 
-        // add the click event listener on each article tr
-        // the click will submit the pending action with the clicked article ref
-        // then hide the modal and rerender the devis
+        // avoid stacking events if this method is called multiple time
+        if (!this._add_events){
+            this._add_events = true;
+            // add the click event listener on each article tr
+            // the click will submit the pending action with the clicked article ref
+            // then hide the modal and rerender the devis
+            tbody.addEventListener("click", (event) =>{
+                const tr = event.target.closest("tr");
+                if (!tr) return;
+                let action = {...this.pending_action};
+                action.payload.base_category_id = devisStore.data_manager.get_base_category_id(tr.dataset.category_id).id;
+                if (action.type === "body-add") action.payload.ref = tr.dataset.ref;
+                if (action.type === "body-edit") action.payload.new_ref = tr.dataset.ref;
+                devisStore.submit_action(action);
+                devisStore.dispatch("render");
+                this.hide();
+            });
+        }
         
-    }
-
-    /**
-     * add the click event listener on each article tr
-     * the click will submit the pending action with the clicked article ref 
-     * then hide the modal and rerender the devis
-     * @param {HTMLTableElement} tbody 
-     */
-    add_events_to_articles(tbody){
-        tbody.addEventListener("click", (event) =>{
-            const tr = event.target.closest("tr");
-            if (!tr) return;
-            let action = {...this.pending_action};
-            if (action.type === "body-add") action.payload.ref = tr.dataset.ref;
-            if (action.type === "body-edit") action.payload.new_ref = tr.dataset.ref;
-            devisStore.submit_action(action);
-            devisStore.dispatch("render");
-            this.hide();
-        });
+        
     }
 
     /**

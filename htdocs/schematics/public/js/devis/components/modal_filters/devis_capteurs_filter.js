@@ -19,6 +19,9 @@ class DevisCapteurFilter{
     constructor(devis_modal, articles){
         this.devis_modal = devis_modal;
 
+        if (this.devis_modal.pending_action.type === "body-edit"){
+            this.filter_values = this.#parse_ref(this.devis_modal.pending_action.payload.old_ref);
+        }
         this.articles = articles.map(article => ({...article, filters:this.#parse_ref(article.ref)}));
 
     }
@@ -175,10 +178,15 @@ class DevisCapteurFilter{
             }); 
         }); 
 
+        // init selects values to match filter of the old_ref in case of edit an article.
+        if (this.filter_values){
+            for (let i = 0; i < selects.length; i++) {
+                selects[i].value = this.filter_values[selects[i].dataset.filter];
+            }
+        }
+
         // init filter by simulate a change of the first select
         selects[0].dispatchEvent(new Event("change"));
-
-        this.devis_modal.add_events_to_articles(div.querySelector(".articles-table tbody"));
     }
 
 

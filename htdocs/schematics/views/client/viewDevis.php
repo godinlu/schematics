@@ -48,7 +48,7 @@
                     <th>Ref</th>
                     <th>Désignation</th>
                     <th>Prix</th>
-                    <th>Remise %</th>
+                    <th>Remise %<br><input type="number" value="0" min="0" max="30"> </th>
                     <th>Quantité</th>
                     <th>Edition</th>
                 </tr>
