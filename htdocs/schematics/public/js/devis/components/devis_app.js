@@ -42,6 +42,9 @@ class DevisApp{
         if (action.type.startsWith("body")){
             this.devis_body.submit_action(action);
         }
+        if (action.type.startsWith("footer")){
+            this.devis_footer.submit_action(action);
+        }
     }
 
     /**

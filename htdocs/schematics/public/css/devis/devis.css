@@ -195,6 +195,11 @@ div.devis-edit > button {
     margin: 0 0.5em;
 }
 
+
+#editable-devis .devis-footer input{
+    width: 3em;
+}
+
 /*==============================================================================
                             rules for pdf devis       
 All of these rules are just to manage properly tables for html2pdf                                                                

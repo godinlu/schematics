@@ -82,7 +82,6 @@ class DevisBody{
                     devis_category.set_global_remise(action.payload.new_value);
                 }
             }
-            devisStore.dispatch("render");
             return;
         }
 
@@ -125,12 +124,9 @@ class DevisBody{
         const debouncedHandler = debounce(()=>{
             const new_value = parseInt(input.value);
 
-            if (!isNaN(new_value)){
-                const action = {
-                    type: "body-edit-global-remise",
-                    payload: {old_value: this.global_remise, new_value},
-                };
-                devisStore.submit_action(action);
+            if (!isNaN(new_value) && new_value !== this.global_remise && new_value >= 0 && new_value <= 30){
+                devisStore.submit_action({type:"body-edit-global-remise", payload:{new_value}});
+                devisStore.dispatch("render");
             }
         }, 300);
 
