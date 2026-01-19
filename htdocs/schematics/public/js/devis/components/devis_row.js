@@ -23,13 +23,14 @@ class DevisRow{
     /**@type {number} */
     quantity
 
-    constructor({ref, label, prix, category_id, priority}){
+    constructor({ref, label, prix, category_id, priority, reason}){
         this.ref = ref;
         this.label = label;
         this.prix = prix;
         this.category_id = category_id;
         this.base_category_id = devisStore.data_manager.get_base_category_id(category_id).id;
         this.priority = priority;
+        this.reason = reason;
         this.remise = 0;
         this.quantity = 1;
     }
@@ -70,6 +71,12 @@ class DevisRow{
                     <button data-handler="remove">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
+                    ${(this.reason)?`
+                        <button class="hint-btn">
+                            <i class="fa-solid fa-info"></i>
+                            <span class="hint-tooltip">${this.reason}</span>
+                        </button>
+                    `:""}
                 </div>
             </td>
         `;

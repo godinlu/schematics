@@ -168,20 +168,21 @@ class DevisCategory{
      * Otherwise, the article is retrieved from the data manager and a new DevisRow is created.
      *
      * @param {string} ref - The reference of the article to insert.
+     * @param {string} [reason] - Optional explanation of why this article was added.
      */
-    insert_row(ref){
+    insert_row(ref, reason){
         if (this.rows.has(ref)){
             this.rows.get(ref).quantity += 1;
         }else{
             try{
                 const art = devisStore.data_manager.get_article(ref);
-                let devis_row = new DevisRow(art);
+                let devis_row = new DevisRow({...art, reason});
                 this.rows.set(ref, devis_row);
+                this.rows.get(ref).remise = this._global_remise;
             }catch (error){
                 console.log(`Warning : Can't insert article : ${error}`);
             }
         }
-        this.rows.get(ref).remise = this._global_remise;
     }
 
     /**

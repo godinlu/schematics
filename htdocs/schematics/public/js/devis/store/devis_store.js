@@ -100,6 +100,13 @@ const devisStore = {
             } 
         }catch (error){
             console.warn(`can't submitting action ${JSON.stringify(action)} : ${error}`);
+
+            // remove the action of the history 
+            const idx = this.action_history.findIndex(a => a === action || a.timestamp === action.timestamp);
+            if (idx !== -1){
+                this.action_history.splice(idx, 1);
+                this.history_cursor -= 1;
+            }
         }
     },
 

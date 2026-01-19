@@ -33,8 +33,8 @@ class DevisBody{
         this.global_remise = 0;
 
         // init the default articles in the body
-        for (const {ref, base_category_id} of get_default_articles_ref(this.formulaire)){
-            this.devis_categories.get(base_category_id).insert_row(ref);
+        for (const {ref, base_category_id, reason} of get_default_articles_ref(this.formulaire)){
+            this.devis_categories.get(base_category_id).insert_row(ref, reason);
         }
     }
 
