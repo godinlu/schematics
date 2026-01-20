@@ -16,6 +16,7 @@
 
 /**@type {MappingRule[]} */
 const SC_MAPPING = [
+    // -------------------- MODULE + KIT --------------------
     {
         when: { typeInstallation: /^SC1Z$/ },
         refs: {"module SC1Z": ["SC1ZBMOD500"], "kit SC1Z": ["SC1ZKIT50"]},
@@ -51,6 +52,7 @@ const SC_MAPPING = [
         refs: {"module Hydraubox 2": ["HYBX2MOD"], "kit Hydraubox": ["HYBXKIT"]},
         reason: "L'installation est une HydrauBox 2."
     },
+    // -------------------- OPTIONS DE ZONES --------------------
     {
         when: {
             typeInstallation: /K$/,
@@ -103,7 +105,6 @@ const SC_MAPPING = [
         refs: {"options": ["OPT0030"]},
         reason: "La zone 2 et/ou 3 sont raccordées avec une piscine"
     },
-    
     {
         when: {
             zoneSupplementaire: /^(?!Aucun$)(?!.*piscine)(?!.*appoint).*$/i,
@@ -133,6 +134,37 @@ const SC_MAPPING = [
         },
         refs: {"options": ["OPT0019"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon) et la zone supplémentaire est un appoint bois."
+    },
+
+    // -------------------- OPTIONS PISCINE --------------------
+
+    {
+        when: {
+            circulateurC1: /piscine/i
+        },
+        refs: {"accessoires piscine": ["MOD0023", "MOD0045"]},
+        reason: "Une piscine est raccordée sur un circulateurs."
+    },
+    {
+        when: {
+            circulateurC2: /piscine/i
+        },
+        refs: {"accessoires piscine": ["MOD0023", "MOD0045"]},
+        reason: "Une piscine est raccordée sur un circulateurs."
+    },
+    {
+        when: {
+            circulateurC3: /piscine/i
+        },
+        refs: {"accessoires piscine": ["MOD0023", "MOD0045"]},
+        reason: "Une piscine est raccordée sur un circulateurs."
+    },
+    {
+        when: {
+            circulateurC7: /piscine/i
+        },
+        refs: {"accessoires piscine": ["MOD0023", "MOD0045"]},
+        reason: "Une piscine est raccordée sur un circulateurs."
     },
 ];
 
@@ -199,12 +231,15 @@ const BAL_MAPPING = [
 /**@type {MappingRule[]} */
 const CAPTEURS_MAPPING = [
     {
+        when: {
+            champCapteur: /^(?!aucun$).*$/i,
+        },
         refs: {
             "capteurs": ["S7 2,5-CS-45-6"],
             "bitube DN20": ["MOD0757"],
             "kit DN20": ["KITCAP015", "KITCAP012"]
         },
-        reason: "Articles ajoutées par défaut."
+        reason: "présence d'un champ capteur"
     }
 ];
 
