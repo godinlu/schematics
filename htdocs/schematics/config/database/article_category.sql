@@ -1,5 +1,5 @@
 -- 1. drop the table category_article
-DROP TABLE category_article;
+DROP TABLE IF EXISTS category_article;
 
 
 -- 2. recreate the table
