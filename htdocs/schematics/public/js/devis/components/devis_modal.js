@@ -3,37 +3,17 @@
  * @type {import('../store/devis_store.js').devisStore}
  * @type {import('./modal_filters/devis_capteurs_filter.js').DevisCapteurFilter}
  * @type {import("../model/data_manager.class.js").article_dict}
+ * @type {import("../../public/modal.js").Modal}
  */
 
 /**
  * 
  */
-class DevisModal{
+class DevisModal extends Modal{
     constructor(){
-        let body = document.querySelector("body");
-        this.modal_div = document.createElement("div");
-        this.modal_div.classList.add("modal");
-
-        this.content_div = document.createElement("div");
-        this.content_div.classList.add("modal-content");
-
-        this.modal_div.appendChild(this.content_div);
-
-        body.appendChild(this.modal_div);
-
-        this.modal_div.onclick = (e) => {
-            if (e.target === this.modal_div) this.modal_div.style.display = 'none';
-        };
+        super();
 
         this.pending_action = null;
-    }
-
-    show(){
-        this.modal_div.style.display = "flex";
-    }
-
-    hide(){
-        this.modal_div.style.display = "none";
     }
 
     set_content({category_id, pending_action = null, force_articles = false}){

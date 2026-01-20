@@ -62,6 +62,7 @@
             ],
             "Devis": [
                 "../assets/html2pdf/html2pdf.bundle.min.js",
+                "public/modal.js",
                 "devis/model/data_manager.class.js",
                 "devis/model/default_articles_ref.js",
                 "devis/store/devis_store.js",

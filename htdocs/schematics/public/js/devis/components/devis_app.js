@@ -5,6 +5,7 @@
  * @type {import('./devis_footer').DevisFooter}
  * @type {import('./devis_modal').DevisModal}
  * @type {import('./devis_pdf').DevisPdf}
+ * @type {import('../../public/modal').Modal}
  */
 
 
@@ -23,7 +24,8 @@ class DevisApp{
         this.devis_body = new DevisBody(formulaire);
         this.devis_footer = new DevisFooter();
 
-        this.devis_modal = new DevisModal();        
+        this.devis_modal = new DevisModal();
+        this.info_modal = new Modal(document.querySelector("#modal-info"));        
 
         this.#register_store_events();
         this.#attach_event_listeners();
@@ -59,8 +61,10 @@ class DevisApp{
         document.querySelector("#undo").addEventListener("click", () => devisStore.undo());
         document.querySelector("#redo").addEventListener("click", () => devisStore.redo());
 
-        // Ctrl + z and Ctrl + y
+        document.querySelector("#info-user").addEventListener("click", () => this.info_modal.show());
+
         document.addEventListener("keydown", (e) => {
+            // Ctrl + z
             if (e.ctrlKey && !e.shiftKey && e.key.toLowerCase() === "z") {
                 e.preventDefault(); // prevent the default action of the nav
                 devisStore.undo();

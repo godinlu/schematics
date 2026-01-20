@@ -71,8 +71,72 @@
         </div>
         
         <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
+        <button id="info-user" class="hint-btn">
+            <i class="fa-solid fa-info"></i>
+            <span class="hint-tooltip">Notice</span>
+        </button>
     </aside>
 </div> 
+
+<div class="modal" id="modal-info">
+    <div class="modal-content">
+        <h2>Comment créer un devis</h2>
+
+        <p>Avant de créer votre devis, voici quelques raccourcis utiles :</p>
+
+        <ul>
+            <li><strong>Ctrl + Z</strong> : Annuler la dernière action</li>
+            <li><strong>Ctrl + Y</strong> ou <strong>Ctrl + Shift + Z</strong> : Rétablir la dernière action</li>
+            <li>Double-clic sur une désignation : éditer la ligne</li>
+            <li><strong>Échap</strong> : fermer n’importe quelle modale</li>
+        </ul>
+
+        <section>
+            <h3>1. Entête</h3>
+            <p>
+                La plupart des champs de l’entête se remplissent automatiquement à partir des informations saisies dans le formulaire. 
+                Tous les champs restent cependant modifiables manuellement.
+            </p>
+        </section>
+
+        <section>
+            <h3>2. Détail du devis</h3>
+            <p>
+                Des articles peuvent être ajoutés automatiquement selon les informations du formulaire (indiqués par un bouton <i class="fa-solid fa-info"></i> dans la colonne "Édition"). 
+                En survolant ce bouton, un texte explique pourquoi l’article a été ajouté par défaut.
+            </p>
+            <p><strong>Actions possibles sur les lignes :</strong></p>
+            <ul>
+                <li><i class="fa-regular fa-pen-to-square"></i> Éditer : modifier le contenu d’une ligne</li>
+                <li><i class="fa-solid fa-angle-up"></i>/<i class="fa-solid fa-angle-down"></i> Déplacer : changer l’ordre des lignes</li>
+                <li><i class="fa-solid fa-xmark"></i> Supprimer : retirer une ligne du devis</li>
+                <li>Modifier la quantité : via l’input de la colonne "Quantité"</li>
+                <li>Modifier la remise : par ligne ou globalement (remarque : la remise globale n’affecte pas les catégories Service et Transport)</li>
+                <li><i class="fa-solid fa-plus"></i> Ajouter un article : ouvre une modale pour naviguer dans les catégories et sélectionner l’article</li>
+                <li>Ajouter un commentaire : via le bouton "TEXT" (les commentaires n’ont pas de prix et modifient uniquement leur libellé)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>3. Bas du devis</h3>
+            <p>
+                Vous trouverez ici les totaux : HT, TVA et TTC. Vous pouvez modifier le taux de TVA et le code correspondant si nécessaire.
+            </p>
+        </section>
+
+        <section>
+            <h3>Conseils</h3>
+            <p>
+                Toutes les actions sont sauvegardées temporairement. Pour une sauvegarde définitive, utilisez le menu <strong>Fichier &gt; Sauvegarder</strong>. 
+                Les données seront enregistrées dans un fichier ".json".
+            </p>
+            <p>
+                Un historique est disponible pour annuler ou rétablir les actions via les boutons <strong>Annuler</strong> et <strong>Rétablir</strong>.
+            </p>
+        </section>
+    </div>
+
+</div>
 
 
 <form id="formulaire" action="" method="post">

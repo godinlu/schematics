@@ -450,3 +450,26 @@ div.modal-category button:focus {
     width: 100%;
 }
 
+aside button.hint-btn{
+    margin: 0 auto;
+    width: min-content;
+    color: white;
+    background-color: #2196F3;
+    border: none;
+}
+
+aside button.hint-btn:hover{
+    transform: none;
+    background-color: #1976D2; /* bleu un peu plus foncé au hover */
+    opacity: 1;
+}
+
+/*==============================================================================
+                            RULES OF INFO MODAL                                                                        
+==============================================================================*/
+
+#modal-info .modal-content{
+    width: 50vw;
+    height: 80vh;
+    overflow-y: auto; 
+}
