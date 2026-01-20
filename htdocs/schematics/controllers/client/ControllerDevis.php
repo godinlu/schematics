@@ -12,29 +12,26 @@ class CatalogueManager extends Model {
         return $this->select("SELECT * FROM category ORDER BY priority");
     }
 
-    /**
-     * Retourne les articles triés selon la priorité absolue
-     * de leur catégorie
-     */
-    public function get_articles() {
-        $articles = $this->select("
-            SELECT a.ref, a.label, a.prix, a.category_id
-            FROM article a
-            INNER JOIN category c
-                ON a.category_id = c.id
+
+    public function get_articles(){
+        $article_category = $this->select("
+            SELECT a.ref, a.label, a.prix, ac.category_id
+            FROM category_article ac
+            INNER JOIN article a ON a.ref = ac.article_ref
+            INNER JOIN category c ON c.id = ac.category_id
             ORDER BY c.priority, a.prix
         ");
 
         $priority = 1;
 
-        foreach ($articles as &$article) {
-            $article['priority'] = $priority;
+        foreach ($article_category as &$row) {
+            $row['priority'] = $priority;
             $priority++;
         }
 
-        unset($article); // bonne pratique avec les références
+        unset($row); // bonne pratique avec les références
 
-        return $articles;
+        return $article_category;
     }
 }
 
@@ -66,8 +63,10 @@ class ControllerDevis
 
       $this->_view = new View('Devis');
       $this->_view->generate(array(
-        "categories" => $catalogue_manager->get_categories(),
-        "articles" => $catalogue_manager->get_articles(),
+        "devis_tables" => array(
+            "categories" => $catalogue_manager->get_categories(),
+            "articles" => $catalogue_manager->get_articles(),
+        ),
         "formulaire" => $formulaire,
         "devis_saved" => $dataForm->getDevis()
       ));

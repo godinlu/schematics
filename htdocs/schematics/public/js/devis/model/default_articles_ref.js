@@ -10,7 +10,7 @@
 /**
  * @typedef {Object} MappingRule
  * @property {Object<string, RegExp>} [when] - Optional conditions to match formulaire fields
- * @property {string[]} refs - List of references to add if rule matches
+ * @property {Object<string, string[]>} refs - List of references to add if rule matches
  * @property {string} [reason] - Optional reason of the article to be added
  */
 
@@ -18,37 +18,37 @@
 const SC_MAPPING = [
     {
         when: { typeInstallation: /^SC1Z$/ },
-        refs: ["SC1ZBMOD500", "SC1ZKIT50"],
+        refs: {"module SC1Z": ["SC1ZBMOD500"], "kit SC1Z": ["SC1ZKIT50"]},
         reason: "L'installation est un SC1Z."
     },
     {
         when: { typeInstallation: /^SC1$/ },
-        refs: ["SC1BMOD", "SC1KIT50"],
+        refs: {"module SC1": ["SC1BMOD"], "kit SC1": ["SC1KIT50"]},
         reason: "L'installation est un SC1."
     },
     {
         when: { typeInstallation: /^SC2$/ },
-        refs: ["SC2BMOD", "SC2KIT5050"],
+        refs: {"module SC2": ["SC2BMOD"], "kit SC2": ["SC2KIT5050"]},
         reason: "L'installation est un SC2."
     },
     {
         when: { typeInstallation: /^SC1K$/ },
-        refs: ["SC1K1,5BMOD", "SC1K1KIT5"],
+        refs: {"module SC1K": ["SC1K1,5BMOD"], "kit SC1K": ["SC1K1KIT5"]},
         reason: "L'installation est un SC1K."
     },
     {
         when: { typeInstallation: /^SC2K$/ },
-        refs: ["SC2K1BMOD", "SC2K1KIT5"],
+        refs: {"module SC2K": ["SC2K1BMOD"], "kit SC2K": ["SC2K1KIT5"]},
         reason: "L'installation est un SC2K"
     },
     {
         when: { typeInstallation: /^HydrauBox 1$/ },
-        refs: ["HYBX1MOD", "HYBXKIT"],
+        refs: {"module Hydraubox 1": ["HYBX1MOD"], "kit Hydraubox": ["HYBXKIT"]},
         reason: "L'installation est une HydrauBox 1."
     },
     {
         when: { typeInstallation: /^HydrauBox 2$/ },
-        refs: ["HYBX2MOD", "HYBXKIT"],
+        refs: {"module Hydraubox 2": ["HYBX2MOD"], "kit Hydraubox": ["HYBXKIT"]},
         reason: "L'installation est une HydrauBox 2."
     },
     {
@@ -56,7 +56,7 @@ const SC_MAPPING = [
             typeInstallation: /K$/,
             circulateurC1: /Plancher chauffant/
         },
-        refs: ["KITSSC049"],
+        refs: {"options": ["KITSSC049"]},
         reason: "Un plancher chauffant est présent en zone 1 et l'installation est collective."
     },
     {
@@ -64,7 +64,7 @@ const SC_MAPPING = [
             typeInstallation: /[^K]$/,
             circulateurC1: /^Plancher chauffant$/
         },
-        refs: ["KITSSC006"],
+        refs: {"options": ["KITSSC006"]},
         reason: "Un plancher chauffant est présent en zone 1"
     },
     {
@@ -72,35 +72,35 @@ const SC_MAPPING = [
             typeInstallation: /[^K]$/,
             circulateurC1: /^Plancher chauffant sur V3V$/
         },
-        refs: ["KITSSC060"],
+        refs: {"options": ["KITSSC060"]},
         reason: "Un plancher chauffant sur V3V est présent en zone 1"
     },
     {
         when: {
             zone2: /^(?!Aucun$)(?!.*piscine).*$/i,
         },
-        refs: ["OPT0016"],
+        refs: {"options": ["OPT0016"]},
         reason: "La zone 2 et/ou 3 sont raccordées."
     },
     {
         when: {
             zone3: /^(?!Aucun$)(?!.*piscine)(?!.*appoint).*$/i
         },
-        refs: ["OPT0016"],
+        refs: {"options": ["OPT0016"]},
         reason: "La zone 2 et/ou 3 sont raccordées."
     },
     {
         when: {
             zone2: /piscine/i
         },
-        refs: ["OPT0030"],
+        refs: {"options": ["OPT0030"]},
         reason: "La zone 2 et/ou 3 sont raccordées avec une piscine"
     },
     {
         when: {
             zone3: /piscine/i
         },
-        refs: ["OPT0030"],
+        refs: {"options": ["OPT0030"]},
         reason: "La zone 2 et/ou 3 sont raccordées avec une piscine"
     },
     
@@ -108,14 +108,14 @@ const SC_MAPPING = [
         when: {
             zoneSupplementaire: /^(?!Aucun$)(?!.*piscine)(?!.*appoint).*$/i,
         },
-        refs: ["OPT0018"],
+        refs: {"options": ["OPT0018"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon)."
     },
     {
         when: {
             zoneSupplementaire: /piscine/i
         },
-        refs: ["OPT0027"],
+        refs: {"options": ["OPT0027"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon) et la zone supplémentaire est une piscine."
     },
     {
@@ -123,7 +123,7 @@ const SC_MAPPING = [
             circulateurC7: /appoint/i,
             zoneSupplementaire: /^aucun$/i
         },
-        refs: ["OPT0017"],
+        refs: {"options": ["OPT0017"]},
         reason: "Un appoint bois est présent sur C7."
     },
     {
@@ -131,7 +131,7 @@ const SC_MAPPING = [
             circulateurC7: /appoint/i,
             zoneSupplementaire: /appoint/i
         },
-        refs: ["OPT0019"],
+        refs: {"options": ["OPT0019"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon) et la zone supplémentaire est un appoint bois."
     },
 ];
@@ -145,7 +145,7 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon ECS 2/
         },
-        refs:["BAL0001"],
+        refs: {"bal double ech": ["BAL0001"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs."
     },
     {
@@ -153,7 +153,7 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon ECS et/
         },
-        refs:["BAL0001", "BAL0001"],
+        refs: {"bal double ech": ["BAL0001", "BAL0001"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."
     },
     {
@@ -161,21 +161,21 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon elec en sortie ballon solaire avec bouclage sanitaire$/
         },
-        refs:["BAL0001", "BAL0001"],
+        refs: {"bal double ech": ["BAL0001", "BAL0001"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."
     },
     {
         when: {
             ballonECS: /^Ballon hygiénique avec 2 echangeurs$/
         },
-        refs:["BAL0098"],
+        refs: {"bal tamp inox": ["BAL0098"]},
         reason: "Le ballon sanitaire est hygiénique et a 2 échangeurs."
     },
     {
         when: {
             ballonECS: /^Ballon hygiénique avec 1 echangeur$/
         },
-        refs:["BAL0094"],
+        refs:{"bal tamp inox": ["BAL0094"]} ,
         reason: "Le ballon sanitaire est hygiénique et a 1 échangeurs."
     },
     {
@@ -183,7 +183,7 @@ const BAL_MAPPING = [
             ballonTampon: /^(?!aucun$).*$/i,
             EchangeurDansBT: /on/,
         },
-        refs:["BAL0085"],
+        refs:{"bal tamp ech total": ["BAL0085"]},
         reason: "Il y a un ballon tampon avec échangeur."
     },
     {
@@ -191,7 +191,7 @@ const BAL_MAPPING = [
             ballonTampon: /^(?!aucun$).*$/i,
             EchangeurDansBT: /off/,
         },
-        refs:["BAL0103"],
+        refs:{"bal tamp ech total": ["BAL0103"]},
         reason: "Il y a un ballon tampon sans échangeur."
     },
 ];
@@ -199,7 +199,11 @@ const BAL_MAPPING = [
 /**@type {MappingRule[]} */
 const CAPTEURS_MAPPING = [
     {
-        refs: ["S7 2,5-CS-45-6", "MOD0757", "KITCAP015", "KITCAP012"],
+        refs: {
+            "capteurs": ["S7 2,5-CS-45-6"],
+            "bitube DN20": ["MOD0757"],
+            "kit DN20": ["KITCAP015", "KITCAP012"]
+        },
         reason: "Articles ajoutées par défaut."
     }
 ];
@@ -207,18 +211,10 @@ const CAPTEURS_MAPPING = [
 /**@type {MappingRule[]} */
 const SERV_PORT_MAPPING = [
     {
-        refs: ["MISE001", "TRANS001"],
+        refs: {"assistance ind": ["MISE001"], "transport fr": ["TRANS001"]},
         reason: "Articles ajoutées par défaut."
     }
 ];
-
-/**@type {Object<string, MappingRule[]> } */
-const GLOBAL_MAPPING = {
-    "SC part": SC_MAPPING,
-    "ballon part": BAL_MAPPING,
-    "capteur part": CAPTEURS_MAPPING,
-    "service transport": SERV_PORT_MAPPING
-};
 
 
 /**
@@ -233,17 +229,14 @@ const GLOBAL_MAPPING = {
  * - When a rule matches, all `refs` in the rule are added to the results with the rule's `base_category_id`.
  *
  * @param {Object} formulaire - The input data containing fields like `typeInstallation`, `circulateurC1`, etc.
- * @returns {Array<{ref: string, base_category_id: string}>} 
+ * @returns {Array<{ref: string, category_id: string, reason?: string}>} 
  *          An array of objects containing `ref` and `base_category_id` for all rules that matched the input.
  */
 function get_default_articles_ref(formulaire){
     const enhanced_formulaire = enhance_formulaire(formulaire);
-    console.log(enhanced_formulaire)
     let results = [];
-    for (const [base_category_id, mapping] of Object.entries(GLOBAL_MAPPING)){
-        const resolved = resolve_mapping(enhanced_formulaire, mapping);
-
-        results.push(...resolved.map(({ref, reason}) => ({ref, base_category_id, reason})));
+    for (const mapping of [SC_MAPPING, BAL_MAPPING, CAPTEURS_MAPPING, SERV_PORT_MAPPING]){
+        results.push(...resolve_mapping(enhanced_formulaire, mapping));
     }
     return results;
 }
@@ -260,7 +253,7 @@ function get_default_articles_ref(formulaire){
  *
  * @param {Object} formulaire - The input object containing various fields.
  * @param {MappingRule[]} mapping - An array of mapping rules to evaluate.
- * @returns {Array<{ ref: string, reason?: string }>}
+ * @returns {Array<{ ref: string, category_id: string, reason?: string }>}
  */
 function resolve_mapping(formulaire, mapping){
     let refs = [];
@@ -275,7 +268,13 @@ function resolve_mapping(formulaire, mapping){
             
         })
 
-        if (match) refs.push(...rule.refs.map(ref => ({ref, reason: rule.reason})));
+        if (match){
+            refs.push(
+                ...Object.entries(rule.refs).flatMap(([category_id, refs]) => refs.map(ref => ({
+                    ref, category_id, reason: rule.reason
+                })))
+            );
+        }
     }
     return refs;
 }

@@ -118,7 +118,7 @@ class DevisCategory{
         const payload = action.payload;
         switch (action.type){
             case "body-add":
-                this.insert_row(payload.ref);
+                this.insert_row(payload.ref, payload.category_id);
                 break;
             case "body-remove":
                 this.rows.delete(payload.ref);
@@ -127,7 +127,7 @@ class DevisCategory{
                 this.#move_row(payload.ref, parseInt(payload.direction));
                 break;
             case "body-edit":
-                this.#edit_row(payload.old_ref, payload.new_ref);
+                this.#edit_row(payload.old_ref, payload.new_ref, payload.category_id);
                 break;
             case "body-add-text":
                 let new_row = new DevisRow({
@@ -168,14 +168,15 @@ class DevisCategory{
      * Otherwise, the article is retrieved from the data manager and a new DevisRow is created.
      *
      * @param {string} ref - The reference of the article to insert.
+     * @param {string} category_id - the category id of the article to insert.
      * @param {string} [reason] - Optional explanation of why this article was added.
      */
-    insert_row(ref, reason){
+    insert_row(ref, category_id, reason){
         if (this.rows.has(ref)){
             this.rows.get(ref).quantity += 1;
         }else{
             try{
-                const art = devisStore.data_manager.get_article(ref);
+                const art = devisStore.data_manager.get_article(ref, category_id);
                 let devis_row = new DevisRow({...art, reason});
                 this.rows.set(ref, devis_row);
                 this.rows.get(ref).remise = this._global_remise;
@@ -199,11 +200,12 @@ class DevisCategory{
      * The switch preserve the priority of the old row
      * @param {string} old_ref 
      * @param {string} new_ref 
+     * @param {string} category_id
      */
-    #edit_row(old_ref, new_ref){
+    #edit_row(old_ref, new_ref, category_id){
         const old_row = this.rows.get(old_ref);
         this.rows.delete(old_ref);
-        this.insert_row(new_ref);
+        this.insert_row(new_ref, category_id);
         this.rows.get(new_ref).priority = old_row.priority;
         this.rows.get(new_ref).quantity = old_row.quantity;
     }

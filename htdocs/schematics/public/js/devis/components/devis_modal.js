@@ -38,6 +38,7 @@ class DevisModal{
 
     set_content({category_id, pending_action = null, force_articles = false}){
         if (pending_action !== null) this.pending_action = pending_action;
+        this.pending_action.payload.category_id = category_id;
 
         const sub_categs = devisStore.data_manager.get_childrens_categories(category_id);
 

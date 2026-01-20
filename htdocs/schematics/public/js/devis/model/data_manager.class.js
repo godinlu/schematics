@@ -6,6 +6,7 @@
  * @property {string} category_id
  * @property {number} priority
  */
+
 /**
  * @typedef {Object} category_dict
  * @property {string} id
@@ -20,34 +21,39 @@ class DataManager{
     #articles;
     /** @type {category_dict[]} */
     #categories;
-    /** @type {Map<string, article_dict>} */
-    #articles_map;
     /** @type {Map<string, category_dict>} */
     #categories_map;
 
     /**
-     * 
-     * @param {article_dict[]} articles 
-     * @param {category_dict[]} categories 
+     * @param {{
+     *  articles: article_dict[],
+     *  categories: category_dict[]
+     * }} params
      */
-    constructor(articles, categories){
+    constructor({articles, categories}){
         this.#articles = articles;
         this.#categories = categories;
 
-        this.#articles_map = new Map(articles.map(art => [art.ref, art]));
         this.#categories_map = new Map(categories.map(cat => [cat.id, cat]));
 
     }
 
     /**
-     * return the Article identify by it's ref.
+     * return the Article identify by it's ref and it's category_id.
      * @param {string} ref 
+     * @param {string} category_id
      * @returns {article_dict}
      */
-    get_article(ref){
-        const article_dict = this.#articles_map.get(ref);
-        if (!article_dict) throw new Error(`Article with ref ${ref} does not exist.`);
-        return article_dict;
+    get_article(ref, category_id){
+        const results = this.#articles.filter(art => art.ref === ref && art.category_id === category_id);
+        if (results.length === 0){
+            const categories_id = this.#articles.filter(art => art.ref === ref).map(art => art.category_id);
+            throw new Error(`
+                Article with ref '${ref}' and category_id '${category_id}' does not exist.
+                Founds (${categories_id.length}) others categories : ${JSON.stringify(categories_id)}.
+            `);
+        }
+        return results[0];
     }
 
     /**

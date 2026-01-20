@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () =>{
 
 
 function init_app(){
-    const {articles, categories, devis_saved, formulaire} = loadInitialData();
+    const {devis_tables, formulaire, devis_saved} = loadInitialData();
 
-    const data_manager = new DataManager(articles, categories);
+    const data_manager = new DataManager(devis_tables);
 
     devisStore.init(data_manager, devis_saved);
 
@@ -30,12 +30,11 @@ function init_app(){
  */
 function loadInitialData() {
     try {
-        const articles = JSON.parse(document.getElementById("data-articles").textContent); 
-        const categories = JSON.parse(document.getElementById("data-categories").textContent);
+        const devis_tables = JSON.parse(document.getElementById("data-devis_tables").textContent); 
         const formulaire = JSON.parse(document.getElementById("data-formulaire").textContent); 
-
         const devis_saved = JSON.parse(document.getElementById("data-devis-saved").textContent);
-        return {articles, categories, devis_saved, formulaire};
+
+        return {devis_tables, formulaire, devis_saved};
     } catch (error) {
         console.error("Error loading initial data:", error);
         return null;

@@ -77,12 +77,8 @@
 
 <form id="formulaire" action="" method="post">
 </form>
-<script id="data-articles" type="application/json">
-<?= json_encode($articles, JSON_UNESCAPED_UNICODE) ?>
-</script>
-
-<script id="data-categories" type="application/json">
-<?= json_encode($categories, JSON_UNESCAPED_UNICODE) ?>
+<script id="data-devis_tables" type="application/json">
+<?= json_encode($devis_tables, JSON_UNESCAPED_UNICODE) ?>
 </script>
 
 <script id="data-formulaire" type="application/json">

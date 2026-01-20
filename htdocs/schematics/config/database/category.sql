@@ -1,12 +1,11 @@
--- 1. Déconnecter les articles de leurs catégories
-UPDATE article
-SET category_id = NULL;
+
+-- 1. Supprimer la table article_category
+DROP TABLE IF EXISTS article_category;
 
 -- 2. Supprimer la table catégories
-ALTER TABLE article DROP FOREIGN KEY fk_category;
 DROP TABLE IF EXISTS category;
 
--- 3. Recréer la table
+-- 3. Recréer la table category
 CREATE TABLE category (
     id VARCHAR(25) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -18,13 +17,6 @@ CREATE TABLE category (
         ON DELETE SET NULL,
     INDEX idx_parent_id (parent_id) 
 );
-
-ALTER TABLE article
-ADD CONSTRAINT fk_category
-FOREIGN KEY (category_id)
-REFERENCES category(id)
-ON DELETE SET NULL
-ON UPDATE CASCADE;
 
 
 -- 4. insertion de toute les catégories
