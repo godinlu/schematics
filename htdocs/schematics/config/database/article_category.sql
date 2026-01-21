@@ -269,37 +269,37 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^SID2,5-(A|T)';
+WHERE ref REGEXP '^SID2,5-(A|T)' AND is_used = 1;
 
 -- capteurs S7 2,5
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|V)';
+WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|V)' AND is_used = 1;
 
 -- capteurs SH 2,5
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|V)';
+WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|V)' AND is_used = 1;
 
 -- capteurs S7 2,5 black frame
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|V)';
+WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|V)' AND is_used = 1;
 
 -- capteurs S7 2 portrait
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7-(ST|CT|CS|V)';
+WHERE ref REGEXP '^S7-(ST|CT|CS|V)' AND is_used = 1;
 
 -- capteurs S7 2 paysage
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^SH 2-(ST|CT|CS|V)';
+WHERE ref REGEXP '^SH 2-(ST|CT|CS|V)' AND is_used = 1;
 
 
 

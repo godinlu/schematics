@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS article (
+    ref VARCHAR(25) PRIMARY KEY,
+    label VARCHAR(255) DEFAULT NULL,
+    prix FLOAT NOT NULL,
+    is_used BOOLEAN NOT NULL DEFAULT true
+);
