@@ -1,102 +1,121 @@
-<!-- formulaire avec toute les informations -->
-<form id="formulaire" action="" method="post">
+<main>
 	<!--première ligne composé de type installation et de la description de l'affaire-->
 	<div class="flex">
-		
+
 		<!--partie type installation-->
 		<div class="rectangle">
 			<p>Module de chauffage</p>
-			<select id="typeInstallation" name="typeInstallation" class="desc" >
+			<select data-field="typeInstallation">
+				<option value="SC1Z">SC1Z</option>
+				<option value="SC1">SC1</option>
+				<option value="SC2">SC2</option>
+				<option value="SC1K">SC1K</option>
+				<option value="SC2K">SC2K</option>
+				<option value="HydrauBox 1">HydrauBox 1</option>
+				<option value="HydrauBox 2">HydrauBox 2</option>
 			</select>
 		</div>
 		<!--menue déroulant pour la description de l'affaire-->
 		<div>
-			<button  type="button" class="accordion" id="AC_descriptionAffaire">Description de l'affaire</button>
+			<button type="button" class="accordion" id="AC_descriptionAffaire">Description de l'affaire</button>
 			<div class="panel">
 				<table>
 
+					<tr>
+						<th colspan="2">Description Installateur</th>
+					</tr>
+					<tbody id="form_installateur">
 						<tr>
-							<th colspan="2">Description Installateur</th>
+							<td>Installateur : </td>
+							<td>
+								<div class="autocomplete" style="width:200px;">
+									<input type="text" class="info autocomplete" id="installateur" name="installateur" required>
+								</div>
+							</td>
 						</tr>
-						<tbody id="form_installateur">
-							<tr>
-								<td>Installateur : </td>
-								<td>
-									<div class="autocomplete" style="width:200px;">
-										<input type="text" class="info autocomplete" id="installateur" name="installateur" required>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>Prénom/nom : </td>
-								<td><input type="text" class="info" id="Prénom/nom" name="Prénom/nom" required></td>
-							</tr>
-							<tr>
-								<td>Adresse mail : </td>
-								<td><input type="email" class="info" id="adresse_mail" name="adresse_mail" placeholder="exemple@gmail.com" required></td>
-							</tr>
-							<tr>
-								<td>Commercial : </td>
-								<td><input type="text" class="info" id="commercial" name="commercial" required></td>
-							</tr>
-						</tbody>
+						<tr>
+							<td>Prénom/nom : </td>
+							<td><input type="text" class="info" id="Prénom/nom" name="Prénom/nom" required></td>
+						</tr>
+						<tr>
+							<td>Adresse mail : </td>
+							<td><input type="email" class="info" id="adresse_mail" name="adresse_mail" placeholder="exemple@gmail.com" required></td>
+						</tr>
+						<tr>
+							<td>Commercial : </td>
+							<td><input type="text" class="info" id="commercial" name="commercial" required></td>
+						</tr>
+					</tbody>
 
-						<tr>
-							<th colspan="2">Description Client</th>
-						</tr>
-						<tr>
-							<td>Nom : </td>
-							<td><input type="text" class="info" id="nom_client" name="nom_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Prénom : </td>
-							<td><input type="text" class="info" id="prenom_client" name="prenom_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Adresse : </td>
-							<td><input type="text" class="info" id="adresse_client" name="adresse_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Code postal : </td>
-							<td><input type="text" class="info" id="code_postale_client" name="code_postale_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Ville : </td>
-							<td><input type="text" class="info" id="ville_client" name="ville_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Téléphone : </td>
-							<td><input type="text" class="info" id="tel_client" name="tel_client" value=""></td>
-						</tr>
-						<tr>
-							<td>Adress Email : </td>
-							<td><input type="email" class="info" id="mail_client" name="mail_client" value=""></td>
-						</tr>
-						
-						
+					<tr>
+						<th colspan="2">Description Client</th>
+					</tr>
+					<tr>
+						<td>Nom : </td>
+						<td><input type="text" class="info" id="nom_client" name="nom_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Prénom : </td>
+						<td><input type="text" class="info" id="prenom_client" name="prenom_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Adresse : </td>
+						<td><input type="text" class="info" id="adresse_client" name="adresse_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Code postal : </td>
+						<td><input type="text" class="info" id="code_postale_client" name="code_postale_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Ville : </td>
+						<td><input type="text" class="info" id="ville_client" name="ville_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Téléphone : </td>
+						<td><input type="text" class="info" id="tel_client" name="tel_client" value=""></td>
+					</tr>
+					<tr>
+						<td>Adress Email : </td>
+						<td><input type="email" class="info" id="mail_client" name="mail_client" value=""></td>
+					</tr>
+
+
 				</table>
 			</div>
 		</div>
-		
+
 	</div>
-	
+
 	<!--menue déroulant pour ballon ECS / tampon-->
 	<div>
-		<button  type="button" class="accordion" id="AC_ballon">Ballons ECS / Tampon</button>
+		<button type="button" class="accordion" id="AC_ballon">Ballons ECS / Tampon</button>
 		<div class="panel">
-		<div id="PartieBallon">
+			<div id="PartieBallon">
 				<!--tableau ballonECS-->
 				<table>
 					<tr>
 						<td>Ballon ECS : </td>
-						<td><select id="ballonECS" class="index bigSelect" name="ballonECS"></select></td>
+						<td>
+							<select data-field="ballonECS">
+								<option value="ballon ECS 2 échangeurs">ballon ECS 2 échangeurs</option>
+								<option value="ballon ECS 2 échangeurs avec bouclage sanitaire">ballon ECS 2 échangeurs avec bouclage sanitaire</option>
+								<option value="ballon ECS et ballon appoint en série">ballon ECS et ballon appoint en série</option>
+								<option value="ballon ECS et ballon appoint en série avec bouclage sanitaire">ballon ECS et ballon appoint en série avec bouclage sanitaire</option>
+								<option value="ballon ECS tank in tank">ballon ECS tank in tank</option>
+								<option value="ballon d'eau chaude sur échangeur">ballon d'eau chaude sur échangeur</option>
+								<option value="ballon elec en sortie ballon solaire avec bouclage sanitaire">ballon elec en sortie ballon solaire avec bouclage sanitaire</option>
+								<option value="Ballon hygiénique avec 1 echangeur">Ballon hygiénique avec 1 echangeur</option>
+								<option value="Ballon hygiénique avec 2 echangeurs">Ballon hygiénique avec 2 echangeurs</option>
+								<option value="Aucun">Aucun</option>
+							</select>
+						</td>
 					</tr>
 					<tr>
-						
+
 						<td><label for="resistanceElectriqueBECS">Résistance électrique : </label></td>
 						<td><input type="checkbox" name="resistanceElectriqueBECS" id="resistanceElectriqueBECS"></td>
 					</tr>
-				
+
 				</table>
 				<!--tableau ballonTampon-->
 				<table>
@@ -117,10 +136,10 @@
 		</div>
 
 	</div>
-	
+
 	<!--menue déroulant pour appoint et raccordement hydraulique-->
 	<div>
-		<button  type="button" class="accordion" id="AC_appRH">Appoints et raccordement hydraulique</button>
+		<button type="button" class="accordion" id="AC_appRH">Appoints et raccordement hydraulique</button>
 		<div class="panel">
 			<!--partie pour l'appoint 1-->
 			<fieldset>
@@ -134,19 +153,19 @@
 						<td class="precisionAppoint1">Zone:</td>
 					</tr>
 					<tr>
-					
+
 						<td>Appoint 1 : </td>
 						<td><select id="appoint1" name="appoint1" class="desc bigSelect"></select></td>
 						<td>Précision :</td>
 						<td><input type="text" id="puissanceApp1" name="puissanceApp1" class="precisionAppoint1 verif info"></td>
 						<td>
-							<select class="precisionAppoint1" id="Zone" name="Zone" >
+							<select class="precisionAppoint1" id="Zone" name="Zone">
 								<option value="Zone non chauffée" selected>Zone non chauffée</option>
-								<option value="Zone chauffée" >Zone chauffée</option>
+								<option value="Zone chauffée">Zone chauffée</option>
 							</select>
-					
+
 						</td>
-		
+
 					</tr>
 				</table>
 				<table>
@@ -154,18 +173,18 @@
 						<td>Raccordement hydraulique :</td>
 						<td><select id="raccordementHydraulique" name="raccordementHydraulique" title="Nécessite un appoint 1" class="sonde bigSelect"></select></td>
 						<td class="rechauffeur">Position par rapport a la casse Pression :</td>
-						<td><select class="rechauffeur" id="Gauche_droite" name="Gauche_droite" >
-							<option value="Gauche">Gauche</option>
-							<option value="Droite">Droite</option>
+						<td><select class="rechauffeur" id="Gauche_droite" name="Gauche_droite">
+								<option value="Gauche">Gauche</option>
+								<option value="Droite">Droite</option>
 
-						</select></td>
+							</select></td>
 					</tr>
-					
+
 				</table>
 				<table>
 					<tr>
 						<td><label for="RDH_appoint1" class="RDH_appoint1" title="nécessite un raccordement hydraulique compatible (échangeur, casse presssion)">Réhaussement des retours sur App 1</label></td>
-						<td><input type="checkbox" class="RDH_appoint1" name="RDH_appoint1" id="RDH_appoint1" ></td>
+						<td><input type="checkbox" class="RDH_appoint1" name="RDH_appoint1" id="RDH_appoint1"></td>
 					</tr>
 				</table>
 			</fieldset>
@@ -174,7 +193,7 @@
 				<table>
 					<tr id="locAppoint2">
 						<td>Appoint 2 : </td>
-						<td>	
+						<td>
 							<input type="radio" name="locAppoint2" value="cascade" id="cascade">
 							<label for="cascade">En cascade d'appoint 1</label>
 						</td>
@@ -184,7 +203,7 @@
 						</td>
 						<td>
 							<input type="radio" name="locAppoint2" value="Aucun" id="Aucun" checked>
-							<label for="Aucun">Aucun</label>								
+							<label for="Aucun">Aucun</label>
 						</td>
 					</tr>
 				</table>
@@ -208,7 +227,7 @@
 					</tr>
 				</table>
 				<table>
-					
+
 					<tr>
 						<td class="div_RH_appoint2">Raccordement hydraulique</td>
 						<td class="div_RH_appoint2"><select id="RH_appoint2" name="RH_appoint2" title="Nécessite un appoint 2 sur C7"></select></td>
@@ -217,20 +236,20 @@
 					</tr>
 				</table>
 			</fieldset>
-			
-			
+
+
 		</div>
 	</div>
 	<!--menue déroulant pour champs capteur-->
 	<div>
-		<button  type="button" class="accordion" id="AC_champCapteur">Panneaux Solaires</button>
+		<button type="button" class="accordion" id="AC_champCapteur">Panneaux Solaires</button>
 		<div class="panel">
-		<table>
+			<table>
 				<tr>
 					<td>Champs capteurs :</td>
 					<td><select id="champCapteur" name="champCapteur" class="sonde bigSelect"></select></td>
 				</tr>
-				
+
 			</table>
 			<table>
 				<tr>
@@ -243,7 +262,7 @@
 
 	<!--menue déroulant pour les zones de chauffages-->
 	<div>
-		<button  type="button" class="accordion" id="AC_circulateur">Zones de Chauffage</button>
+		<button type="button" class="accordion" id="AC_circulateur">Zones de Chauffage</button>
 		<div class="panel">
 			<table>
 				<tr>
@@ -254,23 +273,23 @@
 					<td>Zone 2 (circulateur 2)</td>
 					<td><select id="circulateurC2" name="circulateurC2" class="circulateur desc bigSelect"></select></td>
 				</tr>
-				<tr id ="ligne_circulateurC3">
+				<tr id="ligne_circulateurC3">
 					<td>Zone 3 (circulateur 3)</td>
 					<td><select id="circulateurC3" name="circulateurC3" class="circulateur desc bigSelect"></select></td>
-					
+
 				</tr>
 				<tr>
 					<td>Zone <span id="label_last_zone">4</span> (circulateur 7)<span id="affichage_appoint2"> / Appoint 2</span></td>
 					<td><select id="circulateurC7" name="circulateurC7" class="circulateur desc bigSelect sonde"></select></td>
 				</tr>
-				
+
 			</table>
 		</div>
 	</div>
 	<div class="flex">
 		<!--menue déroulant pour options-->
 		<div>
-			<button  type="button" class="accordion" id="AC_options">Options</button>
+			<button type="button" class="accordion" id="AC_options">Options</button>
 			<div class="panel">
 				<table>
 					<tr>
@@ -287,16 +306,16 @@
 
 		<!--menue déroulant pour divers-->
 		<div>
-			<button  type="button" class="accordion" id="AC_divers">Divers</button>
-			<div class="panel" >
-				
+			<button type="button" class="accordion" id="AC_divers">Divers</button>
+			<div class="panel">
+
 				<table>
 					<tr>
 						<td colspan="2">
 							<input type="checkbox" name="D3" id="D3">
 							<label for="D3">comptage energétique utile solaire D3</label>
 						</td>
-						
+
 					</tr>
 					<tr>
 						<td colspan="2">
@@ -317,7 +336,7 @@
 	</div>
 
 	<div id="partieDescription">
-		<table >
+		<table>
 			<tr>
 				<td>Date: </td>
 				<td id="date"></td>
@@ -330,13 +349,4 @@
 	</div>
 
 	<input type="hidden" name="description">
-</form>
-<script>
-	const formulaire = <?= json_encode($formulaire) ?>;
-	const data_list = <?= $data_list?>;
-	const DATA_LIST = data_list.listInfo;
-    const DATA_DEFAULT_INDEX = data_list.defaultIndex;
-    const DATA_MSG = data_list.forbidMessage;
-</script>
-
-	
+</main>

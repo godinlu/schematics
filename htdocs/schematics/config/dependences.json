@@ -44,11 +44,13 @@
     "js": {
         "client":{
             "Formulaire": [
-                "formulaire/autocomplete.js",
-                "formulaire/forbidList.class.js",
-                "formulaire/Sonde.class.js",
-                "formulaire/List.class.js",
-                "formulaire/gestionErreur.js",
+                "formulaire/index.js",
+                "formulaire/model/rules.js",
+                "formulaire/model/rule_engine.js",
+                "formulaire/store/formulaire_store.js",
+                "formulaire/components/field.js",
+                "formulaire/components/field_manager.js",
+                "formulaire/components/formulaire_app.js",
                 "public/menuDeroulant.js"
             ],
             "Schema_hydrau": [

@@ -1,6 +1,6 @@
 <?php 
 require_once('views/View.php');
-require_once ('models/DataForm.php');
+
 class ControllerFormulaire
 {
     private $_view;
@@ -18,24 +18,10 @@ class ControllerFormulaire
 
     private function formulaire()
     {
-        session_start();
-        $dataForm = new DataForm;
 
-        if (isset($_GET['action'])){
-            if ($_GET['action'] === ControllerFormulaire::$REINIT){
-                $dataForm->clearFormulaire();
-                $dataForm->clearFiche_prog();
-                $dataForm->clearDevis();
-                header('location:formulaire');
-                exit;
-            }
-        }
 
         $this->_view = new View('Formulaire');
-        $this->_view->generate(array(
-            'formulaire' => $dataForm->getFormulaire(),
-            'data_list' => file_get_contents("config/client/data_list.json")
-        ));
+        $this->_view->generate(array());
     }
 }
 

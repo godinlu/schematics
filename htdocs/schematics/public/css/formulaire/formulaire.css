@@ -1,3 +1,8 @@
+main{
+  background-color: #ededed;
+  padding: 2em;
+}
+
 #PartieBallon{
     display: flex;
     justify-content: space-between;
