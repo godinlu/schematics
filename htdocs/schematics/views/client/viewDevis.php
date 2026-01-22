@@ -50,6 +50,7 @@
                     <th>Prix</th>
                     <th>Remise %<br><input type="number" value="0" min="0" max="30"> </th>
                     <th>Quantité</th>
+                    <th>Montant HT</th>
                     <th>Edition</th>
                 </tr>
             </thead>
