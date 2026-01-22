@@ -79,7 +79,7 @@ const SC_MAPPING = [
     },
     {
         when: {
-            zone2: /^(?!Aucun$)(?!.*piscine).*$/i,
+            zone2: /^(?!Aucun$)(?!.*piscine)(?!.*appoint).*$/i,
         },
         refs: {"options": ["OPT0016"]},
         reason: "La zone 2 et/ou 3 sont raccordées."
@@ -169,6 +169,31 @@ const SC_MAPPING = [
 ];
 
 
+/** @type {MappingRule[]} */
+const APPOINT_MAPPING = [
+    {
+        when: {raccordementHydraulique: /casse pression/i},
+        refs: {"decouplage CP": ["KITSSC059"]},
+        reason: "Il y a une casse pression en appoint 1."
+    },
+    {
+        when: {raccordementHydraulique: /échangeur/i},
+        refs: {"decouplage ech": ["MOD0459"]},
+        reason: "Il y a un échangeur à plaque en appoint 1."
+    },
+    {
+        when: {RH_appoint2: /casse pression/i},
+        refs: {"decouplage CP": ["KITSSC059"]},
+        reason: "Il y a une casse pression en appoint 1."
+    },
+    {
+        when: {RH_appoint2: /échangeur/i},
+        refs: {"decouplage ech": ["MOD0459"]},
+        reason: "Il y a un échangeur à plaque en appoint 1."
+    }
+];
+
+
 
 /**@type {MappingRule[]} */
 const BAL_MAPPING = [
@@ -177,7 +202,7 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon ECS 2/
         },
-        refs: {"bal double ech": ["BAL0001"]},
+        refs: {"bal double ech": ["BAL0002"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs."
     },
     {
@@ -185,7 +210,7 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon ECS et/
         },
-        refs: {"bal double ech": ["BAL0001", "BAL0001"]},
+        refs: {"bal double ech": ["BAL0002", "BAL0002"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."
     },
     {
@@ -193,7 +218,7 @@ const BAL_MAPPING = [
             typeInstallation : /^(?!SC1Z$).*$/,
             ballonECS: /^ballon elec en sortie ballon solaire avec bouclage sanitaire$/
         },
-        refs: {"bal double ech": ["BAL0001", "BAL0001"]},
+        refs: {"bal double ech": ["BAL0002", "BAL0002"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."
     },
     {
@@ -220,13 +245,49 @@ const BAL_MAPPING = [
     },
     {
         when: {
+            ballonTampon: /2/i,
+            EchangeurDansBT: /on/,
+        },
+        refs:{"bal tamp ech total": ["BAL0085"]},
+        reason: "Il y a 2 ballon tampon avec échangeur."
+    },
+    {
+        when: {
             ballonTampon: /^(?!aucun$).*$/i,
             EchangeurDansBT: /off/,
         },
-        refs:{"bal tamp ech total": ["BAL0103"]},
+        refs:{"bal tamp sans ech": ["BAL0103"]},
         reason: "Il y a un ballon tampon sans échangeur."
     },
+    {
+        when: {
+            ballonTampon: /2/i,
+            EchangeurDansBT: /off/,
+        },
+        refs:{"bal tamp sans ech": ["BAL0103"]},
+        reason: "Il y a 2 ballon tampon sans échangeur."
+    },
+    {
+        when: {
+            ballonTampon: /3/i,
+            EchangeurDansBT: /off/,
+        },
+        refs:{"bal tamp sans ech": ["BAL0103", "BAL0103"]},
+        reason: "Il y a 3 ballon tampon sans échangeur."
+    },
+    {
+        when: {resistanceElectriqueBECS: /on/i},
+        refs: {"resistance": ["BAL0158"]},
+        reason: "Il y a une résistance dans le ballon ECS ou tampon."
+    },
+    {
+        when: {resistanceElectriqueBT: /on/i},
+        refs: {"resistance": ["BAL0158"]},
+        reason: "Il y a une résistance dans le ballon ECS ou tampon."
+    }
+    
 ];
+
 
 /**@type {MappingRule[]} */
 const CAPTEURS_MAPPING = [
@@ -235,13 +296,48 @@ const CAPTEURS_MAPPING = [
             champCapteur: /^(?!aucun$).*$/i,
         },
         refs: {
-            "capteurs": ["S7 2,5-CS-45-6"],
             "bitube DN20": ["MOD0757"],
+        },
+        reason: "présence de champ capteur"
+    },
+    {
+        when: {
+            champCapteur: /1/i,
+        },
+        refs: {
+            "capteurs": ["S7 2,5-CS-45-6"],
             "kit DN20": ["KITCAP015", "KITCAP012"]
         },
         reason: "présence d'un champ capteur"
+    },
+    {
+        when: {
+            champCapteur: /2/i,
+        },
+        refs: {
+            "capteurs": ["S7 2,5-CS-45-6", "S7 2,5-CS-45-6"],
+            "kit DN20": ["KITCAP015", "KITCAP015", "KITCAP012", "KITCAP012"]
+        },
+        reason: "présence de deux champ capteur."
+    },
+    {
+        when: {champCapteur: /casse pression/i},
+        refs: {"mod sol 1 col": ["kitSSC197"]},
+        reason: "Présence d'une casse pression sur champ capteur."
+    },
+    {
+        when: {champCapteur: /échangeur/i},
+        refs: {"mod sol 2 col": ["kitSSC199"]},
+        reason: "Présence d'un échangeur sur champ capteur."
+    },
+    {
+        when: {champCapteur: /V3V/i},
+        refs: {"kit V3V": ["KITSSC018"]},
+        reason: "Présence d'une V3V sur champ capteur."
     }
 ];
+
+
 
 /**@type {MappingRule[]} */
 const SERV_PORT_MAPPING = [
@@ -270,7 +366,7 @@ const SERV_PORT_MAPPING = [
 function get_default_articles_ref(formulaire){
     const enhanced_formulaire = enhance_formulaire(formulaire);
     let results = [];
-    for (const mapping of [SC_MAPPING, BAL_MAPPING, CAPTEURS_MAPPING, SERV_PORT_MAPPING]){
+    for (const mapping of [SC_MAPPING, APPOINT_MAPPING, BAL_MAPPING, CAPTEURS_MAPPING, SERV_PORT_MAPPING]){
         results.push(...resolve_mapping(enhanced_formulaire, mapping));
     }
     return results;
