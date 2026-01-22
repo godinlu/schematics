@@ -55,6 +55,7 @@ class DevisRow{
                 ${(is_text)? "" : 
                 `<input class="qte-input" data-handler="qte-input" type="number" min="-9999" max="9999" value="${this.quantity}">`} 
             </td>
+            <td> ${(is_text)?"" : format_number(this.total_amount) + " €"} </td>
             <td>
                 <div class="devis-edit">
                     <button data-handler="edit">
@@ -150,7 +151,8 @@ class DevisRow{
 
         tr.addEventListener("dblclick", (event) =>{
             const td = event.target.closest("td");
-            if (Array.from(td.parentElement.children).indexOf(td) === 1 ){
+            if (Array.from(td.parentElement.children).indexOf(td) === 0 ||
+                Array.from(td.parentElement.children).indexOf(td) === 1){
                 edit_row();
             }
         });

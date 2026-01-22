@@ -45,6 +45,7 @@ class DevisCategory{
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
         `;
 
         const footer = document.createElement("tr");
@@ -54,6 +55,7 @@ class DevisCategory{
                 <button data-action="add-article"><i class="fa-solid fa-plus"></i></button>
                 <button data-action="add-text">TEXT</button>
             </td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
