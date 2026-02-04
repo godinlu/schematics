@@ -3,6 +3,10 @@ main{
   padding: 2em;
 }
 
+main > *{
+  margin-bottom: 1em;
+}
+
 #PartieBallon{
     display: flex;
     justify-content: space-between;

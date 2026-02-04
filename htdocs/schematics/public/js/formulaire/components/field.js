@@ -1,94 +1,98 @@
 /**
  * @type {import('../model/rules.js').Effect}
+ * @type {import('./select_field.js')}
+ * @type {import('./checkbox_field.js')}
+ * @type {import('./radio_field.js')}
+ * @typedef {import('./text_field.js')}
  */
 
-class Field{
-    constructor(element){
+/**
+ * 
+ */
+class Field {
+    /** @type {HTMLElement} */
+    el
+
+    /** @type {string} */
+    name
+
+    /**
+     * 
+     * @param {HTMLElement} element 
+     * @returns {Field}
+     */
+    static from_element(element) {
+        if (element.tagName === "SELECT") {
+            return new SelectField(element);
+        } else if (element.tagName === "INPUT") {
+            if (element.type === "checkbox") {
+                return new CheckboxField(element);
+            }else if (element.type === "radio"){
+                return new RadioField(element);
+            }else if (element.type === "text"){
+                return new TextField(element);
+            }
+        }
+    }
+
+    constructor(element) {
         this.el = element;
         this.name = element.dataset.field;
     }
 
     /**
+     * return the current value of the field.
      * @returns {string}
      */
-    get_value(){
+    get_value() {
         throw new Error("get_value() not implemented");
     }
 
-    get_options(){
+    /**
+     * Set the value of the field with the value given.
+     * @param {string} value 
+     */
+    set_value(value){
+        throw new Error("set_value() not implemented");
+    }
+
+    /**
+     * return the default value of the field.
+     * @returns {string|null}
+     */
+    get_default_value(){
+        throw new Error("get_default_value() not implemented");
+    }
+
+    /**
+     * return all possible options of this field.
+     * @return {string[]}
+     */
+    get_options() {
         throw new Error("get_options() not implemented");
     }
 
     /**
-     * 
-     * @param {{
-     *  value: string,
-     *  reason: string,
-     *  hide: boolean
-     * }[]} forbid_rules 
+     * add an update handler, the function handler will be called when the field will be updated
+     * with the new value in parameters.
+     * @param {(value: string) => void} handler 
      */
-    render(forbid_rules){
-        throw new Error("get_options() not implemented");
-    }
-
-    set_disabled(disabled = true){
-        this.el.disabled = disabled;
-    }
-
-}
-
-
-class SelectField extends Field{
-    get_value(){
-        return this.el.value;
-    }
-
-    get_options(){
-        return Array.from(this.el.options).map(opt => opt.value);
+    on_update(handler){
+        throw new Error("on_update() not implemented");
     }
 
     /**
-     * Apply forbid rules to a select field
-     * @param {{
-     *  value: string,
-     *  reason: string,
-     *  hide: boolean
-     * }[]} forbid_rules 
+     * Reset the state of the field
      */
-    render(forbid_rules) {
-        const forbiddenValues = new Set();
-
-        for (const rule of forbid_rules) {
-            const option = Array.from(this.el.options).find(opt => opt.value === rule.value);
-            if (!option) continue;
-
-            forbiddenValues.add(option.value);
-
-            if (rule.hide) {
-                option.style.display = "none";      // cache complètement l'option
-            } else {
-                option.disabled = true;             // désactive l'option
-            }
-
-            if (rule.reason) {
-                option.title = rule.reason;         // affiche la raison au hover
-            }
-        }
-
-        // Si la valeur sélectionnée est interdite, changer la sélection
-        if (forbiddenValues.has(this.el.value)) {
-            // trouver la première option valide
-            const firstValid = Array.from(this.el.options).find(opt => !forbiddenValues.has(opt.value) && opt.style.display !== "none");
-            if (firstValid) {
-                this.el.value = firstValid.value;
-            } else {
-                // aucun choix valide → vider la sélection
-                this.el.value = "";
-            }
-
-            const event = new Event('change', { bubbles: true });
-            this.el.dispatchEvent(event);
-        }
+    reset() {
+        throw new Error("reset() not implemented");
     }
 
+    /**
+     * Apply options states by disabling, hiding and add title to explain the reason. 
+     * @param {Map<string, {disabled: boolean, hidden: boolean, reason: string}>} states 
+     */
+    apply_options_states(states){
+        throw new Error("apply_options_states() not implemented");
+    }
 }

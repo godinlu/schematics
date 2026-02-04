@@ -3,6 +3,7 @@
  * @type {import('../model/rule_engine.js').RuleEngine}
  * @type {import('./field.js').SelectField}
  * @type {import('./field_manager.js').FieldManager}
+ * @type {import('../model/rules.js').process_rules}
  */
 
 /**
@@ -10,35 +11,21 @@
  */
 class FormulaireApp{
     constructor(){
-        this.rule_engine = new RuleEngine();
+        // this.rule_engine.update("typeInstallation");
 
         this.field_manager = new FieldManager();
-        console.log(this.field_manager.get_values());
+        this.field_manager.attach_events();
 
-        this.#attach_events();
+        //this.field_manager.attach_events(rules);
+        //this.field_manager.init_rules(rules);
 
-        // this.select = new SelectField(document.querySelector("select"));
-        // console.log(this.select.get_options());
-        // this.select.render([{value:"SC1Z", reason:"salut", hide: false}]);
+        // this.field_manager.on_field_update(() =>{
+        //     const instructions = this.rule_engine.evaluate( this.field_manager.get_values() );
+        //     this.field_manager.reset();
+        //     this.field_manager.apply_instructions(instructions);
+        // });
 
         
     }
 
-    #init_fields(){
-
-    }
-
-
-    #attach_events(){
-        let main = document.querySelector("main");
-
-        main.addEventListener("change", (event) =>{
-            const select = event.target;
-            if (!select) return;
-            if (!select.dataset.field) return;
-
-            console.log(select.dataset.field);
-
-        });
-    }
 }

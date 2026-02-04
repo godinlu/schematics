@@ -42,7 +42,7 @@ div.rectangle > *{
   margin-bottom: 1em;
 }
 
-label:hover{
+label[for]:hover{
   color:#f6c437 ;
   cursor: pointer;
 }
