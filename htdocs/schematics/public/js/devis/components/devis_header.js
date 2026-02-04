@@ -23,11 +23,13 @@ class DevisHeader{
     reset(){
         this.fields.set("header-date", new Date().toISOString().split("T")[0]);
 
-        const full_name = [this.formulaire.nom_client?.toUpperCase(), this.formulaire.prenom_client].filter(Boolean).join(" ");
-        const header_objet = [full_name, this.formulaire.typeInstallation].filter(Boolean).join(" - ");
-        this.fields.set("header-objet", header_objet);
+        this.fields.set("header-objet", this.formulaire.typeInstallation);
 
-        this.fields.set("header-affaire", this.formulaire.installateur);
+        const client_full_name = [this.formulaire.nom_client?.toUpperCase(), this.formulaire.prenom_client].filter(Boolean).join(" ");
+        this.fields.set("header-affaire", client_full_name);
+
+        this.fields.set("header-entreprise-name", this.formulaire.installateur);
+
         this.fields.set("header-mail", this.formulaire.adresse_mail);
         this.fields.set("header-installateur", this.formulaire["Prénom/nom"]);
         this.fields.set("header-field1", this.formulaire.commercial);

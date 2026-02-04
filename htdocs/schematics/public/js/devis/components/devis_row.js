@@ -49,7 +49,7 @@ class DevisRow{
             <td>${(is_text)? "" : format_number(this.prix) + " €"}</td>
             <td>
                 ${(is_text)? "" : 
-                `<input class="remise" data-handler="remise-input" type="number" min="0" max="30" value="${this.remise}">`}
+                `<input class="remise" data-handler="remise-input" type="number" min="0" max="35" value="${this.remise}">`}
             </td>
             <td>
                 ${(is_text)? "" : 
@@ -165,7 +165,7 @@ class DevisRow{
                     payload:{ref:this.ref, old_value: this.remise, new_value: input.value, base_category_id: this.base_category_id}
                 };
                 devisStore.submit_action(action);
-                devisStore.dispatch("render-footer", action);
+                devisStore.dispatch("render", action);
             }
             if (input.dataset.handler === "qte-input") {
                 const action = {
@@ -173,7 +173,7 @@ class DevisRow{
                     payload:{ref:this.ref, old_value: this.quantity, new_value: input.value, base_category_id: this.base_category_id} 
                 };
                 devisStore.submit_action(action);
-                devisStore.dispatch("render-footer", action);
+                devisStore.dispatch("render", action);
             }
         }, 300);
 

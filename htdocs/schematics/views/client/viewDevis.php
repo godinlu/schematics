@@ -19,9 +19,11 @@
                         <tr><td><input type="date" data-field_name="header-date"></td></tr>
                     </table>
                     <p>
-                        Mail: <input type="text" data-field_name="header-mail">
-                        <br>
                         A l'attention de <input type="text" data-field_name="header-installateur">
+                        <br>
+                        Nom de l'entreprise <input type="text" data-field_name="header-entreprise-name">
+                        <br>
+                        Mail <input type="text" data-field_name="header-mail">
                     </p>
                 </div>
             </div>
@@ -48,7 +50,7 @@
                     <th>Ref</th>
                     <th>Désignation</th>
                     <th>Prix</th>
-                    <th>Remise %<br><input type="number" value="0" min="0" max="30"> </th>
+                    <th>Remise %<br><input type="number" value="0" min="0" max="35"> </th>
                     <th>Quantité</th>
                     <th>Montant HT</th>
                     <th>Edition</th>
