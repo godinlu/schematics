@@ -1,6 +1,6 @@
 
 -- 1. Supprimer la table article_category
-DROP TABLE IF EXISTS article_category;
+DROP TABLE IF EXISTS category_article;
 
 -- 2. Supprimer la table catégories
 DROP TABLE IF EXISTS category;
@@ -122,8 +122,8 @@ INSERT INTO category (id, name, parent_id) VALUES
         ('assistance', 'Assistance à la mise en service', 'service transport'),
             ('assistance ind', 'Sur installation individuelle', 'assistance'),
             ('assistance col', 'Sur installation collectif', 'assistance'),
-        ('transport', 'Transport', 'service transport'),
-            ('transport fr', 'France sauf Corse', 'transport'),
-            ('transport belglux', 'Belgique - Luxembourg', 'transport'),
-            ('transport divers', 'Divers', 'transport')
+        ('transport', 'Transport', 'service transport')
+            -- ('transport fr', 'France sauf Corse', 'transport'),
+            -- ('transport belglux', 'Belgique - Luxembourg', 'transport'),
+            -- ('transport divers', 'Divers', 'transport')
 ;

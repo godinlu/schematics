@@ -342,7 +342,7 @@ const CAPTEURS_MAPPING = [
 /**@type {MappingRule[]} */
 const SERV_PORT_MAPPING = [
     {
-        refs: {"assistance ind": ["MISE001"], "transport fr": ["TRANS001"]},
+        refs: {"assistance ind": ["MISE001"], "transport": ["TRANS001"]},
         reason: "Articles ajoutées par défaut."
     }
 ];

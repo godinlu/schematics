@@ -796,25 +796,38 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('assistance col', 'MISE010');
 
 -- Transport
--- France sauf Corse
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
-    ('transport fr', 'TRANS001'),
-    ('transport fr', 'TRANS002'),
-    ('transport fr', 'TRANS003'),
-    ('transport fr', 'TRANS006');
+    ('transport', 'TRANS001'),
+    ('transport', 'TRANS002'),
+    ('transport', 'TRANS003'),
+    ('transport', 'TRANS006'),
+    ('transport', 'TRANS010'),
+    ('transport', 'TRANS020'),
+    ('transport', 'TRANS030'),
+    ('transport', 'TRANS060'),
+    ('transport', 'TRANS007'),
+    ('transport', 'TRANS008'),
+    ('transport', 'TRANS009');
 
--- Belgique - Luxembourg
-INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
-    ('transport belglux', 'TRANS010'),
-    ('transport belglux', 'TRANS020'),
-    ('transport belglux', 'TRANS030'),
-    ('transport belglux', 'TRANS060');
+-- -- France sauf Corse
+-- INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+--     ('transport fr', 'TRANS001'),
+--     ('transport fr', 'TRANS002'),
+--     ('transport fr', 'TRANS003'),
+--     ('transport fr', 'TRANS006');
 
--- Divers
-INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
-    ('transport divers', 'TRANS007'),
-    ('transport divers', 'TRANS008'),
-    ('transport divers', 'TRANS009');
+-- -- Belgique - Luxembourg
+-- INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+--     ('transport belglux', 'TRANS010'),
+--     ('transport belglux', 'TRANS020'),
+--     ('transport belglux', 'TRANS030'),
+--     ('transport belglux', 'TRANS060');
+
+-- -- Divers
+-- INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+--     ('transport divers', 'TRANS007'),
+--     ('transport divers', 'TRANS008'),
+--     ('transport divers', 'TRANS009');
 
 
 
