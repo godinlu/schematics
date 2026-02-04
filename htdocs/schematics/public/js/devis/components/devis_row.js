@@ -160,20 +160,34 @@ class DevisRow{
         // create a debounceHandler for both input to avoid spamming action
         const debouncedHandler = debounce((input) => {
             if (input.dataset.handler === "remise-input") {
-                const action = {
-                    type:"body-edit-remise", 
-                    payload:{ref:this.ref, old_value: this.remise, new_value: input.value, base_category_id: this.base_category_id}
-                };
-                devisStore.submit_action(action);
-                devisStore.dispatch("render", action);
+                const new_value = parseInt(input.value);
+                if (!isNaN(new_value) && new_value !== this.remise && new_value >= 0 && new_value <= 35){
+                    devisStore.submit_action({
+                        type: "body-edit-remise",
+                        payload:{
+                            ref: this.ref,
+                            old_value: this.remise,
+                            new_value,
+                            base_category_id: this.base_category_id
+                        }
+                    });
+                    devisStore.dispatch("render");
+                }                
             }
             if (input.dataset.handler === "qte-input") {
-                const action = {
-                    type:"body-edit-qte",
-                    payload:{ref:this.ref, old_value: this.quantity, new_value: input.value, base_category_id: this.base_category_id} 
-                };
-                devisStore.submit_action(action);
-                devisStore.dispatch("render", action);
+                const new_value = parseInt(input.value);
+                if (!isNaN(new_value) && new_value !== this.quantity){
+                    devisStore.submit_action({
+                        type: "body-edit-qte",
+                        payload:{
+                            ref: this.ref, 
+                            old_value: this.quantity,
+                            new_value,
+                            base_category_id: this.base_category_id
+                        }
+                    });
+                    devisStore.dispatch("render");
+                }
             }
         }, 300);
 
