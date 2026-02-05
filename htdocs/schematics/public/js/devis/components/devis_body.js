@@ -117,10 +117,13 @@ class DevisBody{
 
     /**
      * convert the devisBody into a JSON representation to be saved in the bd with API
-     * @returns {Object[]} - json_data
+     * @returns {Object<string, any>} - json_data
      */
     to_json_data(){
-        return this.get_devis_categories().flatMap(categ => categ.to_json_data());
+        return {
+            taux_remise: this.global_remise,
+            lignes: this.get_devis_categories().flatMap(categ => categ.to_json_data())
+        };
     }
 
     /**

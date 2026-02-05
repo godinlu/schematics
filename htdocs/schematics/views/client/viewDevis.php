@@ -16,18 +16,18 @@
                 <div>
                     <table>
                         <tr>
-                            <th>CHIFFRAGE ESTIMATIF</th>
+                            <th><input type="text" data-field_name="header-type_devis"></th>
                         </tr>
                         <tr>
-                            <td><input type="date" data-field_name="header-date"></td>
+                            <td><input type="date" data-field_name="header-date_devis"></td>
                         </tr>
                     </table>
                     <p>
-                        A l'attention de <input type="text" data-field_name="header-installateur">
+                        A l'attention de <input type="text" data-field_name="header-installateur_nom_prenom">
                         <br>
-                        Nom de l'entreprise <input type="text" data-field_name="header-entreprise-name">
+                        Nom de l'entreprise <input type="text" data-field_name="header-installateur_entreprise">
                         <br>
-                        Mail <input type="text" data-field_name="header-mail">
+                        Mail <input type="text" data-field_name="header-installateur_mail">
                     </p>
                 </div>
             </div>
@@ -39,10 +39,10 @@
                     <td>Délai</td>
                 </tr>
                 <tr>
-                    <td><textarea data-field_name="header-field1" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea data-field_name="header-field2" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea data-field_name="header-field3" rows="2" placeholder="texte…"></textarea></td>
-                    <td><textarea data-field_name="header-field4" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-affaire_suivie_par" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-mode_reglement" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-validite" rows="2" placeholder="texte…"></textarea></td>
+                    <td><textarea data-field_name="header-delai_livraison" rows="2" placeholder="texte…"></textarea></td>
                 </tr>
             </table>
         </div>
@@ -76,9 +76,14 @@
             <button id="undo" title="Ctrl + z">Annuler <i class="fa-solid fa-rotate-left"></i></button>
             <button id="redo" title="Ctrl + y">Rétablir <i class="fa-solid fa-rotate-right"></i></button>
         </div>
-
-        <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
-        <button id="info-user" class="hint-btn">
+        <div class="hint">
+            <button id="download-devis-pdf" disabled >Télécharger <i class="fa-regular fa-file-pdf"></i></button>
+            <span class="hint-tooltip">
+                Veuillez renseigner l’affaire et le nom <br>de l’entreprise pour télécharger le devis.
+            </span>
+        </div>
+        
+        <button id="info-user" class="hint">
             <i class="fa-solid fa-info"></i>
             <span class="hint-tooltip">Notice</span>
         </button>

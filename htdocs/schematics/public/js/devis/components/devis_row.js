@@ -73,7 +73,7 @@ class DevisRow{
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     ${(this.reason)?`
-                        <button class="hint-btn">
+                        <button class="hint">
                             <i class="fa-solid fa-info"></i>
                             <span class="hint-tooltip">${this.reason}</span>
                         </button>

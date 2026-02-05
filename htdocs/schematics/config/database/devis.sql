@@ -1,26 +1,34 @@
 CREATE TABLE IF NOT EXISTS devis_genere(
     id INT PRIMARY KEY AUTO_INCREMENT,
 
-    -- infos du devis
+    -- identification du devis
+    reference VARCHAR(50) NOT NULL,
+    version INT NOT NULL DEFAULT 1,
     date_generation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    reference VARCHAR(50) UNIQUE,
-    objet VARCHAR(255) NOT NULL,
-    cout_total DECIMAL(10,2) NOT NULL,
+    date_devis DATE NOT NULL,
+    
+    -- clé requise pour enregistrer un devis
+    affaire VARCHAR(100) NOT NULL,
+    installateur_entreprise VARCHAR(100) NOT NULL,
+
+    -- Informations obligatoire
+    type_devis VARCHAR(50) NOT NULL DEFAULT 'CHIFFRAGE ESTIMATIF',
+    cout_total_ht DECIMAL(10,2) NOT NULL,
+    cout_total_ttc DECIMAL(10,2) NOT NULL,
     taux_remise DECIMAL(5,2) NOT NULL DEFAULT 0,
-    nom_commercial VARCHAR(150),
-    statut ENUM('brouillon', 'finalise') DEFAULT 'brouillon',
+    taux_tva DECIMAL(5,2) NOT NULL DEFAULT 20,
+    code_tva INT NOT NULL DEFAULT 3,
 
-    -- client
-    client_prenom VARCHAR(100),
-    client_nom VARCHAR(100),
-    client_mail VARCHAR(255),
-    client_code_postal VARCHAR(10),
-    client_ville VARCHAR(100),
+    -- Informations complémentaires
+    objet VARCHAR(255),
+    installateur_nom_prenom VARCHAR(100),
+    installateur_mail VARCHAR(255),
+    affaire_suivie_par VARCHAR(100),
+    mode_reglement VARCHAR(255),
+    validite VARCHAR(100),
+    delai_livraison VARCHAR(255),
 
-    -- installateur (snapshot)
-    installateur_societe VARCHAR(150),
-    installateur_prenom_nom VARCHAR(150),
-    installateur_mail VARCHAR(255)
+    UNIQUE KEY unique_ref_version (reference, version)  -- <-- couple unique
 );
 
 CREATE TABLE IF NOT EXISTS devis_ligne (

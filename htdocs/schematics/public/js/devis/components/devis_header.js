@@ -21,23 +21,25 @@ class DevisHeader{
      * this function will be called at each reset
      */
     reset(){
-        this.fields.set("header-date", new Date().toISOString().split("T")[0]);
+        this.fields.set("header-type_devis", "CHIFFRAGE ESTIMATIF");
+        this.fields.set("header-date_devis", new Date().toISOString().split("T")[0]);
 
         this.fields.set("header-objet", this.formulaire.typeInstallation);
 
         const client_full_name = [this.formulaire.nom_client?.toUpperCase(), this.formulaire.prenom_client].filter(Boolean).join(" ");
         this.fields.set("header-affaire", client_full_name);
 
-        this.fields.set("header-entreprise-name", this.formulaire.installateur);
+        this.fields.set("header-installateur_entreprise", this.formulaire.installateur);
 
-        this.fields.set("header-mail", this.formulaire.adresse_mail);
-        this.fields.set("header-installateur", this.formulaire["Prénom/nom"]);
-        this.fields.set("header-field1", this.formulaire.commercial);
-        this.fields.set("header-field2", "Défini par l'ouverture de compte");
-        this.fields.set("header-field3", "2 mois");
+        this.fields.set("header-installateur_mail", this.formulaire.adresse_mail);
+        this.fields.set("header-installateur_nom_prenom", this.formulaire["Prénom/nom"]);
+
+        this.fields.set("header-affaire_suivie_par", this.formulaire.commercial);
+        this.fields.set("header-mode_reglement", "Défini par l'ouverture de compte");
+        this.fields.set("header-validite", "2 mois");
 
         const delay = (this.formulaire.typeInstallation.includes("K"))? "3 mois" : "1 mois";
-        this.fields.set("header-field4", delay);
+        this.fields.set("header-delai_livraison", delay);
     }
 
     /**
@@ -46,9 +48,14 @@ class DevisHeader{
      * @param {HTMLElement} div 
      */
     mount(div){
-        this.fields.forEach((value, field_name) =>{
-            div.querySelector(`[data-field_name="${field_name}"]`).value = value;
-        });
+        for (const [field_name, value] of this.fields){
+            const field = div.querySelector(`[data-field_name="${field_name}"]`);
+            if (!field){
+                console.warn(`[DevisHeader.mount] Unrecognized field : '${field_name}'`);
+                continue;
+            }
+            field.value = value;
+        }
 
         // avoid stacking handlers on re-render
         if (!this.add_handlers){
@@ -85,6 +92,10 @@ class DevisHeader{
                     throw new Error("Old value doesn't match with the real value");
                 }
                 this.fields.set(payload.field, payload.new_value);
+
+                // disabled or not the pdf download
+                const disabled = this.fields.get("header-affaire") === "" || this.fields.get("header-installateur_entreprise") === "";
+                devisStore.dispatch("download-disabled", {disabled});
                 break;
             default:
                 throw new Error("Unrecognized action type");
@@ -96,11 +107,25 @@ class DevisHeader{
      * @returns {string}
      */
     get_date_fr_format() {
-        const dateStr = this.fields.get("header-date");
+        const dateStr = this.fields.get("header-date_devis");
         if (!dateStr) return "";
 
         const [year, month, day] = dateStr.split("-");
         return `${day}/${month}/${year}`;
+    }
+
+    /**
+     * convert the header into JSON to saved the devis into bd
+     * 
+     * @returns {Object<string, string>} - json_data
+     */
+    to_json_data(){
+        let result = {};
+        for (const [field_name, value] of this.fields){
+            result[field_name.replace("header-","")] = value;
+        }
+        return result;
+
     }
 
 }

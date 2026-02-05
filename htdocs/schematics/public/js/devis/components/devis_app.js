@@ -8,10 +8,6 @@
  * @type {import('../../public/modal').Modal}
  */
 
-/**
- * @typedef {import('./save_devis_modal.js')}
- */
-
 
 /**
  * 
@@ -30,7 +26,6 @@ class DevisApp{
 
         this.devis_modal = new DevisModal();
         this.info_modal = new Modal(document.querySelector("#modal-info"));   
-        this.save_devis_modal = new SaveDevisModal();     
 
         this.#register_store_events();
         this.#attach_event_listeners();
@@ -39,7 +34,7 @@ class DevisApp{
     mount(){
         this.devis_header.mount(document.querySelector(".devis-header"));
         this.devis_body.mount(document.querySelector("table.devis-body"));
-        this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
+        this.devis_footer.mount(document.querySelector(".devis-footer"), this.cout_total_ht);
     }
 
     submit_action(action){
@@ -57,12 +52,20 @@ class DevisApp{
     /**
      * return the total amount of the devis before taxes
      */
-    get total_amount(){
+    get cout_total_ht(){
         return this.devis_body.total_amount;
     }
 
+    /**
+     * return the total amount of the devis with taxes
+     * @returns {number} 
+     */
+    get cout_total_ttc(){
+        return this.cout_total_ht * (1 + this.devis_footer.tva_percent/100);
+    }
+
     #attach_event_listeners(){
-        document.querySelector("#download-devis-pdf").addEventListener("click", () => this.#download_devis_pdf());
+        document.querySelector("#download-devis-pdf").addEventListener("click", async () => await this._download_devis_pdf());
         document.querySelector("#undo").addEventListener("click", () => devisStore.undo());
         document.querySelector("#redo").addEventListener("click", () => devisStore.redo());
 
@@ -88,7 +91,7 @@ class DevisApp{
         devisStore.subscribe("submit-action", action => this.submit_action(action));
         devisStore.subscribe("render", () => this.mount());
         devisStore.subscribe("render-footer", () => {
-            this.devis_footer.mount(document.querySelector(".devis-footer"), this.total_amount);
+            this.devis_footer.mount(document.querySelector(".devis-footer"), this.cout_total_ht);
         });
         devisStore.subscribe("show-modal", (context) => this.devis_modal.set_content(context));
 
@@ -96,61 +99,86 @@ class DevisApp{
             document.querySelector("#undo").disabled = !can_undo;
             document.querySelector("#redo").disabled = !can_redo;
         });
+
+        // this action is submitted by the devis_header to disabled or enabled the pdf download button.
+        devisStore.subscribe("download-disabled", ({disabled}) =>{
+            document.querySelector("#download-devis-pdf").disabled = disabled;
+            document.querySelector("#download-devis-pdf + span").style.display = (disabled) ? "" : "none";
+        });
     }
 
     /**
      * this function is called when the user click on the download pdf button
      * it will 
+     * @private
      */
-    #download_devis_pdf(){
-        this.save_devis_modal.open(this.to_json_data())
-        .then(() =>{
+    async _download_devis_pdf(){
+        // the first step is to try to save the devis into the database.
+        let devis_reference = null;
+        try{
+            devis_reference = await this._save_devis_into_bd();
+            console.log(`Devis successfully saved with ref '${devis_reference}'`);
+        }catch (e){
+            console.warn(`[DevisApp._download_devis_pdf] can't save the devis into db : ${e}`);
+        }
+        // create an instance of DevisPdf
+        let devis_pdf = new DevisPdf(this.devis_header, this.devis_body, this.devis_footer, devis_reference);
 
-            // create an instance of DevisPdf
-            let devis_pdf = new DevisPdf(this.devis_header, this.devis_body, this.devis_footer);
+        // create the div to mount the devis pdf
+        let div = document.createElement("div");
+        div.id = "devis-pdf";
+        devis_pdf.mount(div);
 
-            // create the div to mount the devis pdf
-            let div = document.createElement("div");
-            div.id = "devis-pdf";
-            devis_pdf.mount(div);
+        // set the pdf filename
+        const filename = "devis" + this.formulaire["nom_affaire"] + ".pdf";
 
-            // set the pdf filename
-            const filename = "devis" + this.formulaire["nom_affaire"] + ".pdf";
+        html2pdf().set({
+                margin: 5,
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).from(div).save();  
+        
+    }
 
-            html2pdf().set({
-                    margin: 5,
-                    filename: filename,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).from(div).save();  
+    /**
+     * save the devis into the database by using the api : save_devis.php
+     * 
+     * @returns {Promise<string>}
+     * @private
+     */
+    async _save_devis_into_bd(){
+        const devis_data = this.to_json_data();
+        console.log(devis_data);
+
+        const response = await fetch('../api/save_devis.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(devis_data)
         });
+
+        const json = await response.json();
+
+        if (!response.ok || !json.success) {
+            throw new Error(json.error ?? "Erreur serveur");
+        }
+
+        return json.reference;
     }
 
 
     /**
+     * convert all 3 part of the devis into JSON data to be saved in database
      * @returns {Object<string, any>} - devis_data
      */
     to_json_data(){
         return {
-            objet: this.devis_header.fields.get("header-objet"),
-            cout_total: this.total_amount,
-            taux_remise: this.devis_body.global_remise,
-            nom_commercial: this.formulaire.commercial,
-            statut: "finalise",
-            client: {
-                prenom: this.formulaire.prenom_client,
-                nom: this.formulaire.nom_client,
-                mail: this.formulaire.mail_client,
-                code_postal: this.formulaire.code_postale_client,
-                ville: this.formulaire.ville_client
-            },
-            installateur: {
-                societe: this.formulaire.installateur,
-                prenom_nom: this.formulaire["Prénom/nom"],
-                mail: this.formulaire["adresse_mail"]
-            },
-            lignes: this.devis_body.to_json_data()
+            cout_total_ht: this.cout_total_ht,
+            cout_total_ttc: this.cout_total_ttc,
+            ...this.devis_header.to_json_data(),
+            ...this.devis_body.to_json_data(),
+            ...this.devis_footer.to_json_data()
         };
     }
 

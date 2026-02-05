@@ -184,31 +184,10 @@ div.devis-edit > button {
     padding: 0;           
 }
 
-.hint-btn {
-    position: relative;
+#editable-devis .hint {
     border-radius: 50%;
     border: 0.5px solid #666;
     box-shadow: none;
-}
-
-.hint-tooltip {
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-    z-index: 1000;
-}
-
-.hint-btn:hover .hint-tooltip {
-    opacity: 1;
 }
 
 /* Center the add button */
@@ -447,11 +426,13 @@ div.modal-category button:focus {
     gap: 1em;
 }
 
-#undo-redo > button{
+#undo-redo > button,
+aside div.hint button{
     width: 100%;
 }
 
-aside button.hint-btn{
+#info-user{
+    border-radius: 50%;
     margin: 0 auto;
     width: min-content;
     color: white;
@@ -459,7 +440,8 @@ aside button.hint-btn{
     border: none;
 }
 
-aside button.hint-btn:hover{
+
+#info-user:hover{
     transform: none;
     background-color: #1976D2; /* bleu un peu plus foncé au hover */
     opacity: 1;

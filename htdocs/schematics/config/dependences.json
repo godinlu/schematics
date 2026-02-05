@@ -17,6 +17,7 @@
                 "fiche_prog/fiche_prog.css"
             ],
             "Devis": [
+                "public/hint.css",
                 "devis/devis.css"
             ],
             "Version": [
@@ -75,7 +76,6 @@
                 "devis/components/devis_modal.js",
                 "devis/components/modal_filters/devis_capteurs_filter.js",
                 "devis/components/devis_pdf.js",
-                "devis/components/save_devis_modal.js",
                 "devis/utils.js",
                 "devis/index.js"
             ],
