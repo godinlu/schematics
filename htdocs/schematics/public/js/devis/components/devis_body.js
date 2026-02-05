@@ -116,6 +116,14 @@ class DevisBody{
     }
 
     /**
+     * convert the devisBody into a JSON representation to be saved in the bd with API
+     * @returns {Object[]} - json_data
+     */
+    to_json_data(){
+        return this.get_devis_categories().flatMap(categ => categ.to_json_data());
+    }
+
+    /**
      * Attach all events listeners :
      * - submit an "body-edit-global-remise" on input of the corresponding input
      * 

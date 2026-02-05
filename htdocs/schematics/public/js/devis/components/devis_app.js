@@ -8,6 +8,10 @@
  * @type {import('../../public/modal').Modal}
  */
 
+/**
+ * @typedef {import('./save_devis_modal.js')}
+ */
+
 
 /**
  * 
@@ -25,7 +29,8 @@ class DevisApp{
         this.devis_footer = new DevisFooter();
 
         this.devis_modal = new DevisModal();
-        this.info_modal = new Modal(document.querySelector("#modal-info"));        
+        this.info_modal = new Modal(document.querySelector("#modal-info"));   
+        this.save_devis_modal = new SaveDevisModal();     
 
         this.#register_store_events();
         this.#attach_event_listeners();
@@ -98,25 +103,55 @@ class DevisApp{
      * it will 
      */
     #download_devis_pdf(){
-        // create an instance of DevisPdf
-        let devis_pdf = new DevisPdf(this.devis_header, this.devis_body, this.devis_footer);
+        this.save_devis_modal.open(this.to_json_data())
+        .then(() =>{
 
-        // create the div to mount the devis pdf
-        let div = document.createElement("div");
-        div.id = "devis-pdf";
-        devis_pdf.mount(div);
+            // create an instance of DevisPdf
+            let devis_pdf = new DevisPdf(this.devis_header, this.devis_body, this.devis_footer);
 
-        // set the pdf filename
-        const filename = "devis" + this.formulaire["nom_affaire"] + ".pdf";
+            // create the div to mount the devis pdf
+            let div = document.createElement("div");
+            div.id = "devis-pdf";
+            devis_pdf.mount(div);
 
-        html2pdf().set({
-                margin: 5,
-                filename: filename,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(div).save();  
+            // set the pdf filename
+            const filename = "devis" + this.formulaire["nom_affaire"] + ".pdf";
 
+            html2pdf().set({
+                    margin: 5,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).from(div).save();  
+        });
+    }
+
+
+    /**
+     * @returns {Object<string, any>} - devis_data
+     */
+    to_json_data(){
+        return {
+            objet: this.devis_header.fields.get("header-objet"),
+            cout_total: this.total_amount,
+            taux_remise: this.devis_body.global_remise,
+            nom_commercial: this.formulaire.commercial,
+            statut: "finalise",
+            client: {
+                prenom: this.formulaire.prenom_client,
+                nom: this.formulaire.nom_client,
+                mail: this.formulaire.mail_client,
+                code_postal: this.formulaire.code_postale_client,
+                ville: this.formulaire.ville_client
+            },
+            installateur: {
+                societe: this.formulaire.installateur,
+                prenom_nom: this.formulaire["Prénom/nom"],
+                mail: this.formulaire["adresse_mail"]
+            },
+            lignes: this.devis_body.to_json_data()
+        };
     }
 
 }

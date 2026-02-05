@@ -111,6 +111,28 @@ class DevisRow{
     }
 
     /**
+     * Convertit l'objet ligne de devis en un format JSON prêt à être envoyé
+     * à l'API ou utilisé pour le stockage.
+     *
+     * @returns {Object} Un objet contenant les informations de la ligne de devis :
+     *  - article_ref {string} : référence de l'article
+     *  - prix_tarif {number} : prix unitaire de l'article
+     *  - taux_remise {number} : remise appliquée en pourcentage
+     *  - quantite {number} : quantité commandée
+     *  - cout_total {number} : total de la ligne après remise
+     */
+    to_json_data(){
+        return {
+            article_ref: this.ref,
+            prix_tarif: this.prix,
+            taux_remise: this.remise,
+            quantite: this.quantity,
+            cout_total: this.total_amount
+
+        };
+    }
+
+    /**
      * attach all event listeners
      * @param {HTMLTableRowElement} tr 
      */

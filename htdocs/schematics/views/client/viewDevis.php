@@ -1,4 +1,4 @@
-<div id="devis-app">   
+<div id="devis-app">
     <div id="editable-devis">
         <div class="devis-header">
             <div>
@@ -15,8 +15,12 @@
                 </div>
                 <div>
                     <table>
-                        <tr><th>CHIFFRAGE ESTIMATIF</th></tr>
-                        <tr><td><input type="date" data-field_name="header-date"></td></tr>
+                        <tr>
+                            <th>CHIFFRAGE ESTIMATIF</th>
+                        </tr>
+                        <tr>
+                            <td><input type="date" data-field_name="header-date"></td>
+                        </tr>
                     </table>
                     <p>
                         A l'attention de <input type="text" data-field_name="header-installateur">
@@ -42,8 +46,8 @@
                 </tr>
             </table>
         </div>
-            
-        
+
+
         <table class="devis-body articles-table">
             <thead>
                 <tr>
@@ -57,10 +61,10 @@
                 </tr>
             </thead>
             <tbody>
-                
+
             </tbody>
         </table>
-        
+
         <div class="devis-footer">
         </div>
         <devis-footer>
@@ -72,14 +76,14 @@
             <button id="undo" title="Ctrl + z">Annuler <i class="fa-solid fa-rotate-left"></i></button>
             <button id="redo" title="Ctrl + y">Rétablir <i class="fa-solid fa-rotate-right"></i></button>
         </div>
-        
+
         <button id="download-devis-pdf">Télécharger <i class="fa-regular fa-file-pdf"></i></button>
         <button id="info-user" class="hint-btn">
             <i class="fa-solid fa-info"></i>
             <span class="hint-tooltip">Notice</span>
         </button>
     </aside>
-</div> 
+</div>
 
 <div class="modal" id="modal-info">
     <div class="modal-content">
@@ -97,7 +101,7 @@
         <section>
             <h3>1. Entête</h3>
             <p>
-                La plupart des champs de l’entête se remplissent automatiquement à partir des informations saisies dans le formulaire. 
+                La plupart des champs de l’entête se remplissent automatiquement à partir des informations saisies dans le formulaire.
                 Tous les champs restent cependant modifiables manuellement.
             </p>
         </section>
@@ -105,7 +109,7 @@
         <section>
             <h3>2. Détail du devis</h3>
             <p>
-                Des articles peuvent être ajoutés automatiquement selon les informations du formulaire (indiqués par un bouton <i class="fa-solid fa-info"></i> dans la colonne "Édition"). 
+                Des articles peuvent être ajoutés automatiquement selon les informations du formulaire (indiqués par un bouton <i class="fa-solid fa-info"></i> dans la colonne "Édition").
                 En survolant ce bouton, un texte explique pourquoi l’article a été ajouté par défaut.
             </p>
             <p><strong>Actions possibles sur les lignes :</strong></p>
@@ -130,7 +134,7 @@
         <section>
             <h3>Conseils</h3>
             <p>
-                Toutes les actions sont sauvegardées temporairement. Pour une sauvegarde définitive, utilisez le menu <strong>Fichier &gt; Sauvegarder</strong>. 
+                Toutes les actions sont sauvegardées temporairement. Pour une sauvegarde définitive, utilisez le menu <strong>Fichier &gt; Sauvegarder</strong>.
                 Les données seront enregistrées dans un fichier ".json".
             </p>
             <p>
@@ -141,17 +145,16 @@
 
 </div>
 
-
 <form id="formulaire" action="" method="post">
 </form>
 <script id="data-devis_tables" type="application/json">
-<?= json_encode($devis_tables, JSON_UNESCAPED_UNICODE) ?>
+    <?= json_encode($devis_tables, JSON_UNESCAPED_UNICODE) ?>
 </script>
 
 <script id="data-formulaire" type="application/json">
-<?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
+    <?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
 </script>
 
 <script id="data-devis-saved" type="application/json">
-<?= json_encode($devis_saved, JSON_UNESCAPED_UNICODE) ?>
+    <?= json_encode($devis_saved, JSON_UNESCAPED_UNICODE) ?>
 </script>
