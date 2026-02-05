@@ -40,6 +40,8 @@ class DevisHeader{
 
         const delay = (this.formulaire.typeInstallation.includes("K"))? "3 mois" : "1 mois";
         this.fields.set("header-delai_livraison", delay);
+
+        this._update_download_pdf_button();
     }
 
     /**
@@ -94,12 +96,22 @@ class DevisHeader{
                 this.fields.set(payload.field, payload.new_value);
 
                 // disabled or not the pdf download
-                const disabled = this.fields.get("header-affaire") === "" || this.fields.get("header-installateur_entreprise") === "";
-                devisStore.dispatch("download-disabled", {disabled});
+                this._update_download_pdf_button();
+                
                 break;
             default:
                 throw new Error("Unrecognized action type");
         }
+    }
+
+    /**
+     * dispatch an "download-disabled" event to disabled or not the download pdf button
+     * to be enabled it required "header-affaire" and "header-installateur_entreprise" not empty.
+     * @private
+     */
+    _update_download_pdf_button(){
+        const disabled = this.fields.get("header-affaire") === "" || this.fields.get("header-installateur_entreprise") === "";
+        devisStore.dispatch("download-disabled", {disabled});
     }
 
     /**
