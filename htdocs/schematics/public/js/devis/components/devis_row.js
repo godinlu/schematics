@@ -119,7 +119,7 @@ class DevisRow{
      *  - prix_tarif {number} : prix unitaire de l'article
      *  - taux_remise {number} : remise appliquée en pourcentage
      *  - quantite {number} : quantité commandée
-     *  - cout_total {number} : total de la ligne après remise
+     *  - cout_total_ht {number} : total de la ligne après remise
      */
     to_json_data(){
         return {
@@ -127,7 +127,7 @@ class DevisRow{
             prix_tarif: this.prix,
             taux_remise: this.remise,
             quantite: this.quantity,
-            cout_total: this.total_amount
+            cout_total_ht: this.total_amount
 
         };
     }

@@ -24,6 +24,12 @@ try{
         }
     }
 
+    // vérification de lignes si il y a bien des lignes dans le devis
+    if (!is_array($data['lignes']) || count($data['lignes']) === 0) {
+        throw new Exception("Le devis doit contenir au moins une ligne");
+    }
+
+
     $affaire = $data['affaire'];
     $installateur = $data['installateur_entreprise'];
 
@@ -40,6 +46,7 @@ try{
         LIMIT 1
     ");
     $stmt->execute([$affaire, $installateur]);
+
     $last = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
@@ -85,6 +92,38 @@ try{
         $data['validite'] ?? null,
         $data['delai_livraison'] ?? null
     ]);
+    // get the id of the inserted devis
+    $id_devis = $pdo->lastInsertId();
+
+    // preparation de la requête d'insertion de ligne
+    $stmtLigne = $pdo->prepare("
+        INSERT INTO devis_ligne (
+            id_devis,
+            article_ref,
+            prix_tarif,
+            taux_remise,
+            quantite,
+            cout_total_ht
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    ");
+
+    // boucle dans les lignes pour les insérer tous dans la base.
+    foreach ($data['lignes'] as $index => $ligne) {
+
+        if (empty($ligne['article_ref']) || !isset($ligne['prix_tarif'], $ligne['quantite'], $ligne['cout_total_ht'])) {
+            throw new Exception("Ligne de devis invalide à l’index $index");
+        }
+
+        $stmtLigne->execute([
+            $id_devis,
+            $ligne['article_ref'],
+            $ligne['prix_tarif'],
+            $ligne['taux_remise'] ?? 0,
+            $ligne['quantite'],
+            $ligne['cout_total_ht']
+        ]);
+    }
+
 
     $pdo->commit();
 

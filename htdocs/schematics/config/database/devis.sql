@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS devis_ligne (
     prix_tarif DECIMAL(10,2) NOT NULL,
     taux_remise DECIMAL(5,2) NOT NULL DEFAULT 0,
     quantite INT NOT NULL DEFAULT 1,
-    cout_total DECIMAL(10,2) NOT NULL,
+    cout_total_ht DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT fk_ligne_devis
         FOREIGN KEY (id_devis)

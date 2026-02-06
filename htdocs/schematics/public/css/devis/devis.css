@@ -116,6 +116,15 @@ div.devis-footer table:last-child th{
     resize: none; 
 }
 
+#editable-devis .devis-header th input{
+    width: 100% !important;
+    height: 100%;
+    border: none; 
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
 
 #editable-devis .devis-body{
     width: 100%;
