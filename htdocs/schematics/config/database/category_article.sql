@@ -79,6 +79,11 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('module Hydraubox 2', 'HYBX2MOD'),
     ('kit Hydraubox', 'HYBXKIT');
 
+-- ECS
+INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+    ('module ECS', 'SCECS'),
+    ('module ECS', 'SCECSK'),
+    ('kit ECS', 'SCECSKIT');
 
 -- #####################################################################
 --                          SC OPTIONS
@@ -220,6 +225,10 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('bal double ech', 'BAL0009'),
     ('bal double ech', 'BAL0086');
 
+INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+    ('bal sans ech', 'BAL0036'),
+    ('bal sans ech', 'BAL0037');
+
 -- Ballons Tampons avec un échangeur bas
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('bal tamp ech bas', 'BAL0079'),
@@ -251,7 +260,10 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('bal tamp sans ech', 'BAL0166'),
     ('bal tamp sans ech', 'BAL0033'),
     ('bal tamp sans ech', 'BAL0061'),
-    ('bal tamp sans ech', 'BAL0062');
+    ('bal tamp sans ech', 'BAL0062'),
+    ('bal tamp sans ech', 'BAL0078'),
+    ('bal tamp sans ech', 'BAL0081')
+;
 
 -- Ballons Tampons avec serpentin sanitaire Inox
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
@@ -275,32 +287,82 @@ WHERE ref REGEXP '^SID2,5-(A|T)' AND is_used = 1;
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|V)' AND is_used = 1;
+WHERE ref REGEXP '^S7 2,5-(ST|CT|CS|CM|V)' AND is_used = 1;
 
 -- capteurs SH 2,5
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|V)' AND is_used = 1;
+WHERE ref REGEXP '^SH 2,5-(ST|CT|CS|CM|V)' AND is_used = 1;
 
 -- capteurs S7 2,5 black frame
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|V)' AND is_used = 1;
+WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|CM|V)' AND is_used = 1;
 
 -- capteurs S7 2 portrait
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7-(ST|CT|CS|V)' AND is_used = 1;
+WHERE ref REGEXP '^S7-(ST|CT|CS|CM|V)' AND is_used = 1;
 
 -- capteurs S7 2 paysage
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^SH 2-(ST|CT|CS|V)' AND is_used = 1;
+WHERE ref REGEXP '^SH 2-(ST|CT|CS|CM|V)' AND is_used = 1;
 
+-- capteurs SM 2,3
+INSERT IGNORE INTO category_article (category_id, article_ref)
+SELECT 'capteurs', ref
+FROM article
+WHERE ref REGEXP '^SM 2,3-' AND is_used = 1;
+
+-- capteurs SMV 2,3
+INSERT IGNORE INTO category_article (category_id, article_ref)
+SELECT 'capteurs', ref
+FROM article
+WHERE ref REGEXP '^SMV 2,3-' AND is_used = 1;
+
+
+-- #####################################################################
+--                          HABILLAGE CAPTEURS
+-- #####################################################################
+
+-- habillage S7
+INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+    ('habillage capteur S7', 'KITCS7 2'),
+    ('habillage capteur S7', 'KITCS7 3'),
+    ('habillage capteur S7', 'KITCS7 4'),
+    ('habillage capteur S7', 'KITCS7 5'),
+    ('habillage capteur S7', 'KITCS7 6')
+;
+
+-- habillage S7 2,5
+INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+    ('habillage capteur S7 2,5', 'KITCS7 2,5-2'),
+    ('habillage capteur S7 2,5', 'KITCS7 2,5-3'),
+    ('habillage capteur S7 2,5', 'KITCS7 2,5-4'),
+    ('habillage capteur S7 2,5', 'KITCS7 2,5-5'),
+    ('habillage capteur S7 2,5', 'KITCS7 2,5-6')
+;
+
+-- #####################################################################
+--                          FIXATION CAPTEURS
+-- #####################################################################
+
+-- fixation S7
+INSERT IGNORE INTO category_article (category_id, article_ref)
+SELECT 'kit fix capt S7', ref
+FROM article
+WHERE ref REGEXP '^FIX-S7-HL-' AND is_used = 1;
+
+-- fixation SH
+INSERT IGNORE INTO category_article (category_id, article_ref)
+SELECT 'kit fix capt SH', ref
+FROM article
+WHERE ref REGEXP '^FIX-SH-HL-' AND is_used = 1;
 
 
 -- #####################################################################
@@ -360,6 +422,8 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('kit DN25', 'MOD0432'),
     ('kit DN25', 'KITCAP016'),
     ('kit DN25', 'KITCAP014'),
+    ('kit DN25', 'KITCAP008'),
+    ('kit DN25', 'KITCAP013'),
     ('kit DN25', 'MOD0795'),
     ('kit DN25', 'KITSSC055');
 
@@ -380,7 +444,9 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('kit CESI regul', 'ECSCESI_18L'),
     ('kit CESI regul', 'ECSCESI_35L'),
-    ('kit CESI regul', 'ECSCESI_50L');
+    ('kit CESI regul', 'ECSCESI_50L'),
+    ('kit CESI regul', 'ECSCESI400S')
+;
 
 -- kit CESI bal
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
@@ -562,7 +628,10 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('anodes', 'BAL0104'),
     ('anodes', 'BAL0105'),
     ('anodes', 'BAL0074'),
-    ('anodes', 'BAL0073');
+    ('anodes', 'BAL0073'),
+    ('anodes', 'BAL0148'),
+    ('anodes', 'BAL0149')
+;
 
 
 -- #####################################################################
@@ -703,7 +772,10 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('pièces capteur', 'CAP0241'),
     ('pièces capteur', 'CAP0200'),
     ('pièces capteur', 'CAP0093'),
-    ('pièces capteur', 'CAP0165');
+    ('pièces capteur', 'CAP0165'),
+    ('pièces capteur', 'CAP0201'),
+    ('pièces capteur', 'CAP0242'),
+    ('pièces capteur', 'CAP0273');
 
 -- Régulation SolisConfort
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
@@ -757,7 +829,40 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('pièces divers', 'MOD0665'),
     ('pièces divers', 'MOD0023'),
     ('pièces divers', 'MOD0311'),
-    ('pièces divers', 'MOD0342');
+    ('pièces divers', 'MOD0342'),
+    ('pièces divers', 'KITSSC052'),
+    ('pièces divers', 'KITSSC053'),
+    ('pièces divers', 'KITSSC054'),
+    ('pièces divers', 'KITSSC079'),
+    ('pièces divers', 'KITSSC148'),
+    ('pièces divers', 'KITSSC219'),
+    ('pièces divers', 'KITSSC236'),
+    ('pièces divers', 'KITSSC237'),
+    ('pièces divers', 'KITSSC238'),
+    ('pièces divers', 'KITSSC239'),
+    ('pièces divers', 'MOD0014'),
+    ('pièces divers', 'MOD0109'),
+    ('pièces divers', 'MOD0110'),
+    ('pièces divers', 'MOD0213'),
+    ('pièces divers', 'MOD0216'),
+    ('pièces divers', 'MOD0218'),
+    ('pièces divers', 'MOD0313'),
+    ('pièces divers', 'MOD0653'),
+    ('pièces divers', 'MOD0672'),
+    ('pièces divers', 'MOD0706'),
+    ('pièces divers', 'MOD0767'),
+    ('pièces divers', 'MOD0781'),
+    ('pièces divers', 'MOD0806'),
+    ('pièces divers', 'MOD0808'),
+    ('pièces divers', 'MOD0809'),
+    ('pièces divers', 'MOD0817'),
+    ('pièces divers', 'MOD0819'),
+    ('pièces divers', 'MOD0820'),
+    ('pièces divers', 'MOD0821'),
+    ('pièces divers', 'MOD0824'),
+    ('pièces divers', 'MOD0834'),
+    ('pièces divers', 'MOD0835'),
+    ('pièces divers', 'ECSECH01');
 
 -- Outillage installateur
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
