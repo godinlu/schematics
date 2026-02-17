@@ -332,12 +332,12 @@ const CAPTEURS_MAPPING = [
     },
     {
         when: {champCapteur: /casse pression/i},
-        refs: {"mod sol 1 col": ["kitSSC197"]},
+        refs: {"mod sol 1 col": ["kitSSC197"], "kit sol 1 col": ["KITSSC206"]},
         reason: "Présence d'une casse pression sur champ capteur."
     },
     {
         when: {champCapteur: /échangeur/i},
-        refs: {"mod sol 2 col": ["kitSSC199"]},
+        refs: {"mod sol 2 col": ["kitSSC199"], "kit sol 2 col": ["KITSSC226"]},
         reason: "Présence d'un échangeur sur champ capteur."
     },
     {
