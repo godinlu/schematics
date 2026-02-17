@@ -291,11 +291,11 @@ class SchemaHydrau extends Schema{
                         $count[0]++;
                         break;
                     case "charge BTC si excédent APP1 sur T16 & T6 x T5":
-                    case "Aquastat différentiel ON si T15 x T5":
+                    case "Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC":
                         $path .= "optionBT/"; // On pointe vers le fichier option dans BT
                         $attribut = $DATA_OPTION['optionBT'];
                         // On ajoute le bon raccordement en fonction du ballon tampon
-                        if ($nameIMG == "Aquastat différentiel ON si T15 x T5") {
+                        if ($nameIMG == "Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC") {
                             // Dans le cas d'un aquastat différentiel, on le met à gauche ou à droite en fonction de la pompe
                             if ($this->_formulaire['raccordementHydraulique'] == "En direct") {
                                 $raccord_pos = [$attribut['pos'][0] + 291, $attribut['pos'][1] + 33];

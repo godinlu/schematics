@@ -732,7 +732,7 @@ function actionBECS(){
  * fonction du select divers sert à interdire ou autorisé l'aquastat
  */
 function actionDivers(){
-    manageOption("Aquastat différentiel ON si T15 > T5");
+    manageOption("Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC");
 }
 
 /**
@@ -741,7 +741,7 @@ function actionDivers(){
  */
 function actionEchangeurDansBt(){
     manageOption("charge BTC si excédent APP1 sur T16 & T6 > T5|charge BTC si excédent APP1 sur T16 & T6 < T5");
-    manageOption("Aquastat différentiel ON si T15 > T5");
+    manageOption("Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC");
     manageOption("recharge nappes goethermiques sur T15 sur serpentin BTC");
     manageOption("recharge nappes goethermiques sur T15 sur échangeur BTC");
 }
@@ -752,7 +752,7 @@ function actionEchangeurDansBt(){
 function manageOption(key){
     //variable qui contient les options et leurs conditions d'activation et l'id de l'envoyeur des interdictions
     const condition_for_enable = {
-        "Aquastat différentiel ON si T15 > T5":{
+        "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC":{
             id:"k_aquast",
             cond:($("#EchangeurDansBT").is(':checked') && /deshu|pompe/.test(S.divers.value))
         },

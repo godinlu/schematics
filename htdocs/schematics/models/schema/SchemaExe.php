@@ -298,12 +298,12 @@ class SchemaExe extends Module{
             if (isset($list_coord[$value])) {
                 switch ($value) {
                     case "charge BTC si excédent APP1 sur T16 & T6 x T5":
-                    case "Aquastat différentiel ON si T15 x T5":
+                    case "Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC":
                         $fullPath = $PATH . "optionBT/";
                         $this->addImage($fullPath . "raccordement " . $this->_formulaire['ballonTampon'], $list_coord[$value]["coordImg"]);
                         $fullPath .= $value;
                         // Dans le cas d'un aquastat, il faut le positionner soit à gauche soit à droite
-                        if ($value == "Aquastat différentiel ON si T15 x T5") {
+                        if ($value == "Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC") {
                             if (preg_match('/gauche/', $this->_formulaire['divers'])) $fullPath .= " gauche";
                             else $fullPath .= " droite";
                         }

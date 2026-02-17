@@ -240,7 +240,7 @@
             "Horloge ON de 7h à 10h et 18h à 22h": "S10 unique:horlogeON2",
             "recharge nappes goethermiques sur T15 sur serpentin BTC": "S10 T15",
             "recharge nappes goethermiques sur T15 sur échangeur BTC": "S10 T15",
-            "Aquastat différentiel ON si T15 > T5": "S10 T5 T15",
+            "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": "S10 T5 T15",
             "charge BTC si excédent APP1 sur T16 & T6 > T5": "S10 T6",
             "charge BTC si excédent APP1 sur T16 & T6 < T5": "S10 T6",
             "Aucun": ""
@@ -274,7 +274,7 @@
             "Horloge ON de 7h à 10h et 18h à 22h": "S11 unique:horlogeON2",
             "recharge nappes goethermiques sur T15 sur serpentin BTC": "S11 T15",
             "recharge nappes goethermiques sur T15 sur échangeur BTC": "S11 T15",
-            "Aquastat différentiel ON si T15 > T5": "S11 T5 T15",
+            "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": "S11 T5 T15",
             "charge BTC si excédent APP1 sur T16 & T6 > T5": "S11 T6",
             "charge BTC si excédent APP1 sur T16 & T6 < T5": "S11 T6",
             "Aucun": ""
@@ -388,7 +388,7 @@
         "optionS10": {
             "V3V bypass appoint 1": "Nécessite:\n-un appoint 1",
             "V3V retour bouclage sanitaire solaire": "Nécessite:\n-un bouclage sanitaire sur le ballon ECS",
-            "Aquastat différentiel ON si T15 > T5": "Nécessite:\n-un ballon tampon avec échangeur\n-une pompe ou une deshu dans divers",
+            "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": "Nécessite:\n-un ballon tampon avec échangeur\n-une pompe ou une deshu dans divers",
             "charge BTC si excédent APP1 sur T16 & T6 > T5": "Nécessite:\n-un ballon tampon avec échangeur\n-un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur",
             "charge BTC si excédent APP1 sur T16 & T6 < T5": "Nécessite:\n-un ballon tampon avec échangeur\n-un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur",
             "Free Cooling Zone 1": "Nécessite:\n-un plancher chauffant en zone 1\n(option activable sur S10 OU S11)",
@@ -423,7 +423,7 @@
         "optionS11": {
             "V3V bypass appoint 1": "Nécessite:\n-un appoint 1",
             "V3V retour bouclage sanitaire solaire": "Nécessite:\n-un bouclage sanitaire sur le ballon ECS",
-            "Aquastat différentiel ON si T15 > T5": "Nécessite:\n-un ballon tampon avec échangeur\n-une pompe ou une deshu dans divers",
+            "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": "Nécessite:\n-un ballon tampon avec échangeur\n-une pompe ou une deshu dans divers",
             "charge BTC si excédent APP1 sur T16 & T6 > T5": "Nécessite:\n-un ballon tampon avec échangeur\n-un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur",
             "charge BTC si excédent APP1 sur T16 & T6 < T5": "Nécessite:\n-un ballon tampon avec échangeur\n-un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur",
             "Free Cooling Zone 1": "Nécessite:\n-un plancher chauffant en zone 1\n(option activable sur S10 OU S11)",

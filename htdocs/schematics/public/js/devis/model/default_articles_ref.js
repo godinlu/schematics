@@ -276,6 +276,16 @@ const BAL_MAPPING = [
         reason: "Il y a 3 ballon tampon sans échangeur."
     },
     {
+        when: {ballonTampon: /2/i},
+        refs:{"SSC divers": ["KITSSC157"]},
+        reason: "Il y a 2 ballon tampons."
+    },
+    {
+        when: {ballonTampon: /3/i},
+        refs:{"SSC divers": ["KITSSC157", "KITSSC157"]},
+        reason: "Il y a 3 ballon tampons."
+    },
+    {
         when: {resistanceElectriqueBECS: /on/i},
         refs: {"resistance": ["BAL0158"]},
         reason: "Il y a une résistance dans le ballon ECS ou tampon."
@@ -342,8 +352,18 @@ const CAPTEURS_MAPPING = [
 /**@type {MappingRule[]} */
 const SERV_PORT_MAPPING = [
     {
-        refs: {"assistance ind": ["MISE001"], "transport": ["TRANS001"]},
+        refs: {"assistance ind": ["MISE001"]},
         reason: "Articles ajoutées par défaut."
+    },
+    {
+        when: {typeInstallation: /1/i},
+        refs: {"transport": ["TRANS001"]},
+        reason: "Le module choisit est un SC1 ou SC1Z ou hydraubox 1."
+    },
+    {
+        when: {typeInstallation: /2/i},
+        refs: {"transport": ["TRANS002"]},
+        reason: "Le module choisit appartient à la gamme des SC2"
     }
 ];
 
