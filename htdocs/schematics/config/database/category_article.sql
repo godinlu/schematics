@@ -114,6 +114,18 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('options col', 'KITSSC072'),
     ('options col', 'KITSSC028');
 
+-- collectif multi-zones
+INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
+    ('col multi zone', 'KITSSC148'),
+    ('col multi zone', 'MOD0806'),
+    ('col multi zone', 'KITSSC079'),
+    ('col multi zone', 'KITSSC219'),
+    ('col multi zone', 'KITSSC052'),
+    ('col multi zone', 'KITSSC053'),
+    ('col multi zone', 'KITSSC054'),
+    ('col multi zone', 'KITSSC059');
+
+
 -- upgrades
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
     ('upgrade part', 'KITSSC031'),

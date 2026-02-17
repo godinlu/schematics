@@ -135,6 +135,27 @@ const SC_MAPPING = [
         refs: {"options": ["OPT0019"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon) et la zone supplémentaire est un appoint bois."
     },
+    // -------------------- OPTIONS MULTI ZONES --------------------
+    {
+        when: {circulateurC1: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC2: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC3: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC7: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
 
     // -------------------- OPTIONS PISCINE --------------------
 

@@ -42,6 +42,7 @@ INSERT INTO category (id, name, parent_id) VALUES
             ('kit ECS', "Gamme ECS", 'SC kit'),
         ('options', 'Options', 'SC part'),
         ('options col', 'Options Collectif', 'SC part'),
+        ('col multi zone', 'Collectif multi-zones', 'SC part'),
         ('upgrade part', 'Upgrades', 'SC part'),
         ('accessoires SSC', 'Accessoires SSC', 'SC part'),
             ('SSC bouclage', 'Bouclage sanitaire', 'accessoires SSC'),
