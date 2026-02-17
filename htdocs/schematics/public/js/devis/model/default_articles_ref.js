@@ -277,7 +277,7 @@ const BAL_MAPPING = [
             ballonTampon: /^(?!aucun$).*$/i,
             EchangeurDansBT: /off/,
         },
-        refs:{"bal tamp sans ech": ["BAL0103"]},
+        refs:{"bal tamp sans ech": ["BAL0161"]},
         reason: "Il y a un ballon tampon sans échangeur."
     },
     {

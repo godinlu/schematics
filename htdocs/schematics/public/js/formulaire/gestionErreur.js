@@ -754,7 +754,7 @@ function manageOption(key){
     const condition_for_enable = {
         "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC":{
             id:"k_aquast",
-            cond:($("#EchangeurDansBT").is(':checked') && /deshu|pompe/.test(S.divers.value))
+            cond:($("#EchangeurDansBT").is(':checked') && /deshu|radiateur|pompe/.test(S.divers.value))
         },
         "charge BTC si excédent APP1 sur T16 & T6 > T5|charge BTC si excédent APP1 sur T16 & T6 < T5":{
             id:"k_charge_BTC",

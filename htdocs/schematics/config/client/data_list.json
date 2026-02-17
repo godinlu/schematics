@@ -211,7 +211,7 @@
         },
         "optionS10": {
             "V3V bypass appoint 1": "S10",
-            "V3V retour bouclage sanitaire solaire": "S10 S11 T15 T16",
+            "V3V retour bouclage sanitaire solaire": "S10 T15 T16 unique:v3vboucle",
             "Piscine déportée T15": "S10 T15",
             "Piscine déportée T6": "S10 T6",
             "Activable par case à cocher": "S10",
@@ -247,7 +247,7 @@
         },
         "optionS11": {
             "V3V bypass appoint 1": "S11",
-            "V3V retour bouclage sanitaire solaire": "S10 S11 T15 T16",
+            "V3V retour bouclage sanitaire solaire": "S11 T15 T16 unique:v3vboucle",
             "Activable par case à cocher": "S11",
             "Décharge sur zone 1": "S11 unique:déchargePC",
             "ON en mode solaire": "S11 unique:onModeSolaire",

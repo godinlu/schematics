@@ -24,7 +24,12 @@ class DevisModal extends Modal{
         this.content_div.innerHTML = "";
         this.content_div.appendChild(this.#breadcrumb_div(category_id));
         if (force_articles || sub_categs.length === 0){
-            const articles = devisStore.data_manager.get_articles_by_category_tree(category_id);
+            let articles = devisStore.data_manager.get_articles_by_category_tree(category_id);
+            // sort articles by ref if all articles are shown
+            if (force_articles){
+                articles = articles.sort((a, b) => a.ref.localeCompare(b.ref));
+            }
+
             this._add_events = false; // ensure to add only once article events
             if (category_id === "capteurs"){
                 this.content_div.appendChild((new DevisCapteurFilter(this, articles)).HTML_div_element());
