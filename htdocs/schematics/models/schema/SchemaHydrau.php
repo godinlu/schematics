@@ -367,7 +367,7 @@ class SchemaHydrau extends Schema{
 
         $this->addTitle($title , [250,20]);
         $desc = str_replace("Schéma", "Schéma hydraulique", $this->_formulaire['description']);
-        $this->addParagraphe($desc , [433, 599] , 57);
+        $this->addParagraphe($desc , [433, 587] , 350, 8);
         $this->addLabel("option S10 : " . getOptionS10($this->_formulaire), [433, 572]);
         $this->addLabel("option S11 : " . getOptionS11($this->_formulaire), [433, 584]);
     }

@@ -31,20 +31,110 @@ abstract class Schema{
         $color = imagecolorallocate($this->_image, $color[0], $color[1], $color[2]);
         imagettftext($this->_image, $size, 0, $this->getX($coord), $this->getY($coord), $color, self::$_verdana, $text);
     }
-    protected function addParagraphe(string $text, array $coord, int $maxWidth, int $size = 9, array $color = [0, 0, 0]){
-        $lines = explode("\n", wordwrap($text, $maxWidth, "\n"));
-        $color = imagecolorallocate($this->_image, $color[0], $color[1], $color[2]);
 
-        #ceci permet d'adapter légèrement la taille du text si il est trop grand 
-        if (count($lines) > 3){
-            $size-=1.6;
-            $lines = explode("\n", wordwrap($text, $maxWidth * 1.2, "\n"));
+    protected function wrapTextToWidth($text, $fontSize, $fontFile, $maxWidthPx) {
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+
+        foreach ($words as $word) {
+            $testLine = $currentLine === '' ? $word : $currentLine . ' ' . $word;
+            $box = imagettfbbox($fontSize, 0, $fontFile, $testLine);
+            $lineWidth = $box[2] - $box[0];
+
+            if ($lineWidth > $maxWidthPx) {
+                $lines[] = $currentLine;
+                $currentLine = $word;
+            } else {
+                $currentLine = $testLine;
+            }
+        }
+
+        if ($currentLine !== '') {
+            $lines[] = $currentLine;
+        }
+
+        return $lines;
+    }
+
+    /**
+     * Draw a wrapped paragraph inside a maximum width (in pixels).
+     *
+     * - Real pixel-based wrapping using imagettfbbox
+     * - Optional max line limit with ellipsis
+     * - Automatic minimal font size protection
+     *
+     * @param string $text        Text to render (UTF-8)
+     * @param array  $coord       Base coordinates
+     * @param int    $maxWidthPx  Maximum width in pixels
+     * @param float    $size        Font size in px
+     * @param array  $colorRGB    RGB color array [R, G, B]
+     * @param int    $maxLines    Maximum allowed lines (default 3)
+     */
+    protected function addParagraphe(
+        string $text,
+        array $coord,
+        int $maxWidthPx,
+        float $size = 9.0,
+        array $colorRGB = [0, 0, 0],
+        int $maxLines = 3
+    ): void {
+
+        if (trim($text) === '') {
+            return;
+        }
+
+        $minFontSize = 7;
+        $lineSpacing = 3;
+
+        $color = imagecolorallocate(
+            $this->_image,
+            $colorRGB[0],
+            $colorRGB[1],
+            $colorRGB[2]
+        );
+
+        // Normalize text
+        $text = trim(preg_replace('/\s+/', ' ', $text));
+
+        $lines = $this->wrapTextToWidth($text, $size, self::$_verdana, $maxWidthPx);
+
+        // If too many lines → reduce font size once
+        if (count($lines) > $maxLines && $size > $minFontSize) {
+            $size -= 1.5;
+            $lines = $this->wrapTextToWidth($text, $size, self::$_verdana, $maxWidthPx);
+        }
+
+        // Hard limit + ellipsis
+        if (count($lines) > $maxLines) {
+            $lines = array_slice($lines, 0, $maxLines);
+            $lastIndex = $maxLines - 1;
+
+            // Add ellipsis safely
+            $lines[$lastIndex] = rtrim($lines[$lastIndex], '. ') . '…';
         }
 
         $y = $this->getY($coord);
+
         foreach ($lines as $line) {
-            imagettftext($this->_image, $size, 0, $this->getX($coord), $y, $color, self::$_verdana, $line);
-            $y += $size + 3; // Espacement entre les lignes (ajustez selon vos besoins)
+
+            $box = imagettfbbox($size, 0, self::$_verdana, $line);
+
+            $textHeight = abs($box[7] - $box[1]); 
+            // real height between top and bottom
+
+            imagettftext(
+                $this->_image,
+                $size,
+                0,
+                $this->getX($coord),
+                $y + $textHeight, // shift to baseline properly
+                $color,
+                self::$_verdana,
+                $line
+            );
+
+            $y += $textHeight + $lineSpacing;
         }
     }
     protected function addTitle(

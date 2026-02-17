@@ -409,7 +409,7 @@ class SchemaExe extends Module{
         $date = (new DateTime())->format("d/m/Y");
         $coord_date = [$list_coord['img_desc_affaire'][0] + 275, $list_coord['img_desc_affaire'][1] + 65];
         $coord_affaire = [$list_coord['img_desc_affaire'][0] + 7, $list_coord['img_desc_affaire'][1] + 65];
-        $coord_description = [$list_coord['img_desc_affaire'][0] + 7, $list_coord['img_desc_affaire'][1] + 17];
+        $coord_description = [$list_coord['img_desc_affaire'][0] + 7, $list_coord['img_desc_affaire'][1] + 4];
 
         $affaire_value = "non renseigné";
         if (!empty($this->_formulaire['nom_client']) || !empty($this->_formulaire['prenom_client'])) {
@@ -418,7 +418,7 @@ class SchemaExe extends Module{
         $this->addLabel("Affaire : " . $affaire_value, $coord_affaire);
 
         $desc = str_replace("Schéma", "Schéma d'exe", $this->_formulaire['description']);
-        $this->addParagraphe($desc , $coord_description, 57);
+        $this->addParagraphe($desc , $coord_description, 350, 8.5);
         $this->addLabel($date, $coord_date);
 
         // Partie nom des options
