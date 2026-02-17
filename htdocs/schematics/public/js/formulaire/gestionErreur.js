@@ -549,21 +549,36 @@ function description() {
 	let appoint1 = S.appoint1.value;
     let dict_zone = {};
 
-    //on commence par le description des différents circulateur
+    let hasV3V = false;
+
     for (let i = 0; i < circulateur.length; i++) {
-        if (circulateur[i] != "Aucun" && !/Appoint/.test(circulateur[i])) {
-            if (dict_zone[circulateur[i]] === undefined) {
-                dict_zone[circulateur[i]] = 1;
-            }else{
-                dict_zone[circulateur[i]] += 1;
+        let value = circulateur[i];
+
+        if (value != "Aucun" && !/Appoint/.test(value)) {
+
+            // Normalisation pour plancher chauffant
+            if (/Plancher chauffant/.test(value)) {
+                value = "Plancher chauffant";
+
+                if (/V3V/.test(circulateur[i])) {
+                    hasV3V = true;
+                }
             }
+
+            dict_zone[value] = (dict_zone[value] || 0) + 1;
         }
     }
-    for (let cle in dict_zone){
-        if (dict_zone[cle] > 1){
-            temp = temp + ", " + dict_zone[cle] + " zones " + cle;
-        }else{
-            temp = temp + ", " + dict_zone[cle] + " zone " + cle;
+    for (let cle in dict_zone) {
+        let label = cle;
+
+        if (cle === "Plancher chauffant" && hasV3V) {
+            label += " sur V3V";
+        }
+
+        if (dict_zone[cle] > 1) {
+            temp += ", " + dict_zone[cle] + " " + label;
+        } else {
+            temp += ", 1 " + label;
         }
     }
 	chain=chain+temp;
