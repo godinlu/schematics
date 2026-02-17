@@ -786,11 +786,11 @@ function manageOption(key){
         },
         "recharge nappes goethermiques sur T15 sur serpentin BTC":{
             id:"k_serpentin",
-            cond:(/tampon/.test(S.ballonTampon.value) && !$("#EchangeurDansBT").is(':checked') && S.appoint1.value == "PAC")
+            cond:(/tampon/.test(S.ballonTampon.value) && !$("#EchangeurDansBT").is(':checked') && S.appoint1.value == "Pompe à chaleur")
         },
         "recharge nappes goethermiques sur T15 sur échangeur BTC":{
             id:"k_geo_echangeur",
-            cond:(/tampon/.test(S.ballonTampon.value) && S.appoint1.value == "PAC")
+            cond:(/tampon/.test(S.ballonTampon.value) && S.appoint1.value == "Pompe à chaleur")
         },
         "Sortie Idem C2":{
             id:"k_idem_2",
