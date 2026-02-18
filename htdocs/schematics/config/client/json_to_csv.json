@@ -24,7 +24,7 @@
         "translation":{
             "Default":"1",
             "ballon ECS et ballon appoint en série": "2",
-            "ballon elec en sortie ballon solaire avec bouclage sanitaire":"2",
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire":"2",
             "ballon d'eau chaude sur échangeur":"2"
         },
         "consequences":{

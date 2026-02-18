@@ -237,7 +237,7 @@ const BAL_MAPPING = [
     {
         when: {
             typeInstallation : /^(?!SC1Z$).*$/,
-            ballonECS: /^ballon elec en sortie ballon solaire avec bouclage sanitaire$/
+            ballonECS: /^ballon Appoint en sortie ballon solaire avec bouclage sanitaire$/
         },
         refs: {"bal double ech": ["BAL0002", "BAL0002"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."

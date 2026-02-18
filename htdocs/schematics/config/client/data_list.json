@@ -23,7 +23,7 @@
             "ballon ECS et ballon appoint en série avec bouclage sanitaire": "",
             "ballon ECS tank in tank": "",
             "ballon d'eau chaude sur échangeur": "",
-            "ballon elec en sortie ballon solaire avec bouclage sanitaire": "",
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": "",
             "Ballon hygiénique avec 1 echangeur": "",
             "Ballon hygiénique avec 2 echangeurs": "",
             "Aucun": ""
@@ -339,7 +339,7 @@
             "ballon ECS et ballon appoint en série avec bouclage sanitaire": "Imcompatible avec un SC1Z",
             "ballon ECS tank in tank": "Imcompatible avec un SC1Z",
             "ballon d'eau chaude sur échangeur": "Imcompatible avec un SC1Z",
-            "ballon elec en sortie ballon solaire avec bouclage sanitaire": "Imcompatible avec un SC1Z",
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": "Imcompatible avec un SC1Z",
             "Ballon hygiénique avec 1 echangeur": "Imcompatible avec un SC1Z",
             "Ballon hygiénique avec 2 echangeurs": "Imcompatible avec un SC1Z"
         },
