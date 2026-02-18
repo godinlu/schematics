@@ -24,11 +24,13 @@ class DevisPdf{
      * @param {DevisHeader} devis_header 
      * @param {DevisBody} devis_body 
      * @param {DevisFooter} devis_footer 
+     * @param {string|null} devis_reference - Référence du devis, générée par défaut si null
      */
-    constructor(devis_header, devis_body, devis_footer){
+    constructor(devis_header, devis_body, devis_footer, devis_reference){
         this.devis_header = devis_header;
         this.devis_body = devis_body;
         this.devis_footer = devis_footer;
+        this.devis_reference = devis_reference ?? `REF-${(new Date()).getFullYear()}-XXXXX`;
     }
 
     /**
@@ -65,13 +67,16 @@ class DevisPdf{
                 </div>
                 <div>
                     <table cellspacing="0">
-                        <tr><th>CHIFFRAGE ESTIMATIF</th></tr>
+                        <tr><th>${this.devis_header.fields.get("header-type_devis")}</th></tr>
+                        <tr><td>${this.devis_reference}</td></tr>
                         <tr><td>${this.devis_header.get_date_fr_format()}</td></tr>
                     </table>
                     <p>
-                        Mail: ${this.devis_header.fields.get("header-mail")}
+                        A l'attention de ${this.devis_header.fields.get("header-installateur_nom_prenom")}
                         <br>
-                        A l'attention de ${this.devis_header.fields.get("header-installateur")}
+                        Nom de l'entreprise : ${this.devis_header.fields.get("header-installateur_entreprise")}
+                        <br>
+                        Mail : ${this.devis_header.fields.get("header-installateur_mail")}  
                     </p>
                 </div>
             </div>
@@ -83,10 +88,10 @@ class DevisPdf{
                     <td>Délai</td>
                 </tr>
                 <tr>
-                    <td>${this.devis_header.fields.get("header-field1")}</td>
-                    <td>${this.devis_header.fields.get("header-field2")}</td>
-                    <td>${this.devis_header.fields.get("header-field3")}</td>
-                    <td>${this.devis_header.fields.get("header-field4")}</td>
+                    <td>${this.devis_header.fields.get("header-affaire_suivie_par")}</td>
+                    <td>${this.devis_header.fields.get("header-mode_reglement")}</td>
+                    <td>${this.devis_header.fields.get("header-validite")}</td>
+                    <td>${this.devis_header.fields.get("header-delai_livraison")}</td>
                 </tr>
             </table>
         </div>

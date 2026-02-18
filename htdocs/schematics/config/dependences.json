@@ -17,6 +17,7 @@
                 "fiche_prog/fiche_prog.css"
             ],
             "Devis": [
+                "public/hint.css",
                 "devis/devis.css"
             ],
             "Version": [

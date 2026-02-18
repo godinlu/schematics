@@ -1,0 +1,57 @@
+/**
+ * Tooltip / Hint
+ * ----------------
+ * Composant d’aide contextuelle affiché au survol (hover)
+ * ou au focus clavier (focus-within).
+ *
+ * Usage :
+ *  <div class="hint">
+ *      <button>Action</button>
+ *      <span class="hint-tooltip">Message d’aide</span>
+ *  </div>
+ *
+ * Caractéristiques :
+ * - Accessible clavier (focus-within)
+ * - Animations légères (opacity + translate)
+ * - Ne bloque pas les interactions (pointer-events: none)
+ * - Positionné automatiquement au-dessus de l’élément cible
+ *
+ * Dépendances :
+ * - Aucune (CSS pur)
+ */
+.hint {
+    position: relative;
+}
+
+.hint-tooltip {
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(5px);
+    background: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1000;
+}
+
+.hint-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.hint:hover .hint-tooltip,
+.hint:focus-within .hint-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

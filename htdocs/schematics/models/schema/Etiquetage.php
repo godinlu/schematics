@@ -160,7 +160,7 @@ class Etiquetage extends Module{
         $date = date("d/m/Y");
         $coord_date = [$coord[0] + 275, $coord[1] + 65];
         $coord_affaire = [$coord[0] + 7, $coord[1] + 65];
-        $coord_description = [$coord[0] + 7, $coord[1] + 17];
+        $coord_description = [$coord[0] + 7, $coord[1] + 4];
 
         $affaire_value = "non renseigné";
         if (!empty($this->_formulaire['nom_client']) || !empty($this->_formulaire['prenom_client'])) {
@@ -169,7 +169,7 @@ class Etiquetage extends Module{
         $this->addLabel("Affaire : " . $affaire_value, $coord_affaire);
 
         $desc = str_replace("Schéma", "Étiquetage", $this->_formulaire['description']);
-        $this->addParagraphe($desc , $coord_description, 57);
+        $this->addParagraphe($desc , $coord_description, 350, 8.5);
         $this->addLabel( $date, $coord_date);
     }
 

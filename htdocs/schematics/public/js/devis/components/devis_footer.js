@@ -85,6 +85,18 @@ class DevisFooter{
         }
     }
 
+    /**
+     * convert the devis_footer into JSON to be saved into database
+     * 
+     * @returns {Object<string, any>} - json_data
+     */
+    to_json_data(){
+        return {
+            taux_tva: this.tva_percent,
+            code_tva: this.tva_code
+        };
+    }
+
 
     /**
      * attach events for input of tva_code and tva_percent.

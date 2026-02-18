@@ -49,7 +49,7 @@ class DevisRow{
             <td>${(is_text)? "" : format_number(this.prix) + " €"}</td>
             <td>
                 ${(is_text)? "" : 
-                `<input class="remise" data-handler="remise-input" type="number" min="0" max="30" value="${this.remise}">`}
+                `<input class="remise" data-handler="remise-input" type="number" min="0" max="35" value="${this.remise}">`}
             </td>
             <td>
                 ${(is_text)? "" : 
@@ -73,7 +73,7 @@ class DevisRow{
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                     ${(this.reason)?`
-                        <button class="hint-btn">
+                        <button class="hint">
                             <i class="fa-solid fa-info"></i>
                             <span class="hint-tooltip">${this.reason}</span>
                         </button>
@@ -108,6 +108,28 @@ class DevisRow{
      */
     get unit_price(){
         return this.prix * (1 - this.remise / 100);
+    }
+
+    /**
+     * Convertit l'objet ligne de devis en un format JSON prêt à être envoyé
+     * à l'API ou utilisé pour le stockage.
+     *
+     * @returns {Object} Un objet contenant les informations de la ligne de devis :
+     *  - article_ref {string} : référence de l'article
+     *  - prix_tarif {number} : prix unitaire de l'article
+     *  - taux_remise {number} : remise appliquée en pourcentage
+     *  - quantite {number} : quantité commandée
+     *  - cout_total_ht {number} : total de la ligne après remise
+     */
+    to_json_data(){
+        return {
+            article_ref: this.ref,
+            prix_tarif: this.prix,
+            taux_remise: this.remise,
+            quantite: this.quantity,
+            cout_total_ht: this.total_amount
+
+        };
     }
 
     /**
@@ -160,20 +182,34 @@ class DevisRow{
         // create a debounceHandler for both input to avoid spamming action
         const debouncedHandler = debounce((input) => {
             if (input.dataset.handler === "remise-input") {
-                const action = {
-                    type:"body-edit-remise", 
-                    payload:{ref:this.ref, old_value: this.remise, new_value: input.value, base_category_id: this.base_category_id}
-                };
-                devisStore.submit_action(action);
-                devisStore.dispatch("render-footer", action);
+                const new_value = parseInt(input.value);
+                if (!isNaN(new_value) && new_value !== this.remise && new_value >= 0 && new_value <= 35){
+                    devisStore.submit_action({
+                        type: "body-edit-remise",
+                        payload:{
+                            ref: this.ref,
+                            old_value: this.remise,
+                            new_value,
+                            base_category_id: this.base_category_id
+                        }
+                    });
+                    devisStore.dispatch("render");
+                }                
             }
             if (input.dataset.handler === "qte-input") {
-                const action = {
-                    type:"body-edit-qte",
-                    payload:{ref:this.ref, old_value: this.quantity, new_value: input.value, base_category_id: this.base_category_id} 
-                };
-                devisStore.submit_action(action);
-                devisStore.dispatch("render-footer", action);
+                const new_value = parseInt(input.value);
+                if (!isNaN(new_value) && new_value !== this.quantity){
+                    devisStore.submit_action({
+                        type: "body-edit-qte",
+                        payload:{
+                            ref: this.ref, 
+                            old_value: this.quantity,
+                            new_value,
+                            base_category_id: this.base_category_id
+                        }
+                    });
+                    devisStore.dispatch("render");
+                }
             }
         }, 300);
 

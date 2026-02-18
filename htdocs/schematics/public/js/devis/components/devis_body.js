@@ -116,6 +116,17 @@ class DevisBody{
     }
 
     /**
+     * convert the devisBody into a JSON representation to be saved in the bd with API
+     * @returns {Object<string, any>} - json_data
+     */
+    to_json_data(){
+        return {
+            taux_remise: this.global_remise,
+            lignes: this.get_devis_categories().flatMap(categ => categ.to_json_data())
+        };
+    }
+
+    /**
      * Attach all events listeners :
      * - submit an "body-edit-global-remise" on input of the corresponding input
      * 
@@ -125,7 +136,7 @@ class DevisBody{
         const debouncedHandler = debounce(()=>{
             const new_value = parseInt(input.value);
 
-            if (!isNaN(new_value) && new_value !== this.global_remise && new_value >= 0 && new_value <= 30){
+            if (!isNaN(new_value) && new_value !== this.global_remise && new_value >= 0 && new_value <= 35){
                 devisStore.submit_action({type:"body-edit-global-remise", payload:{new_value}});
                 devisStore.dispatch("render");
             }

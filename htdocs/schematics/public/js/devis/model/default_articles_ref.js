@@ -135,6 +135,27 @@ const SC_MAPPING = [
         refs: {"options": ["OPT0019"]},
         reason: "Toute les zones sont raccordées (3 pour SC1Z, 4 sinon) et la zone supplémentaire est un appoint bois."
     },
+    // -------------------- OPTIONS MULTI ZONES --------------------
+    {
+        when: {circulateurC1: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC2: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC3: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
+    {
+        when: {circulateurC7: /multi zones/i},
+        refs: {"col multi zone": ["KITSSC148"]},
+        reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
+    },
 
     // -------------------- OPTIONS PISCINE --------------------
 
@@ -216,7 +237,7 @@ const BAL_MAPPING = [
     {
         when: {
             typeInstallation : /^(?!SC1Z$).*$/,
-            ballonECS: /^ballon elec en sortie ballon solaire avec bouclage sanitaire$/
+            ballonECS: /^ballon Appoint en sortie ballon solaire avec bouclage sanitaire$/
         },
         refs: {"bal double ech": ["BAL0002", "BAL0002"]},
         reason: "Le ballon sanitaire selectionné a 2 échangeurs et est en série."
@@ -256,7 +277,7 @@ const BAL_MAPPING = [
             ballonTampon: /^(?!aucun$).*$/i,
             EchangeurDansBT: /off/,
         },
-        refs:{"bal tamp sans ech": ["BAL0103"]},
+        refs:{"bal tamp sans ech": ["BAL0161"]},
         reason: "Il y a un ballon tampon sans échangeur."
     },
     {
@@ -274,6 +295,16 @@ const BAL_MAPPING = [
         },
         refs:{"bal tamp sans ech": ["BAL0103", "BAL0103"]},
         reason: "Il y a 3 ballon tampon sans échangeur."
+    },
+    {
+        when: {ballonTampon: /2/i},
+        refs:{"SSC divers": ["KITSSC157"]},
+        reason: "Il y a 2 ballon tampons."
+    },
+    {
+        when: {ballonTampon: /3/i},
+        refs:{"SSC divers": ["KITSSC157", "KITSSC157"]},
+        reason: "Il y a 3 ballon tampons."
     },
     {
         when: {resistanceElectriqueBECS: /on/i},
@@ -322,19 +353,29 @@ const CAPTEURS_MAPPING = [
     },
     {
         when: {champCapteur: /casse pression/i},
-        refs: {"mod sol 1 col": ["kitSSC197"]},
+        refs: {"mod sol 1 col": ["kitSSC197"], "kit sol 1 col": ["KITSSC206"]},
         reason: "Présence d'une casse pression sur champ capteur."
     },
     {
         when: {champCapteur: /échangeur/i},
-        refs: {"mod sol 2 col": ["kitSSC199"]},
+        refs: {"mod sol 2 col": ["kitSSC199"], "kit sol 2 col": ["KITSSC226"]},
         reason: "Présence d'un échangeur sur champ capteur."
     },
     {
         when: {champCapteur: /V3V/i},
         refs: {"kit V3V": ["KITSSC018"]},
         reason: "Présence d'une V3V sur champ capteur."
-    }
+    },
+    {
+        when: {champCapteur: /2.*casse pression/i},
+        refs: {"mod sol 1 col": ["kitSSC197"]},
+        reason: "Présence d'une casse pression sur champ capteur."
+    },
+    {
+        when: {champCapteur: /2.*échangeur/i},
+        refs: {"mod sol 2 col": ["kitSSC199"]},
+        reason: "Présence d'un échangeur sur champ capteur."
+    },
 ];
 
 
@@ -342,8 +383,18 @@ const CAPTEURS_MAPPING = [
 /**@type {MappingRule[]} */
 const SERV_PORT_MAPPING = [
     {
-        refs: {"assistance ind": ["MISE001"], "transport fr": ["TRANS001"]},
+        refs: {"assistance ind": ["MISE001"]},
         reason: "Articles ajoutées par défaut."
+    },
+    {
+        when: {typeInstallation: /1/i},
+        refs: {"transport": ["TRANS001"]},
+        reason: "Le module choisit est un SC1 ou SC1Z ou hydraubox 1."
+    },
+    {
+        when: {typeInstallation: /2/i},
+        refs: {"transport": ["TRANS002"]},
+        reason: "Le module choisit appartient à la gamme des SC2"
     }
 ];
 

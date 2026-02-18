@@ -1,6 +1,6 @@
 
 -- 1. Supprimer la table article_category
-DROP TABLE IF EXISTS article_category;
+DROP TABLE IF EXISTS category_article;
 
 -- 2. Supprimer la table catégories
 DROP TABLE IF EXISTS category;
@@ -31,6 +31,7 @@ INSERT INTO category (id, name, parent_id) VALUES
             ('module SC2K', "Gamme SC2K", 'module'),
             ('module Hydraubox 1', "Gamme Hydraubox 1", 'module'),
             ('module Hydraubox 2', "Gamme Hydraubox 2", 'module'),
+            ('module ECS', "Gamme ECS", 'module'),
         ('SC kit', 'SC Kit (sondes, mitigeur thermostatique, bidons de fluide glycolé, vase …)', 'SC part'),
             ('kit SC1Z', "Gamme SC1Z", 'SC kit'),
             ('kit SC1', "Gamme SC1", 'SC kit'),
@@ -38,8 +39,10 @@ INSERT INTO category (id, name, parent_id) VALUES
             ('kit SC1K', "Gamme SC1K", 'SC kit'),
             ('kit SC2K', "Gamme SC2K", 'SC kit'),
             ('kit Hydraubox', "Gamme Hydraubox 1", 'SC kit'),
+            ('kit ECS', "Gamme ECS", 'SC kit'),
         ('options', 'Options', 'SC part'),
         ('options col', 'Options Collectif', 'SC part'),
+        ('col multi zone', 'Collectif multi-zones', 'SC part'),
         ('upgrade part', 'Upgrades', 'SC part'),
         ('accessoires SSC', 'Accessoires SSC', 'SC part'),
             ('SSC bouclage', 'Bouclage sanitaire', 'accessoires SSC'),
@@ -54,6 +57,7 @@ INSERT INTO category (id, name, parent_id) VALUES
         ('ballon ECS', 'Ballon ECS', 'ballon part'),
             ('bal simple ech', 'Ballon Sanitaire simple échangeur HT (95°C)', 'ballon ECS'),
             ('bal double ech', 'Ballon Sanitaire double échangeur HT (95°C)', 'ballon ECS'),
+            ('bal sans ech', 'Ballon Sanitaire sans échangeur', 'ballon ECS'),
         ('ballon tampon', 'Ballon Tampon', 'ballon part'),
             ('bal tamp ech bas', 'Ballon Tampon avec un échangeur bas', 'ballon tampon'),
             ('bal tamp ech total', 'Ballon Tampon avec un échangeur total', 'ballon tampon'),
@@ -72,6 +76,12 @@ INSERT INTO category (id, name, parent_id) VALUES
                 ('kit DN20', 'Kit de Raccordement DN20', 'kit racc'),
                 ('kit DN25', 'Kit de Raccordement DN25', 'kit racc'),
                 ('kit DN32', 'Kit de Raccordement DN32', 'kit racc'),
+        ('habillage capteur', 'Kit d''habillage', 'capteur part'),
+            ('habillage capteur S7', 'Kit d''habillage pour S7', 'habillage capteur'),
+            ('habillage capteur S7 2,5', 'Kit d''habillage pour S7 2,5', 'habillage capteur'),
+        ('fixation capteur', 'Kit de fixation capteur', 'capteur part'),
+            ('kit fix capt S7', 'Kit de fixation capteur S7', 'fixation capteur'),
+            ('kit fix capt SH', 'Kit de fixation capteur SH', 'fixation capteur'),
         ('CES', 'CES', 'capteur part'),
             ('CESI', 'Chauffe-eau solaire individuel (CESI)', 'CES'),
                 ('kit CESI regul', 'Kit CESI avec régulation, vase, vanne d''arrêt et 20 L Solisgel', 'CESI'),
@@ -122,8 +132,8 @@ INSERT INTO category (id, name, parent_id) VALUES
         ('assistance', 'Assistance à la mise en service', 'service transport'),
             ('assistance ind', 'Sur installation individuelle', 'assistance'),
             ('assistance col', 'Sur installation collectif', 'assistance'),
-        ('transport', 'Transport', 'service transport'),
-            ('transport fr', 'France sauf Corse', 'transport'),
-            ('transport belglux', 'Belgique - Luxembourg', 'transport'),
-            ('transport divers', 'Divers', 'transport')
+        ('transport', 'Transport', 'service transport')
+            -- ('transport fr', 'France sauf Corse', 'transport'),
+            -- ('transport belglux', 'Belgique - Luxembourg', 'transport'),
+            -- ('transport divers', 'Divers', 'transport')
 ;

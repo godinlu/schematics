@@ -189,6 +189,15 @@ class DevisCategory{
     }
 
     /**
+     * convert the devisCategory into a JSON format to be saved with api
+     * 
+     * @returns {Object[]} - json_data.
+     */
+    to_json_data(){
+        return this.get_rows_ordered().map(devis_row => devis_row.to_json_data());
+    }
+
+    /**
      * Set remise for all articles in rows to the new value given
      * @param {number} new_value 
      */

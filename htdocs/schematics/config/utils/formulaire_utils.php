@@ -128,7 +128,7 @@ function getPilotageRad(array $formulaire):array{
  * return the number of ECS balloon depend on the formulaire
  */
 function getNbBallonECS(array $formulaire):int{
-    $two = '/ballon ECS et ballon appoint en série|ballon elec en sortie ballon solaire avec bouclage sanitaire|ballon d\'eau chaude sur échangeur/';
+    $two = '/ballon ECS et ballon appoint en série|ballon Appoint en sortie ballon solaire avec bouclage sanitaire|ballon d\'eau chaude sur échangeur/';
     if (preg_match($two , $formulaire[FORM_BALLON_ECS]) ) return 2;
     else return 1;
     

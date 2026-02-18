@@ -58,6 +58,7 @@ class DevisCapteurFilter{
                             <option value="SH 2">SH 2</option>
                             <option value="SH 2,5">SH 2,5</option>
                             <option value="SID2,5">SID2,5</option>
+                            <option value="SMV 2,3">SMV 2,3</option>
                         </select>
                     </td>
                 </tr>

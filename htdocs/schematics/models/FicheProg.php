@@ -45,7 +45,7 @@ class FicheProg{
             "ballon ECS et ballon appoint en série",
             "ballon ECS et ballon appoint en série avec bouclage sanitaire",
             "ballon d'eau chaude sur échangeur",
-            "ballon elec en sortie ballon solaire avec bouclage sanitaire"
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire"
         );
         if (in_array($this->_formulaire['ballonECS'] , $ballon2)) $nb_ballon_ecs = 2;
         else if ($this->_formulaire['ballonECS'] !== AUCUN ) $nb_ballon_ecs = 1;
