@@ -1,4 +1,30 @@
 /**
+ * @module rules.config
+ *
+ * Defines rules for controlling form fields and their options.
+ *
+ * ### Writing rules
+ * - Global rules: `evaluate_rules(ctx)` returns an array of effects:
+ *   ```js
+ *   ctx.typeInstallation === "SC1Z" &&
+ *     disable_other("ballonECS", /^ballon ecs 2|^aucun$/i, "SC1Z installations cannot use this ballon ECS")
+ *   ```
+ * - Event rules: `evaluate_event_rules(changed_field, ctx)` returns an array of immediate effects:
+ *   ```js
+ *   changed_field === "typeInstallation" &&
+ *     /2/.test(ctx.typeInstallation) &&
+ *     ctx.ballonTampon === "Aucun" &&
+ *     force_default("ballonTampon", "Ballon tampon")
+ *   ```
+ *
+ * ### Using rules
+ * - Both functions return arrays of **effects** (`Effect` or `EventEffect`)  
+ * - The RuleEngine applies these effects recursively to update context and option states.
+ */
+
+
+
+/**
  * @typedef {Object} OptionsEffect
  * @property {"disabled-options"|"disabled-other-options"|"hide-options"|"hide-other-options"} type
  * @property {string} field
@@ -22,11 +48,28 @@
  */
 
 /**
- * @param {string} changed_field
+ * Evaluate the current context and return a list of effects
+ * to apply on fields/options.
+ *
+ * Each effect represents a change to the state of a field or its options,
+ * e.g., disable an option, hide an option, or force a value.
+ *
+ * This function implements all global rules based on the current context.
+ * Rules can be conditional on multiple fields and produce one or multiple effects.
+ *
+ * Example rules:
+ *  - If typeInstallation is SC1Z, certain ballonECS options are disabled
+ *  - If ballonECS is "Aucun", certain resistances cannot be activated
+ * 
  * @param {Object<string, string>} ctx 
+ * Current field values, keyed by field name
+ *    
  * @returns {Effect[]}
+ * List of effects to apply
  */
 const evaluate_rules = (ctx) => [
+
+    // installation
     ctx.typeInstallation === "SC1Z" && 
         disable_other("ballonECS", /^ballon ecs 2|^aucun$/i, "Les installations SC1Z ne permettent pas ce ballon ECS."),
     /1/i.test(ctx.typeInstallation) &&
@@ -53,11 +96,11 @@ const evaluate_rules = (ctx) => [
         disable("EchangeurDansBT", /^off$/, "L'échangeur est obligatoire pour un ballon tampon en eau chaude sanitaire."),
 
     // Appoint 1
-    /^chaudière|^electrique$/i.test(ctx.appoint1) && ctx.locAppoint2 !== "cascade" &&
+    /^chaudière|^electrique$/i.test(ctx.appoint1) && ctx.locAppoint2 !== "En cascade d'appoint 1" &&
         hide_other("raccordementHydraulique", /^Appoint simple$|^Appoint sur casse pression$|^Appoint sur échangeur$/),
-    /^pompe à chaleur$/i.test(ctx.appoint1) && ctx.locAppoint2 !== "cascade" &&
+    /^pompe à chaleur$/i.test(ctx.appoint1) && ctx.locAppoint2 !== "En cascade d'appoint 1" &&
         hide_other("raccordementHydraulique", /^Appoint sur casse pression$|^Appoint sur échangeur$/),
-    /T16/i.test(ctx.appoint1) && ctx.locAppoint2 !== "cascade" &&
+    /T16/i.test(ctx.appoint1) && ctx.locAppoint2 !== "En cascade d'appoint 1" &&
         hide_other("raccordementHydraulique", /^Appoint simple T16$|^Appoint sur casse pression T16$|^Appoint sur échangeur T16$|^Appoint sur tampon avec échangeur T16 S10$/),
     /aucun/i.test(ctx.appoint1) && [
         hide_other("raccordementHydraulique", /^En direct$/i),
@@ -84,11 +127,11 @@ const evaluate_rules = (ctx) => [
     // locAppoint2
     ctx.locAppoint2 !== "Aucun" &&
         disable("appoint2", /aucun/i, "Disponible seulement si il n'y a pas d'appoint 2."),
-    ctx.locAppoint2 !== "C7" &&
+    ctx.locAppoint2 !== "Sur circulateur C7" &&
         disable("appoint2", /appoint/i, "Disponible seulement si l'appoint 2 est en cascade de l'appoint 1."),
-    ctx.locAppoint2 !== "cascade" && 
+    ctx.locAppoint2 !== "En cascade d'appoint 1" && 
         disable_other("appoint2", /appoint|aucun/i, "Disponible seulement si l'appoint 2 est sur C7."),
-    ctx.locAppoint2 === "cascade" && [
+    ctx.locAppoint2 === "En cascade d'appoint 1" && [
         hide_other("raccordementHydraulique", /double|et/i),
         disable("appoint1", /aucun/i, "Indisponible lorsque l'appoint 2 est en cascade de l'appoint 1."),
     ],
@@ -208,10 +251,29 @@ const evaluate_rules = (ctx) => [
 
 
 /**
- * 
- * @param {string} changed_field 
- * @param {Object<string, string>} ctx 
+ * Evaluate event-driven rules triggered by a single field change.
+ *
+ * This function is intended to be called when a field value changes,
+ * and returns a list of immediate effects to apply to other fields
+ * as a result of that change. Effects are applied recursively
+ * by the RuleEngine to stabilize the context.
+ *
+ * Example rules:
+ *  - If "typeInstallation" changes and matches a certain condition,
+ *    force the "ballonTampon" field to its default.
+ *  - If "ballonTampon" changes and is not "Aucun",
+ *    force "EchangeurDansBT" to "on".
+ *
+ * @param {string} changed_field
+ *   The name of the field that was modified.
+ *
+ * @param {Object<string,string>} ctx
+ *   The current form context (field values keyed by field name).
+ *
  * @returns {EventEffect[]}
+ *   List of immediate effects to apply as a result of this field change.
+ *   The RuleEngine will apply these effects and recursively propagate
+ *   any further rules triggered by these updates.
  */
 const evaluate_event_rules = (changed_field, ctx) => [
     changed_field === "typeInstallation" && /2/.test(ctx.typeInstallation) && ctx.ballonTampon === "Aucun" &&

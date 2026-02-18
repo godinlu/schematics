@@ -5,15 +5,7 @@
 		<!--partie type installation-->
 		<div class="rectangle">
 			<p>Module de chauffage</p>
-			<select data-field="typeInstallation">
-				<option value="SC1Z">SC1Z</option>
-				<option value="SC1">SC1</option>
-				<option value="SC2" selected>SC2</option>
-				<option value="SC1K">SC1K</option>
-				<option value="SC2K">SC2K</option>
-				<option value="HydrauBox 1">HydrauBox 1</option>
-				<option value="HydrauBox 2">HydrauBox 2</option>
-			</select>
+			<select data-field="typeInstallation"></select>
 		</div>
 		<!--menue déroulant pour la description de l'affaire-->
 		<div>
@@ -96,18 +88,7 @@
 					<tr>
 						<td>Ballon ECS : </td>
 						<td>
-							<select data-field="ballonECS">
-								<option value="ballon ECS 2 échangeurs" selected>ballon ECS 2 échangeurs</option>
-								<option value="ballon ECS 2 échangeurs avec bouclage sanitaire">ballon ECS 2 échangeurs avec bouclage sanitaire</option>
-								<option value="ballon ECS et ballon appoint en série">ballon ECS et ballon appoint en série</option>
-								<option value="ballon ECS et ballon appoint en série avec bouclage sanitaire">ballon ECS et ballon appoint en série avec bouclage sanitaire</option>
-								<option value="ballon ECS tank in tank">ballon ECS tank in tank</option>
-								<option value="ballon d'eau chaude sur échangeur">ballon d'eau chaude sur échangeur</option>
-								<option value="ballon elec en sortie ballon solaire avec bouclage sanitaire">ballon elec en sortie ballon solaire avec bouclage sanitaire</option>
-								<option value="Ballon hygiénique avec 1 echangeur">Ballon hygiénique avec 1 echangeur</option>
-								<option value="Ballon hygiénique avec 2 echangeurs">Ballon hygiénique avec 2 echangeurs</option>
-								<option value="Aucun">Aucun</option>
-							</select>
+							<select data-field="ballonECS"></select>
 						</td>
 					</tr>
 					<tr>
@@ -122,13 +103,7 @@
 					<tr>
 						<td>Ballon tampon : </td>
 						<td>
-							<select data-field="ballonTampon">
-								<option value="Ballon tampon" selected>Ballon tampon</option>
-								<option value="2 ballons tampons en série">2 ballons tampons en série</option>
-								<option value="3 ballons tampons en série">3 ballons tampons en série</option>
-								<option value="ballon tampon en eau chaude sanitaire">ballon tampon en eau chaude sanitaire</option>
-								<option value="Aucun">Aucun</option>
-							</select>
+							<select data-field="ballonTampon"></select>
 						</td>
 					</tr>
 					<tr>
@@ -164,25 +139,12 @@
 
 						<td>Appoint 1 : </td>
 						<td>
-							<select data-field="appoint1">
-								<option value="Chaudière fioul" selected>Chaudière fioul</option>
-								<option value="Chaudière gaz">Chaudière gaz</option>
-								<option value="Chaudière condensation fioul">Chaudière condensation fioul</option>
-								<option value="Chaudière condensation gaz">Chaudière condensation gaz</option>
-								<option value="Electrique">Electrique</option>
-								<option value="Pompe à chaleur">Pompe à chaleur</option>
-								<option value="Bois granulés sur T16">Bois granulés sur T16</option>
-								<option value="Bois sur T16">Bois sur T16</option>
-								<option value="Aucun">Aucun</option>
-							</select>
+							<select data-field="appoint1"></select>
 						</td>
 						<td>Précision :</td>
 						<td><input type="text" data-field="puissanceApp1"></td>
 						<td>
-							<select data-field="Zone">
-								<option value="Zone non chauffée" selected>Zone non chauffée</option>
-								<option value="Zone chauffée">Zone chauffée</option>
-							</select>
+							<select data-field="Zone"></select>
 
 						</td>
 
@@ -192,33 +154,11 @@
 					<tr>
 						<td>Raccordement hydraulique :</td>
 						<td>
-							<select data-field="raccordementHydraulique">
-								<option value="Appoint simple" selected>Appoint simple</option>
-								<option value="Appoint sur casse pression">Appoint sur casse pression</option>
-								<option value="Appoint sur échangeur">Appoint sur échangeur</option>
-								<option value="Appoint simple T16">Appoint simple T16</option>
-								<option value="Appoint sur casse pression T16">Appoint sur casse pression T16</option>
-								<option value="Appoint sur échangeur T16">Appoint sur échangeur T16</option>
-								<option value="Appoint sur tampon avec échangeur T16 S10">Appoint sur tampon avec échangeur T16 S10</option>
-								<option value="Appoint double en cascade sur casse pression">Appoint double en cascade sur casse pression</option>
-								<option value="Appoint double en cascade sur casse pression T16">Appoint double en cascade sur casse pression T16</option>
-								<option value="Appoint sur casse pression et réchauffeur de boucle">Appoint sur casse pression et réchauffeur de boucle</option>
-								<option value="Appoint sur casse pression et réchauffeur de boucle T16">Appoint sur casse pression et réchauffeur de boucle T16</option>
-								<option value="Appoint sur échangeur et réchauffeur de boucle">Appoint sur échangeur et réchauffeur de boucle</option>
-								<option value="Appoint sur échangeur et réchauffeur de boucle T16">Appoint sur échangeur et réchauffeur de boucle T16</option>
-								<option value="Appoint double sur échangeur">Appoint double sur échangeur</option>
-								<option value="Appoint double sur échangeur T16">Appoint double sur échangeur T16</option>
-								<option value="Appoint double">Appoint double</option>
-								<option value="En direct">En direct</option>
-							</select>
+							<select data-field="raccordementHydraulique"></select>
 						</td>
 						<td><label data-field-label="Gauche_droite">Position par rapport a la casse Pression :</label></td>
 						<td>
-							<select data-field="Gauche_droite">
-								<option value="Gauche" selected>Gauche</option>
-								<option value="Droite">Droite</option>
-
-							</select>
+							<select data-field="Gauche_droite"></select>
 						</td>
 					</tr>
 
@@ -236,16 +176,7 @@
 					<tr id="locAppoint2">
 						<td>Appoint 2 : </td>
 						<td>
-							<input type="radio" name="locAppoint2" data-field="locAppoint2" value="cascade" id="cascade">
-							<label for="cascade">En cascade d'appoint 1</label>
-						</td>
-						<td>
-							<input type="radio" name="locAppoint2" value="C7" id="C7">
-							<label for="C7">Circulateur C7</label>
-						</td>
-						<td>
-							<input type="radio" name="locAppoint2" value="Aucun" id="Aucun" checked>
-							<label for="Aucun">Aucun</label>
+							<select data-field="locAppoint2"></select>
 						</td>
 					</tr>
 				</table>
@@ -259,28 +190,11 @@
 					<tr>
 						<td>Précision appoint 2 : </td>
 						<td>
-							<select data-field="appoint2">
-								<option value="Electrique">Electrique</option>
-								<option value="Gaz">Gaz</option>
-								<option value="Gaz condensation">Gaz condensation</option>
-								<option value="Fioul">Fioul</option>
-								<option value="Fioul condensation">Fioul condensation</option>
-								<option value="PAC">PAC</option>
-								<option value="Granulé">Granulé</option>
-								<option value="Granulé condensation">Granulé condensation</option>
-								<option value="Bois">Bois</option>
-								<option value="Appoint bois">Appoint bois</option>
-								<option value="Appoint granulé">Appoint granulé</option>
-								<option value="Appoint multiple">Appoint multiple</option>
-								<option value="Aucun" selected>Aucun</option>
-							</select>
+							<select data-field="appoint2"></select>
 						</td>
 						<td><input type="text" data-field="puissanceApp1Multiple"></td>
 						<td>
-							<select data-field="ZoneMultiple">
-								<option value="Zone non chauffée" selected>Zone non chauffée</option>
-								<option value="Zone chauffée">Zone chauffée</option>
-							</select>
+							<select data-field="ZoneMultiple"></select>
 						</td>
 					</tr>
 				</table>
@@ -289,11 +203,7 @@
 					<tr>
 						<td><label data-field-label="RH_appoint2">Raccordement hydraulique</label></td>
 						<td>
-							<select data-field="RH_appoint2">
-								<option value="simple" selected>simple</option>
-								<option value="sur casse pression">sur casse pression</option>
-								<option value="sur échangeur">sur échangeur</option>
-							</select>
+							<select data-field="RH_appoint2"></select>
 						</td>
 						<td><label for="RDH_appoint2">Réhaussement des retours sur App 2</label></td>
 						<td><input type="checkbox" data-field="RDH_appoint2" id="RDH_appoint2"></td>
@@ -312,20 +222,7 @@
 				<tr>
 					<td>Champs capteurs :</td>
 					<td>
-						<select data-field="champCapteur">
-							<option value="1 champ capteurs" selected>1 champ capteurs</option>
-							<option value="2 champs capteurs en série">2 champs capteurs en série</option>
-							<option value="2 champs capteurs en parallèle">2 champs capteurs en parallèle</option>
-							<option value="1 champ capteurs découplé sur casse pression sur T16">1 champ capteurs découplé sur casse pression sur T16</option>
-							<option value="1 champ capteurs découplé sur échangeur sur T16">1 champ capteurs découplé sur échangeur sur T16</option>
-							<option value="1 champ capteurs sur double circulateur sur échangeur sur T16">1 champ capteurs sur double circulateur sur échangeur sur T16</option>
-							<option value="1 champ capteurs découplé sur casse pression sur T15">1 champ capteurs découplé sur casse pression sur T15</option>
-							<option value="1 champ capteurs découplé sur échangeur sur T15">1 champ capteurs découplé sur échangeur sur T15</option>
-							<option value="2 champs capteurs sur V3V">2 champs capteurs sur V3V</option>
-							<option value="2 champs capteurs découplés sur casse pression">2 champs capteurs découplés sur casse pression</option>
-							<option value="2 champs capteurs découplés sur échangeur">2 champs capteurs découplés sur échangeur</option>
-							<option value="Aucun">Aucun</option>
-						</select>
+						<select data-field="champCapteur"></select>
 					</td>
 				</tr>
 
@@ -347,94 +244,26 @@
 				<tr>
 					<td>Zone 1 (circulateur 1)</td>
 					<td>
-						<select data-field="circulateurC1">
-							<option value="Plancher chauffant" selected>Plancher chauffant</option>
-							<option value="Plancher chauffant sur V3V">Plancher chauffant sur V3V</option>
-							<option value="Radiateurs">Radiateurs</option>
-							<option value="Radiateurs sur échangeur à plaques">Radiateurs sur échangeur à plaques</option>
-							<option value="Radiateurs sur casse pression">Radiateurs sur casse pression</option>
-							<option value="Piscine sur échangeur multi tubulaire">Piscine sur échangeur multi tubulaire</option>
-							<option value="Piscine sur échangeur à plaques">Piscine sur échangeur à plaques</option>
-							<option value="Ventilo convecteur">Ventilo convecteur</option>
-							<option value="Décharge sur zone">Décharge sur zone</option>
-							<option value="Décharge sur zone PC">Décharge sur zone PC</option>
-							<option value="Multi zones radiateurs">Multi zones radiateurs</option>
-							<option value="Multi zones PC sur V3V">Multi zones PC sur V3V</option>
-							<option value="Multi zones PC">Multi zones PC</option>
-							<option value="Process">Process</option>
-							<option value="Process sur échangeur V3V">Process sur échangeur V3V</option>
-							<option value="Aucun">Aucun</option>
-						</select>
+						<select data-field="circulateurC1"></select>
 					</td>
 				</tr>
 				<tr>
 					<td>Zone 2 (circulateur 2)</td>
 					<td>
-						<select data-field="circulateurC2">
-							<option value="Plancher chauffant">Plancher chauffant</option>
-							<option value="Radiateurs">Radiateurs</option>
-							<option value="Radiateurs sur échangeur à plaques">Radiateurs sur échangeur à plaques</option>
-							<option value="Radiateurs sur casse pression">Radiateurs sur casse pression</option>
-							<option value="Piscine sur échangeur multi tubulaire">Piscine sur échangeur multi tubulaire</option>
-							<option value="Piscine sur échangeur à plaques">Piscine sur échangeur à plaques</option>
-							<option value="Ventilo convecteur">Ventilo convecteur</option>
-							<option value="Décharge sur zone">Décharge sur zone</option>
-							<option value="Décharge sur zone PC">Décharge sur zone PC</option>
-							<option value="Multi zones radiateurs">Multi zones radiateurs</option>
-							<option value="Multi zones PC">Multi zones PC</option>
-							<option value="Process">Process</option>
-							<option value="Process sur échangeur V3V">Process sur échangeur V3V</option>
-							<option value="Idem zone N-1">Idem zone N-1</option>
-							<option value="Aucun" selected>Aucun</option>
-						</select>
+						<select data-field="circulateurC2"></select>
 					</td>
 				</tr>
 				<tr id="ligne_circulateurC3">
 					<td>Zone 3 (circulateur 3)</td>
 					<td>
-						<select data-field="circulateurC3">
-							<option value="Plancher chauffant">Plancher chauffant</option>
-							<option value="Radiateurs">Radiateurs</option>
-							<option value="Radiateurs sur échangeur à plaques">Radiateurs sur échangeur à plaques</option>
-							<option value="Radiateurs sur casse pression">Radiateurs sur casse pression</option>
-							<option value="Piscine sur échangeur multi tubulaire">Piscine sur échangeur multi tubulaire</option>
-							<option value="Piscine sur échangeur à plaques">Piscine sur échangeur à plaques</option>
-							<option value="Ventilo convecteur">Ventilo convecteur</option>
-							<option value="Décharge sur zone">Décharge sur zone</option>
-							<option value="Décharge sur zone PC">Décharge sur zone PC</option>
-							<option value="Multi zones radiateurs">Multi zones radiateurs</option>
-							<option value="Multi zones PC">Multi zones PC</option>
-							<option value="Process">Process</option>
-							<option value="Process sur échangeur V3V">Process sur échangeur V3V</option>
-							<option value="Idem zone N-1">Idem zone N-1</option>
-							<option value="Aucun" selected>Aucun</option>
-						</select>
+						<select data-field="circulateurC3"></select>
 					</td>
 
 				</tr>
 				<tr>
 					<td>Zone <span id="label_last_zone">4</span> (circulateur 7)<span id="affichage_appoint2"> / Appoint 2</span></td>
 					<td>
-						<select data-field="circulateurC7">
-							<option value="Plancher chauffant">Plancher chauffant</option>
-							<option value="Radiateurs">Radiateurs</option>
-							<option value="Radiateurs sur échangeur à plaques">Radiateurs sur échangeur à plaques</option>
-							<option value="Radiateurs sur casse pression">Radiateurs sur casse pression</option>
-							<option value="Piscine sur échangeur multi tubulaire">Piscine sur échangeur multi tubulaire</option>
-							<option value="Piscine sur échangeur à plaques">Piscine sur échangeur à plaques</option>
-							<option value="Ventilo convecteur">Ventilo convecteur</option>
-							<option value="Décharge sur zone">Décharge sur zone</option>
-							<option value="Décharge sur zone PC">Décharge sur zone PC</option>
-							<option value="Multi zones radiateurs">Multi zones radiateurs</option>
-							<option value="Multi zones PC">Multi zones PC</option>
-							<option value="Process">Process</option>
-							<option value="Process sur échangeur V3V">Process sur échangeur V3V</option>
-							<option value="Idem zone N-1">Idem zone N-1</option>
-							<option value="Appoint bois">Appoint bois</option>
-							<option value="Appoint granulé">Appoint granulé</option>
-							<option value="Appoint multiple">Appoint multiple</option>
-							<option value="Aucun" selected>Aucun</option>
-						</select>
+						<select data-field="circulateurC7"></select>
 					</td>
 				</tr>
 
@@ -449,80 +278,14 @@
 				<table>
 					<tr>
 						<td>Option S10 : </td>
-						<td><select data-field="optionS10">
-								<option value="V3V bypass appoint 1">V3V bypass appoint 1</option>
-								<option value="V3V retour bouclage sanitaire solaire">V3V retour bouclage sanitaire solaire</option>
-								<option value="Piscine déportée T15">Piscine déportée T15</option>
-								<option value="Piscine déportée T6">Piscine déportée T6</option>
-								<option value="Activable par case à cocher">Activable par case à cocher</option>
-								<option value="Décharge sur zone 1">Décharge sur zone 1</option>
-								<option value="ON en mode solaire">ON en mode solaire</option>
-								<option value="Sortie Idem C4">Sortie Idem C4</option>
-								<option value="V3V décharge zone 1">V3V décharge zone 1</option>
-								<option value="Electrovanne Appoint 1 ou Flow Switch">Electrovanne Appoint 1 ou Flow Switch</option>
-								<option value="Horloge ON de 5h à 8h, 11h30 à 14h et 16h30 à 23h">Horloge ON de 5h à 8h, 11h30 à 14h et 16h30 à 23h</option>
-								<option value="Sortie Idem C1">Sortie Idem C1</option>
-								<option value="Sortie Idem C2">Sortie Idem C2</option>
-								<option value="Sortie Idem C3">Sortie Idem C3</option>
-								<option value="ON en mode excédent d'énergie l'été">ON en mode excédent d'énergie l'été</option>
-								<option value="Circulateur chaudière 1">Circulateur chaudière 1</option>
-								<option value="Circulateur chaudière 2">Circulateur chaudière 2</option>
-								<option value="Sortie Idem C5">Sortie Idem C5</option>
-								<option value="Sortie Idem C6">Sortie Idem C6</option>
-								<option value="Sortie Idem C7">Sortie Idem C7</option>
-								<option value="Sortie Idem S11">Sortie Idem S11</option>
-								<option value="CESI déportée sur T15">CESI déportée sur T15</option>
-								<option value="ON buches en demande">ON buches en demande</option>
-								<option value="Free Cooling Zone 1">Free Cooling Zone 1</option>
-								<option value="Free Cooling Zone 2">Free Cooling Zone 2</option>
-								<option value="Free Cooling Zone 3">Free Cooling Zone 3</option>
-								<option value="Free Cooling Zone 4">Free Cooling Zone 4</option>
-								<option value="Horloge ON de 7h à 10h et 18h à 22h">Horloge ON de 7h à 10h et 18h à 22h</option>
-								<option value="recharge nappes goethermiques sur T15 sur serpentin BTC">recharge nappes goethermiques sur T15 sur serpentin BTC</option>
-								<option value="recharge nappes goethermiques sur T15 sur échangeur BTC">recharge nappes goethermiques sur T15 sur échangeur BTC</option>
-								<option value="Aquastat différentiel ON si T15 > T5">Aquastat différentiel ON si T15 > T5</option>
-								<option value="charge BTC si excédent APP1 sur T16 & T6 > T5">charge BTC si excédent APP1 sur T16 & T6 > T5</option>
-								<option value="charge BTC si excédent APP1 sur T16 & T6 < T5">charge BTC si excédent APP1 sur T16 & T6 < T5</option>
-								<option value="Aucun" selected>Aucun</option>
-							</select></td>
+						<td>
+							<select data-field="optionS10"></select>
+						</td>
 					</tr>
 					<tr>
 						<td>Option S11 : </td>
 						<td>
-							<select data-field="optionS11">
-								<option value="V3V bypass appoint 1">V3V bypass appoint 1</option>
-								<option value="V3V retour bouclage sanitaire solaire">V3V retour bouclage sanitaire solaire</option>
-								<option value="Activable par case à cocher">Activable par case à cocher</option>
-								<option value="Décharge sur zone 1">Décharge sur zone 1</option>
-								<option value="ON en mode solaire">ON en mode solaire</option>
-								<option value="Sortie Idem C4">Sortie Idem C4</option>
-								<option value="V3V décharge zone 1">V3V décharge zone 1</option>
-								<option value="Electrovanne Appoint 1 ou Flow Switch">Electrovanne Appoint 1 ou Flow Switch</option>
-								<option value="CESI déportée sur T16">CESI déportée sur T16</option>
-								<option value="Horloge ON de 5h à 8h, 11h30 à 14h et 16h30 à 23h">Horloge ON de 5h à 8h, 11h30 à 14h et 16h30 à 23h</option>
-								<option value="Sortie Idem C1">Sortie Idem C1</option>
-								<option value="Sortie Idem C2">Sortie Idem C2</option>
-								<option value="Sortie Idem C3">Sortie Idem C3</option>
-								<option value="ON en mode excédent d'énergie l'été">ON en mode excédent d'énergie l'été</option>
-								<option value="Circulateur chaudière 1">Circulateur chaudière 1</option>
-								<option value="Circulateur chaudière 2">Circulateur chaudière 2</option>
-								<option value="Sortie Idem C5">Sortie Idem C5</option>
-								<option value="Sortie Idem C6">Sortie Idem C6</option>
-								<option value="Sortie Idem C7">Sortie Idem C7</option>
-								<option value="Sortie Idem S10">Sortie Idem S10</option>
-								<option value="ON buches en demande">ON buches en demande</option>
-								<option value="Free Cooling Zone 1">Free Cooling Zone 1</option>
-								<option value="Free Cooling Zone 2">Free Cooling Zone 2</option>
-								<option value="Free Cooling Zone 3">Free Cooling Zone 3</option>
-								<option value="Free Cooling Zone 4">Free Cooling Zone 4</option>
-								<option value="Horloge ON de 7h à 10h et 18h à 22h">Horloge ON de 7h à 10h et 18h à 22h</option>
-								<option value="recharge nappes goethermiques sur T15 sur serpentin BTC">recharge nappes goethermiques sur T15 sur serpentin BTC</option>
-								<option value="recharge nappes goethermiques sur T15 sur échangeur BTC">recharge nappes goethermiques sur T15 sur échangeur BTC</option>
-								<option value="Aquastat différentiel ON si T15 > T5">Aquastat différentiel ON si T15 > T5</option>
-								<option value="charge BTC si excédent APP1 sur T16 & T6 > T5">charge BTC si excédent APP1 sur T16 & T6 > T5</option>
-								<option value="charge BTC si excédent APP1 sur T16 & T6 < T5">charge BTC si excédent APP1 sur T16 & T6 < T5</option>
-								<option value="Aucun" selected>Aucun</option>
-							</select>
+							<select data-field="optionS11"></select>
 						</td>
 					</tr>
 				</table>
@@ -551,13 +314,7 @@
 					<tr>
 						<td>Divers sur appoint 1 : </td>
 						<td>
-							<select data-field="divers">
-								<option value="deshu sur appoint 1">deshu sur appoint 1</option>
-								<option value="radiateur sur appoint 1">radiateur sur appoint 1</option>
-								<option value="pompe double gauche">pompe double gauche</option>
-								<option value="pompe double droite">pompe double droite</option>
-								<option value="Aucun" selected>Aucun</option>
-							</select>
+							<select data-field="divers"></select>
 						</td>
 					</tr>
 				</table>

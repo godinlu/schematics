@@ -5,7 +5,6 @@
 /**
  * 
  */
-
 document.addEventListener("DOMContentLoaded", () =>{
     init_app();
 });
