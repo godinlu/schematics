@@ -365,7 +365,17 @@ const CAPTEURS_MAPPING = [
         when: {champCapteur: /V3V/i},
         refs: {"kit V3V": ["KITSSC018"]},
         reason: "Présence d'une V3V sur champ capteur."
-    }
+    },
+    {
+        when: {champCapteur: /2.*casse pression/i},
+        refs: {"mod sol 1 col": ["kitSSC197"]},
+        reason: "Présence d'une casse pression sur champ capteur."
+    },
+    {
+        when: {champCapteur: /2.*échangeur/i},
+        refs: {"mod sol 2 col": ["kitSSC199"]},
+        reason: "Présence d'un échangeur sur champ capteur."
+    },
 ];
 
 
