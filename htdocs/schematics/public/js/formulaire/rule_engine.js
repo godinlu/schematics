@@ -82,6 +82,15 @@ class RuleEngine{
 
 
     /**
+     * return the current context
+     * @return {Object<string, string>} context
+     */
+    get_ctx(){
+        return this._context;
+    }
+
+
+    /**
      * Resolve the engine context and option states until stabilized.
      * Checks all fields and options, applies rules, and adjusts context
      * values to valid selections.

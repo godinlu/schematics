@@ -13,7 +13,13 @@
 class FormulaireApp{
     constructor(){
         this._rule_engine = new RuleEngine();
-        this._rule_engine.init();
+
+        // get the saved_context in session or null if no session
+        const saved_context = JSON.parse(sessionStorage.getItem("formulaire"));
+
+        // init the rule engine with the saved_context in session
+        this._rule_engine.init(saved_context);
+
         this._fields = new Map();
 
         // init all fields
@@ -45,7 +51,15 @@ class FormulaireApp{
 
 
     _on_field_update(field_key, new_value){
+        
+
+        // run the rule engine to update the ctx with the change
         this._rule_engine.update_ctx(field_key, new_value);
+
+        // save the new context in session
+        sessionStorage.setItem("formulaire", JSON.stringify(this._rule_engine.get_ctx()));
+
+        // render all field with new computed states
         this.render();
     }
 
