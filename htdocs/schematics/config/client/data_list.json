@@ -24,6 +24,7 @@
             "ballon ECS tank in tank": "",
             "ballon d'eau chaude sur échangeur": "",
             "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": "",
+            "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire": "",
             "Ballon hygiénique avec 1 echangeur": "",
             "Ballon hygiénique avec 2 echangeurs": "",
             "Aucun": ""
@@ -89,7 +90,8 @@
                 "Appoint double":""
             },
             "Aucun": {
-                "En direct": ""
+                "En direct": "",
+                "Aucun": ""
             }
         },
         "RH_appoint2": {
