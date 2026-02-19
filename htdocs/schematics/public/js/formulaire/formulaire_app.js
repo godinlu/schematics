@@ -14,7 +14,6 @@ class FormulaireApp{
     constructor(){
         this._rule_engine = new RuleEngine();
         this._rule_engine.init();
-        this._attach_events();  
         this._fields = new Map();
 
         // init all fields
@@ -26,6 +25,8 @@ class FormulaireApp{
         // render once at the init
         this.render();
 
+        // attach all event
+        this._attach_events();  
     }
 
     render(){
@@ -50,13 +51,11 @@ class FormulaireApp{
 
 
     _attach_events(){
-        document.querySelector("main").addEventListener("change", (event) =>{
-            const field_key = event.target.dataset.field;
-            if (!field_key){
-                console.warn(`[FormulaireApp._attach_events] unrecognized field : ${event.target}`);
-            }
-            this._on_field_update(field_key, event.target.value);
-        });
+        for (const [field_key, field] of this._fields){
+            field.addEventListener("change", () =>{
+                this._on_field_update(field_key, get_field_value(field));
+            });
+        }
     }
 
 }

@@ -209,6 +209,34 @@ const evaluate_rules = (ctx) => [
             regex.test(ctx.optionS11) && disable("optionS10", regex, `L'option : '${opt}' est déjà prise par S11.`)
         ];
     }),
+    // sonde S10
+    /S10/i.test(ctx.raccordementHydraulique) &&
+        disable_other("optionS10", /Aucun/i, "La sonde S10 est déjà prise par le raccordement hydraulique de l'appoint."),
+    /2.*découplés|V3V/i.test(ctx.champCapteur) &&
+        disable_other("optionS10", /Aucun/i, "La sonde S10 est déjà prise par le champ capteur."),
+
+    // sonde S11
+    /sur|découplés/i.test(ctx.champCapteur) &&
+        disable_other("optionS11", /Aucun/i, "La sonde S11 est déjà prise par le champ capteur."),
+
+    // Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC
+    (   /Aucun/i.test(ctx.ballonTampon) ||
+        /off/i.test(ctx.EchangeurDansBT) ||
+        /Aucun/i.test(ctx.divers)
+    ) && [
+        disable("optionS10", /Aquastat différentiel/i, "Nécessite:\n- un ballon tampon avec échangeur\n- une pompe ou une deshu dans divers"),
+        disable("optionS11", /Aquastat différentiel/i, "Nécessite:\n- un ballon tampon avec échangeur\n- une pompe ou une deshu dans divers")
+    ],
+
+    // charge BTC si excédent APP1 sur T16
+    (
+        /Aucun/i.test(ctx.ballonTampon) ||
+        /off/i.test(ctx.EchangeurDansBT) ||
+        !/(casse pression|échangeur).*T16/i.test(ctx.raccordementHydraulique)
+    ) && [
+        disable("optionS10", /charge BTC si excédent APP1 sur T16/i, "Nécessite:\n- un ballon tampon avec échangeur\n- un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur"),
+        disable("optionS11", /charge BTC si excédent APP1 sur T16/i, "Nécessite:\n- un ballon tampon avec échangeur\n- un raccordement hydraulique avec la sonde T16 et avec une casse pression ou un échangeur"),
+    ],
 
     // V3V retour du bouclage sanitaire nécessite un bouclage sanitaire sur le ballon ECS
     !/bouclage sanitaire/i.test(ctx.ballonECS) && [

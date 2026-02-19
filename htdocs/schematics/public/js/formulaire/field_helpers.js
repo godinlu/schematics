@@ -65,6 +65,25 @@ function set_field_value(field, value){
 }
 
 /**
+ * return the value of the field
+ * 
+ * @param {HTMLSelectElement|HTMLInputElement} field 
+ * @returns {string}
+ */
+function get_field_value(field){
+    if (field.tagName === "SELECT"){
+        return field.value;
+    }else if (field.tagName === "INPUT" && field.type === "checkbox"){
+        return (field.checked)? "on" : "off";
+    }else if (field.tagName === "INPUT" && field.type === "text"){
+        return field.value;
+    }else{
+        console.warn("[get_field_value] Unsupported field type", field);
+        return "";
+    }
+}
+
+/**
  * Manage the global visibility of a field based on its option states.
  *
  * The field (and its associated label) is hidden if all options

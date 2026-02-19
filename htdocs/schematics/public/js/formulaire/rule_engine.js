@@ -151,7 +151,7 @@ class RuleEngine{
             const field_states = this._all_states.get(effect.field);
 
             if (!field_states){
-                console.warn(`[RuleEngine._apply_effects] unrecognized field : ${effect.field}`);
+                console.warn("[RuleEngine._apply_effects] unrecognized field for the following effect", effect);
                 continue;
             }
 
