@@ -45,7 +45,7 @@
     "js": {
         "client":{
             "Formulaire": [
-                "formulaire/options.config.js",
+                "options.config.js",
                 "formulaire/rules.config.js",
                 "formulaire/rule_engine.js",
                 "formulaire/field_helpers.js",
@@ -54,7 +54,9 @@
                 "formulaire/index.js"
             ],
             "Schema_hydrau": [
-                "client/schema_hydrau.js"
+                "options.config.js",
+                "api.js",
+                "schema_hydrau/index.js"
             ],
             "Schema_exe": [
                 "client/schema_exe.js"

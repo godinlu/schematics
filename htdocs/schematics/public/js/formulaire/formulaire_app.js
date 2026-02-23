@@ -14,12 +14,6 @@ class FormulaireApp{
     constructor(){
         this._rule_engine = new RuleEngine();
 
-        // get the saved_context in session or null if no session
-        const saved_context = JSON.parse(sessionStorage.getItem("formulaire"));
-
-        // init the rule engine with the saved_context in session
-        this._rule_engine.init(saved_context);
-
         this._fields = new Map();
 
         // init all fields

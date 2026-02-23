@@ -23,7 +23,7 @@ class RuleEngine{
          * Current context of all fields: { fieldKey: value }
          * @type {Object<string, string>}
          */
-        this._context = {};
+        this._context = get_formulaire();
 
         /**
          * Current computed states for all options of all fields.
@@ -31,23 +31,6 @@ class RuleEngine{
          * @type {Map<string, Map<string, {disabled: boolean, hidden: boolean, reason: string}>>}
          */
         this._all_states = new Map();
-    }
-
-    /**
-     * Initialize the engine context with default values from _all_options
-     * if missing.
-     * @param {Object<string, string>} [context] - Optional initial context values
-     */
-    init(context){
-        const ctx = context ? context : {};
-        
-        for (const [key, opt_def] of Object.entries(this._all_options)){
-            if (!(key in ctx) || (ctx[key] == null) ){
-                ctx[key] = opt_def.default;
-            }
-        }
-
-        this._context = ctx;
     }
 
     /**
@@ -79,7 +62,6 @@ class RuleEngine{
             }
         }
     }
-
 
     /**
      * return the current context

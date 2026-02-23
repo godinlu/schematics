@@ -1,7 +1,7 @@
 <div class="flex">
   <!--canvas ou est déssiné la schématèque il fait la taille de base schema -->
   <div id="canvas_container">
-    <img src="../api/getSchema.php?image=SchemaHydrau" id="SchemaHydrau" alt="Schéma hydraulique" >
+    <img src="" id="SchemaHydrau" alt="Schéma hydraulique" >
     <img src="../api/getSchema.php?image=SchemaHydrauWithLegend" id="SchemaHydrauWithLegend" class="hidden" alt="Schéma hydraulique avec legend">
   </div> 
   

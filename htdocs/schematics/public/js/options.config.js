@@ -355,3 +355,31 @@ const options = {
         ]
     }
 };
+
+/**
+ * default context
+ * @type {Object<string, string>}
+ */
+const DEFAULT_CONTEXT = Object.fromEntries(
+  Object.keys(options).map(key => [key, options[key].default])
+);
+
+
+/**
+ * Get current formulaire from sessionStorage
+ * @returns {Object<string, string>} form data
+ */
+function get_formulaire() {
+    const stored = sessionStorage.getItem("formulaire");
+
+    if (stored) {
+        try {
+            return JSON.parse(stored);
+        } catch (err) {
+            console.warn("Corrupted sessionStorage formulaire, using default.", err);
+        }
+    }
+
+    // Return a clone of DEFAULT_CONTEXT to avoid accidental mutation
+    return { ...DEFAULT_CONTEXT };
+}

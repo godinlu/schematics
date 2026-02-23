@@ -1,20 +1,17 @@
 <?php
 require_once ("../config/config.php");
-require_once (URL_DATA_FORM);
 require_once (URL_FPDF);
 
-session_start();
-$dataForm = new DataForm;
+$input_json = file_get_contents("php://input");
+$input = json_decode($input_json, true);
 
 if (!isset($_GET['image'])){
     throw new Exception("le paramètre 'image' n'a pas été trouvé");
 }
-
-
 switch ($_GET['image']){
     case "SchemaHydrau":
         require_once (URL_SCHEMA_HYDRAULIQUE);
-        $schema = new SchemaHydrau($dataForm->getFormulaire());
+        $schema = new SchemaHydrau($input);
         break;
     case "SchemaHydrauWithLegend":
         require_once (URL_SCHEMA_HYDRAULIQUE_WITH_LEGEND);
