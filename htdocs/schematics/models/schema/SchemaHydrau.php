@@ -2,20 +2,69 @@
 require_once("image_utils.php");
 require_once (APP_BASE_PATH ."config/utils/formulaire_utils.php");
 
-/**
- * Generate the full hydraulic diagram.
- *
- * This function creates a complete hydraulic diagram, optionally including
- * legends. The diagram is generated based on the input form data provided
- * in the $formulaire array.
- *
- * @param array $formulaire Input data defining the hydraulic system components and connections.
- * @param bool $legend Optional. If true, legends will be included in the diagram. Default is false.
- *
- * @return GdImage Returns image generated.
- */
-function generate_full_hydraulic_diagram(array $formulaire, bool $legend = false): GdImage{
-    return generate_hydraulic_sub_diagram($formulaire);
+function add_legend_equipments(GdImage $gd_image, array $formulaire): GdImage{
+    // define the static new width of the img
+    $NEW_WIDTH = 1170;
+
+    // create a new white image with the same height and the new width
+    $new_img = imagecreatetruecolor($NEW_WIDTH, imagesy($gd_image));
+    imagefill($new_img, 0 , 0 , imagecolorallocate($new_img, 255, 255, 255));
+
+    // copy the $gd_img to new img
+    imagecopy($new_img, $gd_image, 0, 0, 0, 0, imagesx($gd_image), imagesy($gd_image));
+
+    // construct the table of equipments
+    $table = construct_table_of_equipments($formulaire);
+
+    // draw the table on the right of the new img
+    draw_table($new_img, $table, [880 ,30], "Légende des équipements");
+    return $new_img;
+}
+
+
+function add_header_and_footer_on_base(GdImage $gd_image, array $formulaire): GdImage{
+    $new_image = imagecreatetruecolor(891, 666);
+    imagefill($new_image,0 , 0 , imagecolorallocate($new_image, 255, 255, 255));
+
+    // Copier l'image originale aux coordonnées données
+    imagecopy($new_image, $gd_image, 0, 40, 0, 0, imagesx($gd_image), imagesy($gd_image));
+
+    // ajout du titre du schéma
+    if (preg_match('/SC/', $formulaire['typeInstallation'])){
+        $title = "Schéma hydraulique |S|olis |C|onfort |SC|" . str_replace( "SC", "", $formulaire['typeInstallation']);
+    }else{
+        $title = "Schéma hydraulique " . $formulaire['typeInstallation'];
+    }
+    add_title_inplace($new_image, $title, [250, 20]);
+
+    // ajout de l'image du footer
+    $footer = imagecreatefrompng(APP_BASE_PATH . "public/img/schema_hydro/footer.png");
+    imagecopy($new_image, $footer, 8, 517, 0, 0, imagesx($footer), imagesy($footer));
+
+    // ajout des labels pour les sorties S10 S11
+    add_label_inplace($new_image, "option S10 : " . getOptionS10($formulaire), [433, 572]);
+    add_label_inplace($new_image, "option S11 : " . getOptionS11($formulaire), [433, 584]);
+
+    // ajout du paragraphe de description
+    add_paragraph_inplace($new_image, $formulaire['description'], [433, 587] , 350, 8);
+
+    // ajout de la date
+    add_label_inplace($new_image, date("d/m/Y"), [710, 648]);
+
+    // ajout du nom de l'affaire
+    $affaire_value = "non renseigné";
+    if ($formulaire['nom_client'] != "" || $formulaire['prenom_client'] != "") {
+        $affaire_value = strtoupper($formulaire['nom_client']) . " " . strtoupper($formulaire['prenom_client']);
+    }
+    add_label_inplace($new_image, "Affaire : $affaire_value", [433, 646]);
+
+    // ajout de la légende en cas d'appoint sur C7
+    if (preg_match('/Appoint/', $formulaire['circulateurC7'])){
+        $legend_APP = imagecreatefrompng(APP_BASE_PATH . "public/img/schema_hydro/legend_appoint_C7.png");
+        imagecopy($new_image, $legend_APP, 0, 0, 0, 0, imagesx($legend_APP), imagesy($legend_APP));
+    }
+
+    return $new_image;
 }
 
 /**
@@ -28,7 +77,7 @@ function generate_full_hydraulic_diagram(array $formulaire, bool $legend = false
  *
  * @return GdImage Returns the image generated.
  */
-function generate_hydraulic_sub_diagram(array $formulaire): GdImage{
+function generate_hydraulic_base_diagram(array $formulaire): GdImage{
     $img_composer = new ImageComposer(APP_BASE_PATH . "public/img/schema_hydro/");
 
     generate_hydraulic_components($formulaire, $img_composer);
@@ -299,5 +348,77 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
             }
         }        
     }
+}
+
+
+function construct_table_of_equipments(array $ctx):array{
+    $res = [];
+
+    if ($ctx['champCapteur'] !== 'Aucun'){
+        $res[] = ["T1","T° capteur chaud"];
+        $res[] = ["T2","T° capteur froid"];
+    }
+    if ($ctx['ballonECS'] !== 'Aucun'){
+        $res[] = ["T3","T° bas de ballon / T° ballon solaire"];
+        $res[] = ["T4","T° haut de ballon / T° ballon appoint"];
+    }
+    if($ctx['ballonTampon'] !== 'Aucun'){
+        $res[] = ["T5","T° ballon tampon"];
+    }
+    if(preg_match('/Appoint/', $ctx['circulateurC7'])){
+        $res[] = ["T6","T° appoint 2"];
+    }
+    $res[] = ["T7","T° collecteur froid"];
+    $res[] = ["T8","T° collecteur chaud"];
+    $res[] = ["T9","T° extérieure"];
+
+    if (preg_match('/T10/', $ctx['sondes'])){
+        $res[] = ["T10","T° sonde d’option"];
+    }
+    if ($ctx['circulateurC1'] !== 'Aucun'){
+        $res[] = ["T11","T° ambiance zone 1"];
+    }
+    if ($ctx['circulateurC2'] !== 'Aucun'){
+        $res[] = ["T12","T° ambiance zone 2"];
+    }
+    if ($ctx['circulateurC3'] !== 'Aucun'){
+        $res[] = ["T13","T° ambiance zone 3"];
+    }
+    if ($ctx['circulateurC7'] !== 'Aucun' && !preg_match('/Appoint/', $ctx['circulateurC7'])){
+        $res[] = ["T14","T° ambiance zone 4"];
+    }
+    if (preg_match('/T15/', $ctx['sondes'])){
+        $res[] = ["T15","T° sonde d’option"];
+    }
+    if (preg_match('/T16/', $ctx['sondes'])){
+        $res[] = ["T16","T° sonde d’option"];
+    }
+    if ($ctx['circulateurC1'] !== 'Aucun'){
+        $res[] = ["C1","Circulateur chauffage zone 1"];
+    }
+    if ($ctx['circulateurC2'] !== 'Aucun'){
+        $res[] = ["C2","Circulateur chauffage zone 2"];
+    }
+    if ($ctx['circulateurC3'] !== 'Aucun'){
+        $res[] = ["C3","Circulateur chauffage zone 3"];
+    }
+    $res[] = ["C4","Circulateur ballon appoint"];
+
+    if ($ctx['ballonECS'] !== 'Aucun'){
+        $res[] = ["C5","Circulateur ballon solaire"];
+    }
+    if ($ctx['ballonTampon'] !== 'Aucun'){
+        $res[] = ["C6","Circulateur ballon tampon"];
+    }
+    if ($ctx['circulateurC7'] !== 'Aucun'){
+        $res[] = ["C7","Circulateur appoint 2 / chauffage zone 4"];
+    }
+    if (preg_match('/S10/', $ctx['sondes'])){
+        $res[] = ["S10","Sortie disponible pour option 47/48"];
+    }
+    if (preg_match('/S11/', $ctx['sondes'])){
+        $res[] = ["S11","Sortie disponible pour option 49/50"];
+    }
+    return $res;
 }
 ?>

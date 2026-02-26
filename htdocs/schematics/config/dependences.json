@@ -53,7 +53,8 @@
                 "public/menuDeroulant.js"
             ],
             "Schema_hydrau": [
-                "client/schema_hydrau.js"
+                "schema_hydrau/index.js",
+                "api.js"
             ],
             "Schema_exe": [
                 "client/schema_exe.js"
