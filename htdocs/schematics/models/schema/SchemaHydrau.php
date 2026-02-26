@@ -218,17 +218,34 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
     //                          OPTIONS S10 + S11
     ////////////////////////////////////////////////////////////////////////
     $opt_mapping = [
-        'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC' => [true, [20, 20]],
         'CESI déportée sur T15' => [true, [50, 190]],
         'CESI déportée sur T16' => [true, [50, 284]],
         'Piscine déportée T15' => [true, [50, 190]],
         'Piscine déportée T6' => [true, [50, 190]],
-        'ON en mode excédent d\'énergie l\'été S10' => [true, [50, 190]],
-        'ON en mode excédent d\'énergie l\'été S11' => [true, [50, 284]],
-        'charge BTC si excédent APP1 sur T16 & T6 < T5_1BT' => [true, [317, 157]],
-        'charge BTC si excédent APP1 sur T16 & T6 < T5_2BT' => [true, [317, 157]],
-        'charge BTC si excédent APP1 sur T16 & T6 > T5_1BT' => [true, [317, 157]],
-        'charge BTC si excédent APP1 sur T16 & T6 > T5_2BT' => [true, [317, 157]]
+        'ON en mode excédent d\'énergie l\'été [S10]' => [true, [50, 190]],
+        'ON en mode excédent d\'énergie l\'été [S11]' => [true, [50, 284]],
+        'charge BTC si excédent APP1 sur T16 & T6 < T5 [1BT]' => [true, [317, 157]],
+        'charge BTC si excédent APP1 sur T16 & T6 < T5 [2BT]' => [true, [317, 157]],
+        'charge BTC si excédent APP1 sur T16 & T6 > T5 [1BT]' => [true, [317, 157]],
+        'charge BTC si excédent APP1 sur T16 & T6 > T5 [2BT]' => [true, [317, 157]],
+        'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC [1BT-gauche]' => [true, [322, 135]],
+        'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC [2BT-gauche]' => [true, [322, 135]],
+        'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC [1BT-droite]' => [true, [450, 135]],
+        'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC [2BT-droite]' => [true, [450, 135]],
+        'Décharge sur zone 1' => [true, [820, 413]],
+        'Décharge sur zone 1 [PC]' => [true, [762, 413]],
+        'V3V décharge zone 1' => [true, [868, 335]],
+        'V3V décharge zone 1 [PC]' => [true, [858, 376]],
+        'V3V décharge zone 1 [PISCINE]' => [true, [825, 352]],
+        'Free Cooling Zone 1' => [true, [778, 449]],
+        'Free Cooling Zone 2' => [true, [804, 285]],
+        'Free Cooling Zone 3' => [true, [810, 192]],
+        'Free Cooling Zone 4' => [true, [692, 184]],
+        'Electrovanne Appoint 1 ou Flow Switch' => [true, [485, 75]],
+        'V3V bypass appoint 1' => [true, [543, 154]],
+        'V3V retour bouclage sanitaire solaire' => [true, [363, 320]],
+        'recharge nappes goethermiques sur T15 sur échangeur BTC' => [true, [326, 376]],
+        'recharge nappes goethermiques sur T15 sur serpentin BTC' => [true, [323, 408]]
 
     ];
     foreach (['S10', 'S11'] as $output) {
@@ -236,14 +253,40 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
 
         // pour l'option ON en mode excédent d'énergie l'été l'option peut être à 2 endroit
         // possible en fonction de S10 ou S11 pour cela on rajoute la sortie au nom de l'image.
-        if ($val === 'ON en mode excédent d\'énergie l\'été') $val .= ' ' . $output;
+        if ($val === 'ON en mode excédent d\'énergie l\'été') $val .= ' [' . $output . ']';
 
         // l'option charge BTC si excédent APP1 sur T16 se branche sur le BT
         // donc on ajoute au nom le nombre de ballon
         if ($val === 'charge BTC si excédent APP1 sur T16 & T6 < T5' ||
         $val === 'charge BTC si excédent APP1 sur T16 & T6 > T5'){
             $nb_BT = preg_replace('/\D/', '', $ctx['ballonTampon']) ?: "1";
-            $val .= "_" . $nb_BT . 'BT';
+            $val .= ' [' . $nb_BT . 'BT]';
+        }
+
+        // l'option Aquastat différentiel ON si... se branche sur le BT et sur l'options de divers
+        // pompe, ou deshu on a donc 4 images. prefix : [(1|2)BT-(gauche|droite)]
+        if ($val === 'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC'){
+            $nb_BT = preg_replace('/\D/', '', $ctx['ballonTampon']) ?: "1";
+            $gd = (preg_match('/gauche/', $ctx['divers'])) ? 'gauche' : 'droite';
+            $val .= ' [' . $nb_BT . 'BT-' . $gd . ']';
+        }
+
+        // l'option Décharge sur zone 1 n'a pas la même image si elle est branché sur un PC prefix : [PC]
+        if ($val === 'Décharge sur zone 1'){
+            $val .= (preg_match('/Plancher chauffant|PC/', $ctx['circulateurC1']))? ' [PC]': '';
+        }
+
+        // l'option V3V décharge zone 1 n'a pas la même image si elle est branché sur un PC ou un piscine
+        // prefix : [PC|PISCINE]
+        if ($val === 'V3V décharge zone 1'){
+            $pc = (preg_match('/Plancher chauffant|PC/', $ctx['circulateurC1']))? ' [PC]': '';
+            $piscine = (preg_match('/Piscine/', $ctx['circulateurC1']))? ' [PISCINE]': '';
+            $val .= $pc . $piscine;
+        }
+
+        // L'option Electrovanne Appoint 1 ou Flow Switch à son label de sortie dupliqué
+        if ($val === 'Electrovanne Appoint 1 ou Flow Switch'){
+            $ic->add_label($output, 485, 163);
         }
         
 
