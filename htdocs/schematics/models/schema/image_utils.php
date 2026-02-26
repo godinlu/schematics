@@ -1,5 +1,7 @@
 <?php
 
+const VERDANA = APP_BASE_PATH . "config/client/Verdana.ttf";
+
 class ImageComposer{
     /**
      * @var array List of PNG image paths to compose
@@ -151,7 +153,7 @@ function add_label_inplace(GDImage $image, string $text, array $coord, int $size
     $col = imagecolorallocate($image, $color[0], $color[1], $color[2]);
 
     // Ajouter le texte (fonction GD standard)
-    imagestring($image, $size, $x, $y, $text, $col);
+    imagettftext($image, $size, 0, $x, $y, $col, VERDANA, $text);
 }
 
 ?>
