@@ -95,8 +95,9 @@ class SchemaHydrau extends Schema{
 
         $path = "Appoint/";
 
-        $this->addImage($path . "raccord Appoint",$position['raccord']);
-
+        if ($rh !== "Aucun"){
+            $this->addImage($path . "raccord Appoint",$position['raccord']);
+        }
         foreach($mapping as $image_name => $is_matched){
             if ($is_matched){
                 $this->addImage($path . $image_name, $position['base']);

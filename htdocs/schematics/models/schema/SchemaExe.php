@@ -217,6 +217,9 @@ class SchemaExe extends Module{
         $value = $this->_formulaire['raccordementHydraulique'];
         $path = "appoint/";
 
+        // on sort de la fonction si il n'y a pas d'appoint
+        if ($value == "Aucun") return;
+
         $rcc = ""; // $rcc correspond au raccord qui doit être utilisé pour le champ capteur, soit " SC1Z" soit "" par défaut
         if ($this->_is_SC1Z) $rcc = " SC1Z";  // Si $Z est vrai, on utilise le raccord du SC1Z
         if ($value == "En direct") {  // Si le raccordement est en direct, on ajoute le raccord et on quitte la fonction
