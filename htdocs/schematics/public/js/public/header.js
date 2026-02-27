@@ -103,11 +103,11 @@ function download_folder(){
         return;
     }
     if (form){
-        form.action = "../ajax/downloadFolder.php";
+        form.action = "../api/generateSchemaReport.php";
         form.submit();
         form.action = "";
     }else{
-        window.location.href = "../ajax/downloadFolder.php";
+        window.location.href = "../api/generateSchemaReport.php";
     }
     
     

@@ -321,49 +321,69 @@ function add_paragraph_inplace(
 }
 
 /**
- * Adds a GDImage to an FPDF page, scaling it proportionally and centering it.
+ * Adds a GDImage to an FPDF page, scaling it proportionally,
+ * centering it inside a printable area defined by margins.
  *
- * This function converts a GDImage to a temporary PNG file, computes the proper size 
- * to fit the PDF page while maintaining aspect ratio, optionally adjusting for orientation,
- * and centers the image on the page. The temporary file is automatically deleted after use.
+ * This function converts a GDImage to a temporary PNG file,
+ * computes the proper size to fit within the page margins
+ * while maintaining aspect ratio, and centers the image.
+ * The temporary file is automatically deleted after use.
  *
  * @param GdImage $img        The GD image resource to add to the PDF.
  * @param FPDF    &$pdf       An instance of FPDF where the image will be added.
- * @param string  $orientation Optional. Page orientation: 'l' for landscape, 'p' for portrait. Default is 'l'.
+ * @param float   $margin     Margin size in mm (applied on all sides).
  *
  * @return void
  */
-function add_img_to_pdf(GdImage $img, FPDF &$pdf, string $orientation = 'l'){
-    // convert the GdImage into a temporary png file
-    $tmpfile = tempnam(sys_get_temp_dir(), 'schema') . '.png';
-    imagepng($img, $tmpfile);
+function add_img_to_pdf(GdImage $img, FPDF &$pdf, float $margin = 10.0)
+{
+    // Determine best orientation based on image ratio
+    $orientation = (imagesx($img) > imagesy($img)) ? "l" : "p";
 
-    // add a page with the correct orientation to the pdf
-    $pdf->AddPage($orientation);
+    // Convert the GDImage into a temporary PNG file
+    $tmpfile = tempnam(sys_get_temp_dir(), 'schema') . '.jpeg';
+    imagejpeg($img, $tmpfile, 85);
 
-    // get PDF dimension
+    // Add a page with the correct orientation
+    $pdf->AddPage($orientation, 'A4');
+
+    // Get full page dimensions
     $pdf_width = $pdf->GetPageWidth();
     $pdf_height = $pdf->GetPageHeight();
 
-    // compute the img dimension from pdf dimension
-    $img_width = $pdf_width;
-    $img_height = $img_width * (imagesy($img) / imagesx($img));
+    // Compute printable area dimensions (inside margins)
+    $available_width = $pdf_width - (2 * $margin);
+    $available_height = $pdf_height - (2 * $margin);
 
-    // ajuste size of image to avoid height overflow
-    if ($img_height > $pdf_height){
-        $img_height = $pdf_height;
-        $img_width = ($pdf_height / imagesy($img)) * imagesx($img);
+    // Safety check: avoid negative printable area
+    if ($available_width <= 0 || $available_height <= 0) {
+        unlink($tmpfile);
+        throw new Exception("Margin too large for the selected page size.");
     }
 
-    // compute coordinate to center images
-    $x = ($pdf_width - $img_width) / 2;
-    $y = ($pdf_height - $img_height) / 2;
+    // Get image original dimensions
+    $img_original_width = imagesx($img);
+    $img_original_height = imagesy($img);
 
-    // add the image to the pdf
+    // Scale image to fit within available width
+    $img_width = $available_width;
+    $img_height = $img_width * ($img_original_height / $img_original_width);
+
+    // Adjust if height exceeds available height
+    if ($img_height > $available_height) {
+        $img_height = $available_height;
+        $img_width = $img_height * ($img_original_width / $img_original_height);
+    }
+
+    // Compute centered coordinates inside margins
+    $x = $margin + (($available_width - $img_width) / 2);
+    $y = $margin + (($available_height - $img_height) / 2);
+
+    // Add image to PDF
     $pdf->Image($tmpfile, $x, $y, $img_width, $img_height);
 
-    // clean the temp file.
-    if (file_exists($tmpfile)){
+    // Clean up temporary file
+    if (file_exists($tmpfile)) {
         unlink($tmpfile);
     }
 }

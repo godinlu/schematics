@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
     ///////////////////////////////////////////////////////
-    images[current_image].src = `../api/getSchema.php?image=${current_image}&format=png`;
+    images[current_image].src = `../api/generateSchema.php?image=${current_image}&format=png`;
 
 
     ///////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
 
         // load the other image if not already loaded.
         if (!images[current_image].src){
-            images[current_image].src = `../api/getSchema.php?image=${current_image}&format=png`;
+            images[current_image].src = `../api/generateSchema.php?image=${current_image}&format=png`;
         }
 
         // hide all images
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async ()=>{
         try {
-            const response = await fetch(`../api/getSchema.php?image=${current_image}&format=pdf`);
+            const response = await fetch(`../api/generateSchema.php?image=${current_image}&format=pdf`);
             const blob = await response.blob();
 
             const url = URL.createObjectURL(blob);

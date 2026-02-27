@@ -12,7 +12,7 @@ var table = document.getElementById("ficheProgrammation");
  * télécharge le tableau en format pdf avec le bon nom
  */
 function downloadPDF(){
-    const imageUrl = "../api/getSchema.php?image=ImageFicheProg";
+    const imageUrl = "../api/generateSchema.php?image=ImageFicheProg";
     const form = document.getElementById('formulaire');
   
     fetch(imageUrl + "&format=PDF",{

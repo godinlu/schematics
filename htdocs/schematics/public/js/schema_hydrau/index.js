@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
     ///////////////////////////////////////////////////////
-    images[currentVersion].src = `../api/getSchema.php?image=schema_hydrau_${currentVersion}&format=png`;
+    images[currentVersion].src = `../api/generateSchema.php?image=schema_hydrau_${currentVersion}&format=png`;
 
 
     ///////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // load img if src not defined
         if(!images[version].src) {
-            images[version].src = `../api/getSchema.php?image=schema_hydrau_${version}&format=png`;
+            images[version].src = `../api/generateSchema.php?image=schema_hydrau_${version}&format=png`;
         }
 
         // activate corresponding img
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
         try {
-            const response = await fetch(`../api/getSchema.php?image=schema_hydrau_${currentVersion}&format=pdf`);
+            const response = await fetch(`../api/generateSchema.php?image=schema_hydrau_${currentVersion}&format=pdf`);
             const blob = await response.blob();
 
             const url = URL.createObjectURL(blob);

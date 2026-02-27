@@ -22,24 +22,3 @@ async function post_data(endpoint, payload) {
     // On renvoie la response brute
     return response;
 }
-
-/**
- * Get schema
- * @param {"SchemaHydrau"|"SchemaHydrauWithLegend"|"SchemaExe"|"Etiquetage"|"ImageFicheProg"} image
- * @param {"PDF"|"PNG"} format
- * @returns {Promise<Object|Blob>} JSON pour PNG, Blob pour PDF
- */
-async function get_schema(image = "SchemaHydrau", format = "PNG") {
-    const endpoint = `getSchema.php?image=${encodeURIComponent(image)}&format=${encodeURIComponent(format)}&debug`;
-
-    const response = await post_data(endpoint, get_formulaire());
-
-    const contentType = response.headers.get("Content-Type") || "";
-    
-    if (!contentType.includes("application/pdf") && !contentType.includes("image/")){
-        const text = await response.text();
-        throw new Error(`Server Error:\n${text}`);
-    }
-
-    return response.blob();
-}
