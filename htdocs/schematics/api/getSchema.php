@@ -24,6 +24,21 @@ switch (strtolower($image)){
         $gd_image = add_header_and_footer_on_base($gd_image, $dataForm->getFormulaire());
         $gd_image = add_legend_equipments($gd_image, $dataForm->getFormulaire());
         break;
+    case 'schema_exe':
+        require_once(URL_SCHEMA_EXE);
+        $schema = new SchemaExe($dataForm->getFormulaire());
+        $gd_image = $schema->get_img();
+        break;
+    case 'etiquetage':
+        require_once(URL_ETIQUETAGE);
+        $schema = new Etiquetage($dataForm->getFormulaire());
+        $gd_image = $schema->get_img();
+        break;
+    case 'fiche_prog':
+        require_once(URL_FICHE_PROG);
+        $schema = new ImageFicheProg($dataForm->getFormulaire(), $dataForm->getFiche_prog());
+        $gd_image = $schema->get_img();
+        break;
     default:
         throw new Exception("Invalid image name : $image");
         break;

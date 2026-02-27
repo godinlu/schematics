@@ -57,7 +57,7 @@
                 "api.js"
             ],
             "Schema_exe": [
-                "client/schema_exe.js"
+                "schema_exe/index.js"
             ],
             "Fiche_prog": [
                 "client/fiche_prog.js"

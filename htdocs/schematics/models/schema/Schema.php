@@ -249,6 +249,10 @@ abstract class Schema{
         imagedestroy($this->_image);
     }
 
+    public function get_img(): GdImage{
+        return $this->_image;
+    }
+
     public function saveAt(string $file_path) {
         imagepng($this->_image , $file_path);
         imagedestroy($this->_image);

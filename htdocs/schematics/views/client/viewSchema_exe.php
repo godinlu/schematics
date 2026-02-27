@@ -4,8 +4,8 @@
   <div id="img_container">
     <!-- <canvas id="canvas" width="891" height="666">
     </canvas> -->
-    <img src="../api/getSchema.php?image=SchemaExe" id="SchemaExe" alt="Schéma d'EXE" >
-    <img src="../api/getSchema.php?image=Etiquetage" id="Etiquetage" alt="Etiquetage" class="hidden" >
+    <img id="schema_exe" alt="Schéma d'EXE" >
+    <img id="etiquetage" alt="Etiquetage" style="display: none;" >
 
   </div>
   <aside>
