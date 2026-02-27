@@ -446,8 +446,6 @@ function resolve_mapping(formulaire, mapping){
                 return false;
             }
             return regex.test(formulaire[field]);
-            
-            
         })
 
         if (match){
