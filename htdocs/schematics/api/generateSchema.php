@@ -1,11 +1,10 @@
 <?php
 require_once ("../config/config.php");
-require_once (URL_DATA_FORM);
 require_once (URL_FPDF);
 require_once (URL_SCHEMA_HYDRAULIQUE);
 
-session_start();
-$dataForm = new DataForm;
+$input_json = file_get_contents("php://input");
+$input = json_decode($input_json, true);
 
 $image = $_GET['image'] ?? "schema_hydrau_brut";
 $format = $_GET['format'] ?? "png";
@@ -13,11 +12,11 @@ $debug = $_GET['debug'] ?? false;
 
 switch (strtolower($image)){
     case "schema_hydrau_brut":
-        $gd_image = generate_hydraulic_base_diagram($dataForm->getFormulaire());
+        $gd_image = generate_hydraulic_base_diagram($input);
         break;
     case 'schema_hydrau_annote':
-        $gd_image = generate_hydraulic_base_diagram($dataForm->getFormulaire());
-        $gd_image = add_header_and_footer_on_base($gd_image, $dataForm->getFormulaire());
+        $gd_image = generate_hydraulic_base_diagram($input);
+        $gd_image = add_header_and_footer_on_base($gd_image, $input);
         break;
     case 'schema_hydrau_complet':
         $gd_image = generate_hydraulic_base_diagram($dataForm->getFormulaire());

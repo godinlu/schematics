@@ -50,12 +50,14 @@
                 "formulaire/rule_engine.js",
                 "formulaire/field_helpers.js",
                 "formulaire/formulaire_app.js",
+                "formulaire/ressource_engine.js",
                 "public/menuDeroulant.js",
                 "formulaire/index.js"
             ],
             "Schema_hydrau": [
                 "schema_hydrau/index.js",
-                "api.js"
+                "api.js",
+                "options.config.js"
             ],
             "Schema_exe": [
                 "schema_exe/index.js"

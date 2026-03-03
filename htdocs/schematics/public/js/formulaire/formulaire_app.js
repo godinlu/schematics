@@ -32,7 +32,7 @@ class FormulaireApp{
     render(){
         const {context, all_states} = this._rule_engine.resolve();
 
-        for (const [field_key, states] of all_states){
+        for (const [field_key, states] of Object.entries(all_states)){
             set_field_states(this._fields.get(field_key), states);
         }
 

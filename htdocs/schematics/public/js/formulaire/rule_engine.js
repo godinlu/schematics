@@ -1,16 +1,7 @@
 /**
- * @typedef {import('./rules.config.js')}
  * @typedef {import('./options.config.js')}
  */
 
-
-/**
- * RuleEngine is responsible for managing form field states and context
- * according to a set of predefined rules. It supports:
- *  - initializing default context values
- *  - applying event-driven updates recursively
- *  - resolving all derived states for options (disabled, hidden, reason)
- */
 class RuleEngine{
     constructor(){
         /**
@@ -18,6 +9,16 @@ class RuleEngine{
          * @type {Options}
          */
         this._all_options = options;
+
+        /** @type {Object<string, Object<string, Set<string> >>} */
+        this._resource_map = this._generate_ressources_mapping();
+        // const {sender_map, receiver_map} = this._generate_rules_mapping(this._all_options);
+
+        // /** @type {Object<string, Object<string, Set<string>>>} */
+        // this._sender_map = sender_map;
+
+        // /** @type {Object<string, Object<string, Set<string>>>} */
+        // this._receiver_map = receiver_map;
 
         /**
          * Current context of all fields: { fieldKey: value }
@@ -28,39 +29,96 @@ class RuleEngine{
         /**
          * Current computed states for all options of all fields.
          * Map<fieldKey, Map<optionValue, {disabled: boolean, hidden: boolean, reason: string}>>
-         * @type {Map<string, Map<string, {disabled: boolean, hidden: boolean, reason: string}>>}
+         * @type {Object<string, Object<string, {disabled: boolean, hidden: boolean, reason: string}>>}
          */
-        this._all_states = new Map();
+        this._all_states = {};
     }
 
+
     /**
-     * Update the context for a single field and recursively propagate
-     * event rules until the context stabilizes.
-     * @param {string} field_key - The field to update
-     * @param {string} new_value - The new value to set
+     * Resolves the form context by applying all rules until stabilization.
+     *
+     * Iteratively computes `_all_states` using `_compute_all_states` and updates
+     * the current context `_context` for each field. If a selected option becomes
+     * disabled or hidden according to the rules, it is replaced by the default
+     * or the next available valid option.
+     *
+     * The loop continues until no changes occur, ensuring that all cascading
+     * dependencies between fields and signals are properly handled.
+     *
+     * @returns {{
+     *   context: Object<string, string>,
+     *   all_states: Object<string, Object<string, {disabled: boolean, hidden: boolean, reason: string}>> 
+     * }}
      */
-    update_ctx(field_key, new_value){
-        this._context[field_key] = new_value;
+    resolve(){
+        let stabilized = false;
 
-        const queue = [field_key];
+        while(!stabilized){
+            stabilized = true;
 
-        // 2️⃣ Process queue
-        while (queue.length > 0) {
-            const current = queue.shift();
+            this._reset_states();
+            this._compute_ressource_states();
 
-            // 3️⃣ Evaluate rules for current field
-            const effects = evaluate_event_rules(current, this._context);
+            //this._compute_all_states();
 
-            for (const effect of effects) {
-                const { field, value } = effect;
+            // step 3 : check if a selected value is now forbidden in _all_states and need to changed
+            for (const [field_key, states] of Object.entries(this._all_states)){
+                // skip if the field is a text field cause no options
+                const options = Object.keys(this._all_options[field_key].options);
+                if (options.length === 1 && options[0] === "*") continue;
 
-                // Only enqueue if the value actually changes
-                if (this._context[field] !== value) {
-                    this._context[field] = value;
-                    queue.push(field); // re-evaluate rules for this field
+                const current_value = this._context[field_key];
+                const default_value = this._all_options[field_key].default;
+
+                if (current_value === undefined){
+                    console.warn(`[RuleEngine.resolve()] something went wrong for ${field_key}`);
+                    continue;
+                };
+                const new_value = [current_value, default_value, ...Object.keys(states)].find(val => {
+                    const state = states[val];
+                    return (state && !state.disabled && !state.hidden);
+                }) ?? null;
+
+                if (current_value !== new_value){
+                    this._context[field_key] = new_value;
+                    stabilized = false;
                 }
             }
         }
+
+        return {context: this._context, all_states: this._all_states};
+    }
+
+    /**
+     * Updates the value of a specific field in the current context and propagates dependent changes.
+     *
+     * Sets `_context[field_key]` to `new_value` and automatically updates related fields
+     * according to predefined dependency rules:
+     *  - If `typeInstallation` contains "2" and `ballonTampon` is "Aucun", sets `ballonTampon` to "Ballon tampon".
+     *  - If `ballonTampon` is not "Aucun", sets `EchangeurDansBT` to "on".
+     *
+     * This ensures that changes to key fields propagate necessary updates to dependent fields,
+     * maintaining a consistent and valid form context.
+     *
+     * @param {string} field_key - The key of the field to update.
+     * @param {string} new_value - The new value to assign to the field.
+     */
+    update_ctx(field_key, new_value){
+        this._context[field_key] = new_value;
+        if (
+            field_key === "typeInstallation" && 
+            /2/.test(this._context.typeInstallation) &&
+            this._context.ballonTampon === "Aucun"
+        ){
+            this.update_ctx("ballonTampon", "Ballon tampon");
+        }
+
+        if (field_key === "ballonTampon" && this._context.ballonTampon !== "Aucun"){
+            this.update_ctx("EchangeurDansBT", "on");
+        }
+        
+
     }
 
     /**
@@ -71,104 +129,229 @@ class RuleEngine{
         return this._context;
     }
 
-
     /**
-     * Resolve the engine context and option states until stabilized.
-     * Checks all fields and options, applies rules, and adjusts context
-     * values to valid selections.
-     * @returns {{context: Object<string,string>, all_states: Map<string, Map<string, {disabled:boolean, hidden:boolean, reason:string}>>}}
+     * Computes the current state of all options based on active signals.
+     *
+     * Initializes `_all_states` for every field and option, setting default
+     * `disabled`, `hidden`, and `reason` values. Then iterates through the
+     * current context to propagate signals emitted by selected options.
+     * 
+     * For each signal, marks the corresponding receiver options as disabled
+     * according to the `_receiver_map`. A field cannot disable its own options
+     * via its own signals.
+     *
+     * After execution, `_all_states` reflects the updated `disabled` and `hidden`
+     * states of all options, ready for UI rendering or further rule evaluation.
      */
-    resolve(){
-        let stabilized = false;
+    _compute_all_states(){
+        // reset _all_states
+        this._all_states = {};
+        for (const [field, field_data] of Object.entries(this._all_options)){
+            this._all_states[field] = {};
+            for (const opt of Object.keys(field_data.options)){
+                this._all_states[field][opt] = {disabled:false, hidden:false, reason:""};
+            }
+        }
 
-        while(!stabilized){
-            stabilized = true;
+        for (const [field, value] of Object.entries(this._context)){
+            const signales = this._sender_map?.[field]?.[value] ?? new Set();
 
-            // step 1 : evaluate rules on the context
-            const effects = evaluate_rules(this._context);
+            for (const s of signales){
+                const receivers = this._receiver_map?.[s] ?? {};
+                
+                // get the reason in signal_mapping if existe or get
+                // constructed reason for equipment such as SXX, TXX or CX
+                const reason = signal_reasons?.[s]?.reason ?? this._construct_signal_reason(field, s);
 
-            // step 2 : transform effects on _all_states
-            this._apply_effects(effects);
+                for (const [receiver_field, opt_set] of Object.entries(receivers)){
 
-            // step 3 : check if a selected value is now forbidden in _all_states and need to changed
-            for (const [field_key, states] of this._all_states){
-                // skip if the field is a text field cause no options
-                const options = this._all_options[field_key].options;
-                if (options.length === 1 && options[0] === "*") continue;
+                    // a field can't send and receive it's own signal
+                    if (field === receiver_field) continue;
 
-                const current_value = this._context[field_key];
-                const default_value = options.default;
-
-                if (current_value === undefined){
-                    console.warn(`[RuleEngine.resolve()] something went wrong for ${field_key}`);
-                    continue;
-                };
-                const new_value = [current_value, default_value, ...states.keys()].find(val => {
-                    const state = states.get(val);
-                    return (state && !state.disabled && !state.hidden);
-                }) ?? null;
-
-                if (current_value !== new_value){
-                    this._context[field_key] = new_value;
-                    stabilized = false;
+                    for (const opt of opt_set){
+                        const state = this._all_states[receiver_field][opt];
+                        state.disabled = true;
+                        state.hidden = hide_signales?.[s]?.[receiver_field] ?? false;
+                        if (state.reason === ""){
+                            state.reason = reason;
+                        }else{
+                            state.reason = `Conditions d'activation : \n - ${state.reason}\n - ${reason}`;
+                        }
+                    }
                 }
             }
         }
-        return {context: this._context, all_states: this._all_states};
+
+    }
+
+    /**
+     */
+    _reset_states(){
+        // reset _all_states
+        this._all_states = {};
+        for (const [field, field_data] of Object.entries(this._all_options)){
+            this._all_states[field] = {};
+            for (const opt of Object.keys(field_data.options)){
+                this._all_states[field][opt] = {disabled:false, hidden:false, reason:""};
+            }
+        }
+    }
+
+
+    _compute_ressource_states(){
+        for (const [ctx_field, ctx_value] of Object.entries(this._context)){
+            const used_ressources = this._all_options?.[ctx_field]?.options?.[ctx_value] ?? [];
+            for (const resource of used_ressources){
+                for (const [target_field, options] of Object.entries(this._resource_map[resource])){
+                    // don't affect the same field
+                    if (target_field === ctx_field) continue;
+
+                    for (const opt of options){
+                        console.log(target_field, opt);
+                        this._all_states[target_field][opt].disabled = true;
+
+                        let reason = "";
+                        if (resource.startsWith("S")){
+                            reason = `La sortie ${resource} est déjà prise par le champ : ${ctx_field}`;
+                        }else if (resource.startsWith("C")){
+                            reason = `Le circulateur ${resource} est déjà pris par le champ : ${ctx_field}`;
+                        }else if (resource.startsWith("T")){
+                            reason = `La sonde ${resource} est déjà prise par le champ : ${ctx_field}`;
+                        }
+                        this._all_states[target_field][opt].reason = reason;
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    _compute_buisness_states(){
+
+    }
+
+
+
+    /**
+     * 
+     * @param {string} sender_field 
+     * @param {string} signal
+     * @return {string} 
+     */
+    _construct_signal_reason(sender_field, signal){
+        const sortie_match = signal.match(/^[<>]?(S\d+)$/);
+        if (sortie_match) {
+            return `La sortie ${sortie_match[1]} est déjà prise par le champ : ${sender_field}`;
+        }
+        const sonde_match = signal.match(/^[<>]?(T\d+)$/);
+        if (sonde_match) {
+            return `La sonde ${sonde_match[1]} est déjà prise par le champ : ${sender_field}`;
+        }
+
+        const circ_match = signal.match(/^[<>]?(C\d+)$/);
+        if (circ_match){
+            return `Le circulateur ${circ_match[1]} est déjà pris par le champ : ${sender_field}`;
+        }
+        console.log(`[RuleEngine._construct_signal_reason] No reason found for the signal : "${signal}" sended by "${sender_field}".`);
+        return "";
     }
 
 
     /**
-     * Apply a set of effects to the _all_states map.
-     * Updates option disabled/hidden states and their reasons.
-     * @param {Effect[]} effects - List of effects to apply
-     * @private
+     * Generates mappings for rule signals based on all field options.
+     *
+     * Parses each option's rules to build:
+     *  - sender_map: which signals are emitted by each field option.
+     *  - receiver_map: which options are affected (receive) by each signal.
+     *
+     * Supports rules prefixed with:
+     *  - ">"  : send signal
+     *  - "<"  : receive signal
+     * 
+     * Can also send and receive if no prefix.
+     *
+     * @param {Options} all_options - The full options definition with rules.
+     * @returns {{
+     *   sender_map: Object<string, Object<string, Set<string>>>,
+     *   receiver_map: Object<string, Object<string, Set<string>>>
+     * }}
+     *   sender_map[field][option] = Set of signals sent by that option
+     *   receiver_map[signal][field] = Set of options affected by that signal
      */
-    _apply_effects(effects){
-        this._all_states.clear();
+    _generate_rules_mapping(all_options) {
+        const sender_map = {};
+        const receiver_map = {};
 
-        for (const [field_key, opt_def] of Object.entries(this._all_options)){
-            const field_states = new Map();
+        for (const [field, field_data] of Object.entries(all_options)) {
+            for (const [opt, rules] of Object.entries(field_data.options)) {
+                for (const r of rules) {
 
-            for (const opt of opt_def.options) {
-                field_states.set(opt, {disabled: false, hidden: false, reason: ""});
-            }
+                    const signal = r.replace(/^[<>!]+/, "");
 
-            this._all_states.set(field_key, field_states);
-        }
+                    // SEND
+                    if (!r.startsWith("<")) {
 
+                        sender_map[field] ??= {};
+                        sender_map[field][opt] ??= new Set();
 
-        for (const effect of effects){
-            const field_states = this._all_states.get(effect.field);
-
-            if (!field_states){
-                console.warn("[RuleEngine._apply_effects] unrecognized field for the following effect", effect);
-                continue;
-            }
-
-            for (const [opt, state] of field_states){
-                const match = effect.regex.test(opt);
-                if (match){
-                    if (effect.type === "disabled-options"){
-                        state.disabled = true;
-                        state.reason = effect.reason;
+                        if (r.startsWith(">!")){
+                            for (const [_opt, _rules] of Object.entries(field_data.options)){
+                                if (_rules.includes(r)) continue;
+                                sender_map[field][_opt] ??= new Set();
+                                sender_map[field][_opt].add(signal);
+                            }
+                        }else{
+                            sender_map[field][opt].add(signal);
+                        }
                     }
-                    else if (effect.type === "hide-options"){
-                        state.hidden = true;
-                        state.reason = effect.reason;
-                    }
-                }else{
-                    if (effect.type === "disabled-other-options"){
-                        state.disabled = true;
-                        state.reason = effect.reason;
-                    }else if (effect.type === "hide-other-options"){
-                        state.hidden = true;
-                        state.reason = effect.reason;
+
+                    // RECEIVE
+                    if (!r.startsWith(">")) {
+
+                        receiver_map[signal] ??= {};
+                        receiver_map[signal][field] ??= new Set();
+
+                        if (r.startsWith("<!")){
+                            for (const [_opt, _rules] of Object.entries(field_data.options)){
+                                if (_rules.includes(r)) continue;
+                                receiver_map[signal][field].add(_opt);
+                            }
+                        }else{
+                            receiver_map[signal][field].add(opt);
+                        }          
                     }
                 }
             }
         }
+
+        return { sender_map, receiver_map };
+    }
+
+
+    /**
+     * Builds a mapping of resources to the options that use them.
+     *
+     * Structure:
+     *   { resource: { field: Set<optionValues> } }
+     * 
+     * Useful for quickly checking which options to disable
+     * when a resource is already in use.
+     *
+     * @returns {Object<string, Object<string, Set<string>>>} Resource-to-options map
+     */
+    _generate_ressources_mapping(){
+        const resource_map = {};
+        for (const [field, field_data] of Object.entries(this._all_options)) {
+            for (const [opt, ressources] of Object.entries(field_data.options)) {
+                for (const r of ressources) {
+                    resource_map[r] ??= {};
+                    resource_map[r][field] ??= new Set();
+                    resource_map[r][field].add(opt);
+                }
+            }
+        }
+        return resource_map;
+
     }
 
 }
-

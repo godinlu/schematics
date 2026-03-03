@@ -399,4 +399,15 @@ function force_default(field, value){
 }
 
 
+function test(ctx){
+    return {
+        cond: /2/.test(ctx.typeInstallation),
+        on: {
+            ballonTampon: ['ballon tampon']
+        },
+        message: "Une installation type 2 est nécessaire pour un ballonTampon"
+    };
+}
+
+
 

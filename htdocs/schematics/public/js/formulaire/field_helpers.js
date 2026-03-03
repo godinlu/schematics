@@ -9,8 +9,8 @@
  * @param {HTMLSelectElement|HTMLInputElement} field
  * The target form field to update.
  *
- * @param {Map<string, {disabled: boolean, hidden: boolean, reason: string}>} states
- * A map describing the state of each option:
+ * @param {Object<string, {disabled: boolean, hidden: boolean, reason: string}>} states
+ * An Object describing the state of each option:
  *  - key: option value
  *  - disabled: whether the option is disabled
  *  - hidden: whether the option is hidden
@@ -24,14 +24,14 @@ function set_field_states(field, states){
 
     if (field.tagName === "SELECT"){
         field.innerHTML = `
-            ${Array.from(states, ([opt_value, state]) =>`
-                    <option
-                        value="${opt_value}"
-                        ${state.disabled ? "disabled" : ""}
-                        ${state.hidden ? "hidden" : ""}
-                        title="${state.reason ?? ""}"
-                    >${opt_value}</option>
-                `).join("")}
+            ${Object.entries(states).map(([opt_value, state]) => `
+                <option
+                value="${opt_value}"
+                ${state.disabled ? "disabled" : ""}
+                ${state.hidden ? "hidden" : ""}
+                title="${state.reason ?? ""}"
+                >${opt_value}</option>
+            `).join("")}
         `;
     }
 }
@@ -93,11 +93,11 @@ function get_field_value(field){
  * @param {HTMLSelectElement|HTMLInputElement} field
  * The target field.
  *
- * @param {Map<string, {disabled: boolean, hidden: boolean, reason: string}>} states
+ * @param {Object<string, {disabled: boolean, hidden: boolean, reason: string}>} states
  * The option state definitions.
  */
 function _manage_hide_field(field, states){
-    const all_hidden = [...states.values()].every(s => s.hidden);
+    const all_hidden = Object.values(states).every(s => s.hidden);
 
     if (field.tagName === "SELECT"
         || (field.tagName === "INPUT" && (field.type === "checkbox" || field.type === "text"))
@@ -128,12 +128,12 @@ function _manage_hide_field(field, states){
  * @param {HTMLSelectElement|HTMLInputElement} field
  * The target field.
  *
- * @param {Map<string, {disabled: boolean, hidden: boolean, reason: string}>} states
+ * @param {Object<string, {disabled: boolean, hidden: boolean, reason: string}>} states
  * The option state definitions.
  */
 function _manage_disabled_field(field, states){
     if (field.tagName === "INPUT" && field.type === "text") return;
-    const values = [...states.values()];
+    const values = Object.values(states);
 
     const should_disabled = values.filter(s => !s.disabled && !s.hidden).length <= 1;
 
