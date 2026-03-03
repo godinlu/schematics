@@ -286,31 +286,6 @@ All of these rules are just to manage properly tables for html2pdf
                             RULES OF MODAL                                                                        
 ==============================================================================*/
 
-/* Le conteneur de la modale, invisible au départ */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* fond semi-transparent */
-  display: none; /* cachée */
-  justify-content: center;
-  align-items: center;
-}
-
-/* Contenu de la modale */
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: min-content;
-  height: 60vh;
-
-  display: flex;
-  flex-direction: column;
-}
-
 .breadcrumb {
     display: flex;
     align-items: center;

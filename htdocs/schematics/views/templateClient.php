@@ -45,8 +45,8 @@
                 <li class="dropdown" style="float:right;">
                     <a href="#" class="dropbtn bleue"><i class="fa fa-file-text" aria-hidden="true"></i>  fichier <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
                     <div class="dropdown-content">
-                        <a href="<?=$dependencyLoader->get_url()?>/client/formulaire?action=reinit" id="TB_reinitialisation"><i class="fa fa-refresh" aria-hidden="true"></i> réinitialiser</a>
-                        <a href="?action=save" id="TB_sauvegarder"><i class="fa-regular fa-floppy-disk"></i> sauvegarder</a>
+                        <a href="#" id="TB_reinitialisation"><i class="fa fa-refresh" aria-hidden="true"></i> réinitialiser</a>
+                        <a href="#" id="TB_sauvegarder"><i class="fa-regular fa-floppy-disk"></i> sauvegarder</a>
                         <a href="#" id="TB_charger" ><i class="fa-regular fa-folder-open"></i>   ouvrir</a>
                         <a href="#" id="TB_télécharger_dossier" ><i class="fa fa-download" aria-hidden="true"></i> dossier</a>
                         <!-- <a href="#" id="TB_power_point" ><i class="fa fa-file-powerpoint-o" aria-hidden="true"></i></i> power point</a> -->
@@ -55,18 +55,6 @@
                 </li>
             </ul>
         </nav>
-        <div id="popupImport" class="popup_content">
-        <span class="helper"></span>
-        <div>
-            <div class="popupCloseButton">&times;</div>
-                <form action="#" method="POST" enctype="multipart/form-data">
-                    <p>Choisissez le fichier que vous voulez importer</p>
-                    <input type="file" name="fichier" accept="application/JSON" id="import_fichier" required>
-                    <label for="import_fichier"><i class="fa fa-upload" aria-hidden="true"></i><span>Choisissez un fichier</span> </label>
-                    <button id="charger"> Ouvrir <i class="fa fa-check" aria-hidden="true"></i></button>
-                </form>
-            </div>
-        </div>
     </header>
     
     <?= $content ?>

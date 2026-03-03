@@ -100,7 +100,7 @@ nav li.dropdown {
     display: inline-block;
     font-size: large;
 }
-#charger, #dl_powerPoint{
+#charger{
     border-radius: 0.5em;
     background-color: #10B9B7;
     border: none;
@@ -109,21 +109,25 @@ nav li.dropdown {
     display: inline-block;
     font-size: large;
 }
-#charger:hover, #dl_powerPoint:hover{
+/* Hover quand le bouton n'est pas disabled */
+#charger:not(:disabled):hover {
     background-color: #000000;
     color: #10B9B7;
     cursor: pointer;
 }
 
-#import_fichier + label i,
-#dl_powerPoint + label i{
+/* Style quand le bouton est disabled */
+#charger:disabled {
+    background-color: #ccc;  /* gris clair pour indiquer l'état inactif */
+    color: #666;             /* texte plus clair */
+    cursor: not-allowed;     /* icône interdit */
+}
+
+#import_fichier + label i{
     margin-right: 1em;
 }
 
-
-
-#import_fichier + label:hover,
-#dl_powerPoint + label:hover {
+#import_fichier + label:hover{
     background-color: #000000;
     color: #f6c437;
 

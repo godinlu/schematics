@@ -2,15 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
     /////////////////////////////////////////////////////////////
     //                  MANAGE TOOLBAR
     /////////////////////////////////////////////////////////////
-    document.querySelector("#TB_sauvegarder").addEventListener("click", ()=>{
-        const obj = {
-            formulaire: get_formulaire(),
-            fiche_prog: null, // TODO
-            devis: null // TODO
-        };
 
+    // reinit
+    document.querySelector("#TB_reinitialisation").addEventListener("click", ()=>{
+        sessionStore.clear();
+        location.reload();
+    });
+
+    // save the installation
+    document.querySelector("#TB_sauvegarder").addEventListener("click", ()=>{
         // Convert object to formatted JSON string
-        const json = JSON.stringify(obj, null, 2);
+        const json = JSON.stringify(sessionStore.all, null, 2);
 
         // Create a Blob
         const blob = new Blob([json], { type: "application/json" });
@@ -19,12 +21,62 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "config.json"; 
+        a.download = `installation-${sessionStore.name}`; 
         a.click();
 
         // Cleanup
         URL.revokeObjectURL(url);
 
+    });
+
+    // open installation
+    document.querySelector("#TB_charger").addEventListener("click", () => {
+        let modal = new Modal();
+        modal.content_div.innerHTML = `
+            <div style="width: max-content">
+                <p>Choisissez le fichier à importer</p>
+                <input type="file" accept="application/JSON" id="import_fichier">
+                <label for="import_fichier">
+                    <i class="fa fa-upload" aria-hidden="true"></i><span>Choisissez un fichier</span> 
+                </label>
+                <button id="charger" disabled> Ouvrir <i class="fa fa-check" aria-hidden="true"></i></button>
+            </div>
+        `;
+        
+
+        const input = modal.content_div.querySelector("#import_fichier");
+        const button = modal.content_div.querySelector("button");
+        const span = modal.content_div.querySelector("span");
+
+        input.addEventListener("change", () => {
+            if (input.files.length) {
+                span.textContent = input.files[0].name;
+                button.disabled = false;
+            } else {
+                span.textContent = "Choisissez un fichier";
+                button.disabled = true;
+            }
+        });
+
+        button.addEventListener("click", () =>{
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                try {
+                    const jsonData = JSON.parse(event.target.result);
+                    sessionStore.all = jsonData;
+                    location.reload();
+                } catch (err) {
+                    console.error("Erreur lors de la lecture du JSON :", err);
+                }
+            };
+            reader.readAsText(file);
+
+        });
+
+        modal.show();
     });
 });
 

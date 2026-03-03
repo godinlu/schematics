@@ -24,6 +24,7 @@
                 "version/version.css"
             ],
             "public":[
+                "public/modal.css",
                 "public/public.css",
                 "public/popup.css",
                 "fiche_prog/tableau.css"
@@ -81,9 +82,10 @@
             ],
             "public":[
                 "config/options.config.js",
+                "components/modal.js",
                 "core/header.js",
                 "core/utils.js",
-                "core/session.js"
+                "core/session.store.js"
             ]
         },
         "admin":{
