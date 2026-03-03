@@ -45,19 +45,15 @@
     "js": {
         "client":{
             "Formulaire": [
-                "options.config.js",
-                "formulaire/rules.config.js",
-                "formulaire/rule_engine.js",
-                "formulaire/field_helpers.js",
-                "formulaire/formulaire_app.js",
-                "formulaire/ressource_engine.js",
-                "public/menuDeroulant.js",
-                "formulaire/index.js"
+                "pages/formulaire/rules.config.js",
+                "pages/formulaire/rule_engine.js",
+                "pages/formulaire/field_helpers.js",
+                "pages/formulaire/formulaire_app.js",
+                "components/accordion.js",
+                "pages/formulaire/index.js"
             ],
             "Schema_hydrau": [
-                "schema_hydrau/index.js",
-                "api.js",
-                "options.config.js"
+                "pages/schema_hydrau/index.js"
             ],
             "Schema_exe": [
                 "schema_exe/index.js"
@@ -67,25 +63,27 @@
             ],
             "Devis": [
                 "../assets/html2pdf/html2pdf.bundle.min.js",
-                "public/modal.js",
-                "devis/model/data_manager.class.js",
-                "devis/model/default_articles_ref.js",
-                "devis/store/devis_store.js",
-                "devis/components/devis_app.js",
-                "devis/components/devis_header.js",
-                "devis/components/devis_body.js",
-                "devis/components/devis_footer.js",
-                "devis/components/devis_category.js",
-                "devis/components/devis_row.js",
-                "devis/components/devis_modal.js",
-                "devis/components/modal_filters/devis_capteurs_filter.js",
-                "devis/components/devis_pdf.js",
-                "devis/utils.js",
-                "devis/index.js"
+                "components/modal.js",
+                "pages/devis/model/data_manager.class.js",
+                "pages/devis/model/default_articles_ref.js",
+                "pages/devis/store/devis_store.js",
+                "pages/devis/components/devis_app.js",
+                "pages/devis/components/devis_header.js",
+                "pages/devis/components/devis_body.js",
+                "pages/devis/components/devis_footer.js",
+                "pages/devis/components/devis_category.js",
+                "pages/devis/components/devis_row.js",
+                "pages/devis/components/devis_modal.js",
+                "pages/devis/components/modal_filters/devis_capteurs_filter.js",
+                "pages/devis/components/devis_pdf.js",
+                "pages/devis/utils.js",
+                "pages/devis/index.js"
             ],
             "public":[
-                "public/header.js",
-                "public/utils.js"
+                "config/options.config.js",
+                "core/header.js",
+                "core/utils.js",
+                "core/session.js"
             ]
         },
         "admin":{

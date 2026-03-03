@@ -1,13 +1,12 @@
-const BASE_URL = "../api/";
-
 /**
  * Send POST request
  * @param {string} endpoint
  * @param {Object} payload
+ * @param {string} base_url
  * @returns {Promise<Object>}
  */
-async function post_data(endpoint, payload) {
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
+async function post_data(endpoint, payload, base_url = "../api/") {
+    const response = await fetch(`${base_url}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

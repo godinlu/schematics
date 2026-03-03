@@ -6,10 +6,9 @@
  * 
  */
 document.addEventListener("DOMContentLoaded", () =>{
-    init_app();
+    // init accordion
+    init_accordion();
+
+    let app = new FormulaireApp();
 });
 
-
-function init_app(){
-    let app = new FormulaireApp();
-}

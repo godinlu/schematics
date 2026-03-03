@@ -1,5 +1,6 @@
 /**
- * @typedef {import('./options.config.js')}
+ * @typedef {import('../options.config.js')}
+ * @typedef {import('./rules.config.js')}
  */
 
 class RuleEngine{
@@ -12,13 +13,9 @@ class RuleEngine{
 
         /** @type {Object<string, Object<string, Set<string> >>} */
         this._resource_map = this._generate_ressources_mapping();
-        // const {sender_map, receiver_map} = this._generate_rules_mapping(this._all_options);
-
-        // /** @type {Object<string, Object<string, Set<string>>>} */
-        // this._sender_map = sender_map;
-
-        // /** @type {Object<string, Object<string, Set<string>>>} */
-        // this._receiver_map = receiver_map;
+        
+        /** @type {Rule[]} */
+        this._rules = RULES;
 
         /**
          * Current context of all fields: { fieldKey: value }
@@ -59,6 +56,7 @@ class RuleEngine{
 
             this._reset_states();
             this._compute_ressource_states();
+            this._compute_rules_states();
 
             //this._compute_all_states();
 
@@ -207,7 +205,6 @@ class RuleEngine{
                     if (target_field === ctx_field) continue;
 
                     for (const opt of options){
-                        console.log(target_field, opt);
                         this._all_states[target_field][opt].disabled = true;
 
                         let reason = "";
@@ -226,8 +223,17 @@ class RuleEngine{
         }
     }
 
-    _compute_buisness_states(){
-
+    _compute_rules_states(){
+        for (const rule of this._rules){
+            if (!rule.when(this._context)){
+                for (const [field, options] of Object.entries(rule.allow)){
+                    for (const opt of options){
+                        this._all_states[field][opt].disabled = true;
+                        this._all_states[field][opt].reason = rule.reason;
+                    }
+                }
+            }
+        }
     }
 
 
