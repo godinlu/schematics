@@ -42,8 +42,10 @@ function add_header_and_footer_on_base(GdImage $gd_image, array $formulaire): Gd
     imagecopy($new_image, $footer, 8, 517, 0, 0, imagesx($footer), imagesy($footer));
 
     // ajout des labels pour les sorties S10 S11
-    add_label_inplace($new_image, "option S10 : " . getOptionS10($formulaire), [433, 572]);
-    add_label_inplace($new_image, "option S11 : " . getOptionS11($formulaire), [433, 584]);
+    $opt_S10 = $formulaire["used_equipment"]["sorties"]["S10"] ?? "";
+    $opt_S11 = $formulaire["used_equipment"]["sorties"]["S11"] ?? "";
+    add_label_inplace($new_image, "option S10 : " . $opt_S10, [433, 572]);
+    add_label_inplace($new_image, "option S11 : " . $opt_S11, [433, 584]);
 
     // ajout du paragraphe de description
     add_paragraph_inplace($new_image, $formulaire['description'], [433, 587] , 350, 8);

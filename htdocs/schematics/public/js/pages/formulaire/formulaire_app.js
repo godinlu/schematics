@@ -12,7 +12,9 @@
  */
 class FormulaireApp{
     constructor(){
-        this._rule_engine = new RuleEngine();
+        this._context = sessionStore.formulaire;
+
+        this._rule_engine = new RuleEngine(rule_config, options);
 
         this._fields = new Map();
 
@@ -30,13 +32,17 @@ class FormulaireApp{
     }
 
     render(){
-        const {context, all_states} = this._rule_engine.resolve();
+        // here this._context will be updated inplace
+        const all_states = this._rule_engine.resolve(this._context);
+
+        // save the context in the session
+        sessionStore.formulaire = this._context;
 
         for (const [field_key, states] of Object.entries(all_states)){
             set_field_states(this._fields.get(field_key), states);
         }
 
-        for (const [field_key, value] of Object.entries(context)){
+        for (const [field_key, value] of Object.entries(this._context)){
             set_field_value(this._fields.get(field_key), value);
         }
 
@@ -45,13 +51,8 @@ class FormulaireApp{
 
 
     _on_field_update(field_key, new_value){
-        
-
-        // run the rule engine to update the ctx with the change
-        this._rule_engine.update_ctx(field_key, new_value);
-
-        // save the new context in session
-        sessionStorage.setItem("formulaire", JSON.stringify(this._rule_engine.get_ctx()));
+        // appply default selection and update inplace the context
+        this._rule_engine.apply_default_selection_on_context(this._context, field_key, new_value);
 
         // render all field with new computed states
         this.render();

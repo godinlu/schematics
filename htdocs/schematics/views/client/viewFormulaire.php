@@ -16,62 +16,53 @@
 					<tr>
 						<th colspan="2">Description Installateur</th>
 					</tr>
-					<tbody id="form_installateur">
-						<tr>
-							<td>Installateur : </td>
-							<td>
-								<div class="autocomplete" style="width:200px;">
-									<input type="text" class="info autocomplete" id="installateur" name="installateur" required>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>Prénom/nom : </td>
-							<td><input type="text" class="info" id="Prénom/nom" name="Prénom/nom" required></td>
-						</tr>
-						<tr>
-							<td>Adresse mail : </td>
-							<td><input type="email" class="info" id="adresse_mail" name="adresse_mail" placeholder="exemple@gmail.com" required></td>
-						</tr>
-						<tr>
-							<td>Commercial : </td>
-							<td><input type="text" class="info" id="commercial" name="commercial" required></td>
-						</tr>
-					</tbody>
-
+					<tr>
+						<td>Installateur : </td>
+						<td><input type="text" data-field="installateur"></td>
+					</tr>
+					<tr>
+						<td>Prénom/nom : </td>
+						<td><input type="text" data-field="Prénom/nom"></td>
+					</tr>
+					<tr>
+						<td>Adresse mail : </td>
+						<td><input type="text" data-field="adresse_mail" placeholder="exemple@gmail.com"></td>
+					</tr>
+					<tr>
+						<td>Commercial : </td>
+						<td><input type="text" data-field="commercial"></td>
+					</tr>
 					<tr>
 						<th colspan="2">Description Client</th>
 					</tr>
 					<tr>
 						<td>Nom : </td>
-						<td><input type="text" class="info" id="nom_client" name="nom_client" value=""></td>
+						<td><input type="text" data-field="nom_client"></td>
 					</tr>
 					<tr>
 						<td>Prénom : </td>
-						<td><input type="text" class="info" id="prenom_client" name="prenom_client" value=""></td>
+						<td><input type="text" data-field="prenom_client"></td>
 					</tr>
 					<tr>
 						<td>Adresse : </td>
-						<td><input type="text" class="info" id="adresse_client" name="adresse_client" value=""></td>
+						<td><input type="text" data-field="adresse_client"></td>
 					</tr>
 					<tr>
 						<td>Code postal : </td>
-						<td><input type="text" class="info" id="code_postale_client" name="code_postale_client" value=""></td>
+						<td><input type="text" data-field="code_postale_client"></td>
 					</tr>
 					<tr>
 						<td>Ville : </td>
-						<td><input type="text" class="info" id="ville_client" name="ville_client" value=""></td>
+						<td><input type="text" data-field="ville_client"></td>
 					</tr>
 					<tr>
 						<td>Téléphone : </td>
-						<td><input type="text" class="info" id="tel_client" name="tel_client" value=""></td>
+						<td><input type="text" data-field="tel_client"></td>
 					</tr>
 					<tr>
 						<td>Adress Email : </td>
-						<td><input type="email" class="info" id="mail_client" name="mail_client" value=""></td>
+						<td><input type="text" data-field="mail_client"></td>
 					</tr>
-
-
 				</table>
 			</div>
 		</div>

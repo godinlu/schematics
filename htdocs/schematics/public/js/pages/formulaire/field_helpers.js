@@ -9,7 +9,7 @@
  * @param {HTMLSelectElement|HTMLInputElement} field
  * The target form field to update.
  *
- * @param {Object<string, {disabled: boolean, hidden: boolean, reason: string}>} states
+ * @param {Object<string, {disabled: boolean, reason: string}>} states
  * An Object describing the state of each option:
  *  - key: option value
  *  - disabled: whether the option is disabled
@@ -97,21 +97,19 @@ function get_field_value(field){
  * The option state definitions.
  */
 function _manage_hide_field(field, states){
-    const all_hidden = Object.values(states).every(s => s.hidden);
+    const all_disabled = Object.values(states).every(s => s.disabled);
 
     if (field.tagName === "SELECT"
         || (field.tagName === "INPUT" && (field.type === "checkbox" || field.type === "text"))
     ){
-        field.style.display = (all_hidden)? "none": "";
+        field.style.display = (all_disabled)? "none": "";
 
         const label = _get_label(field);
         if (!label) return;
-        label.style.display = (all_hidden)? "none": "";
+        label.style.display = (all_disabled)? "none": "";
     }else{
-        console.warn(`[hide_field] unsupported field type : ${field}`);
+        console.warn("[hide_field] unsupported field type :", field);
     }
-
-    
 }
 
 /**

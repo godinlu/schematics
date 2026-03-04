@@ -17,8 +17,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
     ///////////////////////////////////////////////////////
-    console.log(get_equipment_from_form(get_formulaire()));
-    const response = await post_data(`generateSchema.php?image=schema_hydrau_${currentVersion}&format=png`, get_formulaire());
+    // console.log(get_equipment_from_form(get_formulaire()));
+    const form_data = sessionStore.formulaire;
+    form_data["used_equipment"] = get_equipment_from_form(sessionStore.formulaire);
+    const response = await post_data(`generateSchema.php?image=schema_hydrau_${currentVersion}&format=png`, form_data);
     const blob = await response.blob();
     const img_url = URL.createObjectURL(blob);
 

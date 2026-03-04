@@ -36,6 +36,50 @@ const options = {
         }
 
     },
+    installateur:{
+        default:"",
+        options: { "*": [] }
+    },
+    "Prénom/nom":{
+        default:"",
+        options: { "*": [] }
+    },
+    adresse_mail:{
+        default:"",
+        options: { "*": [] }
+    },
+    commercial:{
+        default:"",
+        options: { "*": [] }
+    },
+    nom_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    prenom_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    adresse_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    code_postale_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    ville_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    tel_client:{
+        default:"",
+        options: { "*": [] }
+    },
+    mail_client:{
+        default:"",
+        options: { "*": [] }
+    },
     ballonECS: {
         default: "ballon ECS 2 échangeurs",
         options: {
@@ -45,7 +89,8 @@ const options = {
             "ballon ECS et ballon appoint en série avec bouclage sanitaire": [],
             "ballon ECS tank in tank": [],
             "ballon d'eau chaude sur échangeur": [],
-            "ballon elec en sortie ballon solaire avec bouclage sanitaire": [],
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": [],
+            "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire": [],
             "Ballon hygiénique avec 1 echangeur": [],
             "Ballon hygiénique avec 2 echangeurs": [],
             "Aucun": []
@@ -302,7 +347,7 @@ const options = {
         options: {
             "Activable par case à cocher": ["S10"],
             "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": ["S10"],
-            "CESI déportée sur T15": ["S10"],
+            "CESI déportée sur T15": ["S10", "T15"],
             "charge BTC si excédent APP1 sur T16 & T6 < T5": ["S10"],
             "charge BTC si excédent APP1 sur T16 & T6 > T5": ["S10"],
             "Circulateur chaudière 1": ["S10"],
@@ -318,10 +363,10 @@ const options = {
             "ON buches en demande": ["S10"],
             "ON en mode excédent d'énergie l'été": ["S10"],
             "ON en mode solaire": ["S10"],
-            "Piscine déportée T15": ["S10"],
-            "Piscine déportée T6": ["S10"],
-            "recharge nappes goethermiques sur T15 sur échangeur BTC": ["S10"],
-            "recharge nappes goethermiques sur T15 sur serpentin BTC": ["S10"],
+            "Piscine déportée T15": ["S10", "T15"],
+            "Piscine déportée T6": ["S10", "T6"],
+            "recharge nappes goethermiques sur T15 sur échangeur BTC": ["S10", "T15"],
+            "recharge nappes goethermiques sur T15 sur serpentin BTC": ["S10", "T15"],
             "Sortie Idem C1": ["S10"],
             "Sortie Idem C2": ["S10"],
             "Sortie Idem C3": ["S10"],
@@ -341,7 +386,7 @@ const options = {
         options: {
             "Activable par case à cocher": ["S11"],
             "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC": ["S11"],
-            "CESI déportée sur T16": ["S11"],
+            "CESI déportée sur T16": ["S11", "T16"],
             "charge BTC si excédent APP1 sur T16 & T6 < T5": ["S11"],
             "charge BTC si excédent APP1 sur T16 & T6 > T5": ["S11"],
             "Circulateur chaudière 1": ["S11"],
@@ -407,26 +452,6 @@ const options = {
 const DEFAULT_CONTEXT = Object.fromEntries(
     Object.keys(options).map(key => [key, options[key].default])
 );
-
-
-/**
- * Get current formulaire from sessionStorage
- * @returns {Object<string, any>} form data
- */
-function get_formulaire() {
-    const stored = sessionStorage.getItem("formulaire");
-
-    if (stored) {
-        try {
-            return JSON.parse(stored);
-        } catch (err) {
-            console.warn("Corrupted sessionStorage formulaire, using default.", err);
-        }
-    }
-
-    // Return a clone of DEFAULT_CONTEXT to avoid accidental mutation
-    return { ...DEFAULT_CONTEXT };
-}
 
 /**
  * Circulateurs, sondes, and sorties are extracted from the options
