@@ -315,17 +315,6 @@
 	</div>
 
 	<div id="partieDescription">
-		<table>
-			<tr>
-				<td>Date: </td>
-				<td id="date"></td>
-			</tr>
-			<tr>
-				<td>Description: </td>
-				<td id="description"></td>
-			</tr>
-		</table>
+		<p id="description"></p>
 	</div>
-
-	<input type="hidden" name="description">
 </main>

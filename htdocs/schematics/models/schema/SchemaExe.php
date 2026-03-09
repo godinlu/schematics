@@ -174,7 +174,8 @@ class SchemaExe extends Module{
             case "Appoint multiple":
                 if ($value != "Appoint multiple") $res = "Appoint";
                 else $res = $value;
-                $res .= " " . $this->_formulaire['RH_appoint2'] . " " . $this->_formulaire['RDH_appoint2'];
+                $rdh = ( $this->_formulaire['RDH_appoint2'] === "on") ? " [RDH]" : "";
+                $res .= " " . $this->_formulaire['RH_appoint2'] . $rdh;
                 return $res;
             default:
             return $value;
@@ -420,13 +421,15 @@ class SchemaExe extends Module{
         }
         $this->addLabel("Affaire : " . $affaire_value, $coord_affaire);
 
-        $desc = str_replace("Schéma", "Schéma d'exe", $this->_formulaire['description']);
-        $this->addParagraphe($desc , $coord_description, 350, 8.5);
+        $this->addParagraphe("Schéma d'exe " .  $this->_formulaire['description'], $coord_description, 350, 8.5);
         $this->addLabel($date, $coord_date);
 
+        $opt_S10 = $formulaire["sorties"]["S10"] ?? "";
+        $opt_S11 = $formulaire["sorties"]["S11"] ?? "";
+
         // Partie nom des options
-        $this->addLabel("Option S10: " . getOptionS10($this->_formulaire), $list_coord['label_optionS10']);
-        $this->addLabel("Option S11: " . getOptionS11($this->_formulaire), $list_coord['label_optionS11']);
+        $this->addLabel("Option S10: " . $opt_S10, $list_coord['label_optionS10']);
+        $this->addLabel("Option S11: " . $opt_S11, $list_coord['label_optionS11']);
     }
 
 

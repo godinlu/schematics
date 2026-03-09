@@ -1,5 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", async () =>{
+    const formulaire = sessionStore.formulaire;
     const images = {
         schema_exe: document.querySelector("#schema_exe"),
         etiquetage: document.querySelector("#etiquetage")
@@ -10,7 +11,24 @@ document.addEventListener("DOMContentLoaded", async () =>{
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
     ///////////////////////////////////////////////////////
-    images[current_image].src = `../api/generateSchema.php?image=${current_image}&format=png`;
+    async function load_current_image(){
+        // avoid reloading images
+        if (images[current_image].src) return;
+
+        const response = await fetch(`../api/generateSchema.php?image=${current_image}&format=png`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formulaire)
+        });
+
+        const blob = await response.blob();
+        const img_url = URL.createObjectURL(blob);
+
+        images[current_image].src = img_url;
+    }
+
+
+    load_current_image();
 
 
     ///////////////////////////////////////////////////////
@@ -22,9 +40,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
         current_image = (current_image === "schema_exe") ? "etiquetage" : "schema_exe";
 
         // load the other image if not already loaded.
-        if (!images[current_image].src){
-            images[current_image].src = `../api/generateSchema.php?image=${current_image}&format=png`;
-        }
+        load_current_image();
 
         // hide all images
         for (const img of Object.values(images)){
@@ -53,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
         const link = document.createElement("a");
         
         link.href = images[current_image].src;
-        link.download = `${current_image}${formulaire['nom_affaire']}.png`;
+        link.download = `${current_image}-${sessionStore.name}.png`;
         link.click();
     });
 
@@ -62,13 +78,17 @@ document.addEventListener("DOMContentLoaded", async () =>{
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async ()=>{
         try {
-            const response = await fetch(`../api/generateSchema.php?image=${current_image}&format=pdf`);
+            const response = await fetch(`../api/generateSchema.php?image=${current_image}&format=pdf`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(sessionStore.formulaire)
+            });
             const blob = await response.blob();
 
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = `${current_image}${formulaire['nom_affaire']}.pdf`;
+            link.download = `${current_image}-${sessionStore.name}.pdf`;
             link.click();
             URL.revokeObjectURL(url);
         } catch (err) {

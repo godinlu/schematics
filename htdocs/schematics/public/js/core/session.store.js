@@ -37,7 +37,11 @@ class __SessionStore {
 
     // ===== Formulaire =====
     get formulaire() {
-        return this._load(this.keys.formulaire, structuredClone(DEFAULT_CONTEXT));
+        const data = this._load(this.keys.formulaire);
+        if (!data && !window.location.pathname.endsWith("/formulaire")){
+            window.location.href  = "./formulaire";
+        }
+        return data
     }
 
     set formulaire(data) {

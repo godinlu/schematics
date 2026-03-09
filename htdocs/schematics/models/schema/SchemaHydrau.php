@@ -42,13 +42,13 @@ function add_header_and_footer_on_base(GdImage $gd_image, array $formulaire): Gd
     imagecopy($new_image, $footer, 8, 517, 0, 0, imagesx($footer), imagesy($footer));
 
     // ajout des labels pour les sorties S10 S11
-    $opt_S10 = $formulaire["used_equipment"]["sorties"]["S10"] ?? "";
-    $opt_S11 = $formulaire["used_equipment"]["sorties"]["S11"] ?? "";
+    $opt_S10 = $formulaire["sorties"]["S10"] ?? "";
+    $opt_S11 = $formulaire["sorties"]["S11"] ?? "";
     add_label_inplace($new_image, "option S10 : " . $opt_S10, [433, 572]);
     add_label_inplace($new_image, "option S11 : " . $opt_S11, [433, 584]);
 
     // ajout du paragraphe de description
-    add_paragraph_inplace($new_image, $formulaire['description'], [433, 587] , 350, 8);
+    add_paragraph_inplace($new_image, "Schéma hydraulique " . $formulaire['description'], [433, 587] , 350, 8);
 
     // ajout de la date
     add_label_inplace($new_image, date("d/m/Y"), [710, 648]);
@@ -354,72 +354,50 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
 
 
 function construct_table_of_equipments(array $ctx):array{
+    $equipment_mapping = [
+        "circulateurs" => [
+            "C1" => "Circulateur chauffage zone 1",
+            "C2" => "Circulateur chauffage zone 2",
+            "C3" => "Circulateur chauffage zone 3",
+            "C4" => "Circulateur ballon appoint",
+            "C5" => "Circulateur ballon solaire",
+            "C6" => "Circulateur ballon tampon",
+            "C7" => "Circulateur appoint 2 / chauffage zone 4"
+        ],
+        "sondes" => [
+            "T1" => "T° capteur chaud",
+            "T2" => "T° capteur froid",
+            "T3" => "T° bas de ballon / T° ballon solaire",
+            "T4" => "T° haut de ballon / T° ballon appoint",
+            "T5" => "T° ballon tampon",
+            "T6" => "T° appoint 2",
+            "T7" => "T° collecteur froid",
+            "T8" => "T° collecteur chaud",
+            "T9" => "T° extérieure",
+            "T10" => "T° sonde d’option",
+            "T11" => "T° ambiance zone 1",
+            "T12" =>  "T° ambiance zone 2",
+            "T13" => "T° ambiance zone 3",
+            "T14" => "T° ambiance zone 4",
+            "T15" => "T° sonde d’option",
+            "T16" => "T° sonde d’option"
+        ],
+        "sorties" => [
+            "S10" => "Sortie disponible pour option 47/48",
+            "S11" => "Sortie disponible pour option 49/50"
+        ]
+    ];
+
     $res = [];
 
-    if ($ctx['champCapteur'] !== 'Aucun'){
-        $res[] = ["T1","T° capteur chaud"];
-        $res[] = ["T2","T° capteur froid"];
-    }
-    if ($ctx['ballonECS'] !== 'Aucun'){
-        $res[] = ["T3","T° bas de ballon / T° ballon solaire"];
-        $res[] = ["T4","T° haut de ballon / T° ballon appoint"];
-    }
-    if($ctx['ballonTampon'] !== 'Aucun'){
-        $res[] = ["T5","T° ballon tampon"];
-    }
-    if(preg_match('/Appoint/', $ctx['circulateurC7'])){
-        $res[] = ["T6","T° appoint 2"];
-    }
-    $res[] = ["T7","T° collecteur froid"];
-    $res[] = ["T8","T° collecteur chaud"];
-    $res[] = ["T9","T° extérieure"];
-
-    if (preg_match('/T10/', $ctx['sondes'])){
-        $res[] = ["T10","T° sonde d’option"];
-    }
-    if ($ctx['circulateurC1'] !== 'Aucun'){
-        $res[] = ["T11","T° ambiance zone 1"];
-    }
-    if ($ctx['circulateurC2'] !== 'Aucun'){
-        $res[] = ["T12","T° ambiance zone 2"];
-    }
-    if ($ctx['circulateurC3'] !== 'Aucun'){
-        $res[] = ["T13","T° ambiance zone 3"];
-    }
-    if ($ctx['circulateurC7'] !== 'Aucun' && !preg_match('/Appoint/', $ctx['circulateurC7'])){
-        $res[] = ["T14","T° ambiance zone 4"];
-    }
-    if (preg_match('/T15/', $ctx['sondes'])){
-        $res[] = ["T15","T° sonde d’option"];
-    }
-    if (preg_match('/T16/', $ctx['sondes'])){
-        $res[] = ["T16","T° sonde d’option"];
-    }
-    if ($ctx['circulateurC1'] !== 'Aucun'){
-        $res[] = ["C1","Circulateur chauffage zone 1"];
-    }
-    if ($ctx['circulateurC2'] !== 'Aucun'){
-        $res[] = ["C2","Circulateur chauffage zone 2"];
-    }
-    if ($ctx['circulateurC3'] !== 'Aucun'){
-        $res[] = ["C3","Circulateur chauffage zone 3"];
-    }
-    $res[] = ["C4","Circulateur ballon appoint"];
-
-    if ($ctx['ballonECS'] !== 'Aucun'){
-        $res[] = ["C5","Circulateur ballon solaire"];
-    }
-    if ($ctx['ballonTampon'] !== 'Aucun'){
-        $res[] = ["C6","Circulateur ballon tampon"];
-    }
-    if ($ctx['circulateurC7'] !== 'Aucun'){
-        $res[] = ["C7","Circulateur appoint 2 / chauffage zone 4"];
-    }
-    if (preg_match('/S10/', $ctx['sondes'])){
-        $res[] = ["S10","Sortie disponible pour option 47/48"];
-    }
-    if (preg_match('/S11/', $ctx['sondes'])){
-        $res[] = ["S11","Sortie disponible pour option 49/50"];
+    foreach ($equipment_mapping as $ctx_key => $sub_mapping) {
+        if (isset($ctx[$ctx_key]) && is_array($ctx[$ctx_key])){
+            foreach ($sub_mapping as $key => $label) {
+                if (array_key_exists($key, $ctx[$ctx_key])) {
+                    $res[] = [$key, $label];
+                }
+            }
+        }
     }
     return $res;
 }

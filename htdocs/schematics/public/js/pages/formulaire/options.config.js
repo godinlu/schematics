@@ -26,13 +26,13 @@ const options = {
     typeInstallation: {
         default: "SC2",
         options: {
-            "SC1Z": [],
-            "SC1": [],
-            "SC2": [],
-            "SC1K": [],
-            "SC2K": [],
-            "HydrauBox 1": [],
-            "HydrauBox 2": []
+            "SC1Z": ["T7", "T8", "T9"],
+            "SC1": ["T7", "T8", "T9"],
+            "SC2": ["T7", "T8", "T9"],
+            "SC1K": ["T7", "T8", "T9"],
+            "SC2K": ["T7", "T8", "T9"],
+            "HydrauBox 1": ["T7", "T8", "T9"],
+            "HydrauBox 2": ["T7", "T8", "T9"]
         }
 
     },
@@ -83,16 +83,16 @@ const options = {
     ballonECS: {
         default: "ballon ECS 2 échangeurs",
         options: {
-            "ballon ECS 2 échangeurs": [],
-            "ballon ECS 2 échangeurs avec bouclage sanitaire": [],
-            "ballon ECS et ballon appoint en série": [],
-            "ballon ECS et ballon appoint en série avec bouclage sanitaire": [],
-            "ballon ECS tank in tank": [],
-            "ballon d'eau chaude sur échangeur": [],
-            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": [],
-            "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire": [],
-            "Ballon hygiénique avec 1 echangeur": [],
-            "Ballon hygiénique avec 2 echangeurs": [],
+            "ballon ECS 2 échangeurs": ["T3", "T4", "C4", "C5"],
+            "ballon ECS 2 échangeurs avec bouclage sanitaire": ["T3", "T4", "C4", "C5"],
+            "ballon ECS et ballon appoint en série": ["T3", "T4", "C4", "C5"],
+            "ballon ECS et ballon appoint en série avec bouclage sanitaire": ["T3", "T4", "C4", "C5"],
+            "ballon ECS tank in tank": ["T3", "T4", "C4", "C5"],
+            "ballon d'eau chaude sur échangeur": ["T3", "T4", "C4", "C5"],
+            "ballon Appoint en sortie ballon solaire avec bouclage sanitaire": ["T3", "T4", "C4", "C5"],
+            "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire": ["T3", "T4", "C4", "C5"],
+            "Ballon hygiénique avec 1 echangeur": ["T3", "T4", "C4", "C5"],
+            "Ballon hygiénique avec 2 echangeurs": ["T3", "T4", "C4", "C5"],
             "Aucun": []
         }
     },
@@ -106,10 +106,10 @@ const options = {
     ballonTampon: {
         default: "Ballon tampon",
         options: {
-            "Ballon tampon": [],
-            "2 ballons tampons en série": [],
-            "3 ballons tampons en série": [],
-            "ballon tampon en eau chaude sanitaire": [],
+            "Ballon tampon": ["T5", "C6"],
+            "2 ballons tampons en série": ["T5", "C6"],
+            "3 ballons tampons en série": ["T5", "C6"],
+            "ballon tampon en eau chaude sanitaire": ["T5", "C6"],
             "Aucun": []
         }
     },
@@ -265,84 +265,84 @@ const options = {
     circulateurC1: {
         default: "Plancher chauffant",
         options: {
-            "Plancher chauffant": ["C1"],
-            "Plancher chauffant sur V3V": ["C1"],
-            "Radiateurs": ["C1"],
-            "Radiateurs sur échangeur à plaques": ["C1"],
-            "Radiateurs sur casse pression": ["C1"],
-            "Piscine sur échangeur multi tubulaire": ["C1"],
-            "Piscine sur échangeur à plaques": ["C1"],
-            "Ventilo convecteur": ["C1"],
-            "Décharge sur zone": ["C1"],
-            "Décharge sur zone PC": ["C1"],
-            "Multi zones radiateurs": ["C1"],
-            "Multi zones PC": ["C1"],
-            "Multi zones PC sur V3V": ["C1"],
-            "Process": ["C1"],
-            "Process sur échangeur V3V": ["C1"],
+            "Plancher chauffant": ["C1", "T11"],
+            "Plancher chauffant sur V3V": ["C1", "T11"],
+            "Radiateurs": ["C1", "T11"],
+            "Radiateurs sur échangeur à plaques": ["C1", "T11"],
+            "Radiateurs sur casse pression": ["C1", "T11"],
+            "Piscine sur échangeur multi tubulaire": ["C1", "T11"],
+            "Piscine sur échangeur à plaques": ["C1", "T11"],
+            "Ventilo convecteur": ["C1", "T11"],
+            "Décharge sur zone": ["C1", "T11"],
+            "Décharge sur zone PC": ["C1", "T11"],
+            "Multi zones radiateurs": ["C1", "T11"],
+            "Multi zones PC": ["C1", "T11"],
+            "Multi zones PC sur V3V": ["C1", "T11"],
+            "Process": ["C1", "T11"],
+            "Process sur échangeur V3V": ["C1", "T11"],
             "Aucun": []
         }
     },
     circulateurC2: {
         default: "Aucun",
         options: {
-            "Plancher chauffant": ["C2"],
-            "Radiateurs": ["C2"],
-            "Radiateurs sur échangeur à plaques": ["C2"],
-            "Radiateurs sur casse pression": ["C2"],
-            "Piscine sur échangeur multi tubulaire": ["C2"],
-            "Piscine sur échangeur à plaques": ["C2"],
-            "Ventilo convecteur": ["C2"],
-            "Décharge sur zone": ["C2"],
-            "Décharge sur zone PC": ["C2"],
-            "Multi zones radiateurs": ["C2"],
-            "Multi zones PC": ["C2"],
-            "Process": ["C2"],
-            "Process sur échangeur V3V": ["C2"],
-            "Idem zone N-1": ["C2"],
+            "Plancher chauffant": ["C2", "T12"],
+            "Radiateurs": ["C2", "T12"],
+            "Radiateurs sur échangeur à plaques": ["C2", "T12"],
+            "Radiateurs sur casse pression": ["C2", "T12"],
+            "Piscine sur échangeur multi tubulaire": ["C2", "T12"],
+            "Piscine sur échangeur à plaques": ["C2", "T12"],
+            "Ventilo convecteur": ["C2", "T12"],
+            "Décharge sur zone": ["C2", "T12"],
+            "Décharge sur zone PC": ["C2", "T12"],
+            "Multi zones radiateurs": ["C2", "T12"],
+            "Multi zones PC": ["C2", "T12"],
+            "Process": ["C2", "T12"],
+            "Process sur échangeur V3V": ["C2", "T12"],
+            "Idem zone N-1": ["C2", "T12"],
             "Aucun": []
         }
     },
     circulateurC3: {
         default: "Aucun",
         options: {
-            "Plancher chauffant": ["C3"],
-            "Radiateurs": ["C3"],
-            "Radiateurs sur échangeur à plaques": ["C3"],
-            "Radiateurs sur casse pression": ["C3"],
-            "Piscine sur échangeur multi tubulaire": ["C3"],
-            "Piscine sur échangeur à plaques": ["C3"],
-            "Ventilo convecteur": ["C3"],
-            "Décharge sur zone": ["C3"],
-            "Décharge sur zone PC": ["C3"],
-            "Multi zones radiateurs": ["C3"],
-            "Multi zones PC": ["C3"],
-            "Process": ["C3"],
-            "Process sur échangeur V3V": ["C3"],
-            "Idem zone N-1": ["C3"],
+            "Plancher chauffant": ["C3", "T13"],
+            "Radiateurs": ["C3", "T13"],
+            "Radiateurs sur échangeur à plaques": ["C3", "T13"],
+            "Radiateurs sur casse pression": ["C3", "T13"],
+            "Piscine sur échangeur multi tubulaire": ["C3", "T13"],
+            "Piscine sur échangeur à plaques": ["C3", "T13"],
+            "Ventilo convecteur": ["C3", "T13"],
+            "Décharge sur zone": ["C3", "T13"],
+            "Décharge sur zone PC": ["C3", "T13"],
+            "Multi zones radiateurs": ["C3", "T13"],
+            "Multi zones PC": ["C3", "T13"],
+            "Process": ["C3", "T13"],
+            "Process sur échangeur V3V": ["C3", "T13"],
+            "Idem zone N-1": ["C3", "T13"],
             "Aucun": []
         }
     },
     circulateurC7: {
         default: "Aucun",
         options: {
-            "Plancher chauffant": ["C7"],
-            "Radiateurs": ["C7"],
-            "Radiateurs sur échangeur à plaques": ["C7"],
-            "Radiateurs sur casse pression": ["C7"],
-            "Piscine sur échangeur multi tubulaire": ["C7"],
-            "Piscine sur échangeur à plaques": ["C7"],
-            "Ventilo convecteur": ["C7"],
-            "Décharge sur zone": ["C7"],
-            "Décharge sur zone PC": ["C7"],
-            "Multi zones radiateurs": ["C7"],
-            "Multi zones PC": ["C7"],
-            "Process": ["C7"],
-            "Process sur échangeur V3V": ["C7"],
-            "Idem zone N-1": ["C7"],
-            "Appoint bois": ["C7"],
-            "Appoint granulé": ["C7"],
-            "Appoint multiple": ["C7"],
+            "Plancher chauffant": ["C7", "T14"],
+            "Radiateurs": ["C7", "T14"],
+            "Radiateurs sur échangeur à plaques": ["C7", "T14"],
+            "Radiateurs sur casse pression": ["C7", "T14"],
+            "Piscine sur échangeur multi tubulaire": ["C7", "T14"],
+            "Piscine sur échangeur à plaques": ["C7", "T14"],
+            "Ventilo convecteur": ["C7", "T14"],
+            "Décharge sur zone": ["C7", "T14"],
+            "Décharge sur zone PC": ["C7", "T14"],
+            "Multi zones radiateurs": ["C7", "T14"],
+            "Multi zones PC": ["C7", "T14"],
+            "Process": ["C7", "T14"],
+            "Process sur échangeur V3V": ["C7", "T14"],
+            "Idem zone N-1": ["C7", "T14"],
+            "Appoint bois": ["C7", "T6"],
+            "Appoint granulé": ["C7", "T6"],
+            "Appoint multiple": ["C7", "T6"],
             "Aucun": []
         }
     },
@@ -457,73 +457,6 @@ const DEFAULT_CONTEXT = Object.fromEntries(
     Object.keys(options).map(key => [key, options[key].default])
 );
 
-/**
- * Circulateurs, sondes, and sorties are extracted from the options
- * based on the value of each form field.
- *
- * @param {Object<string, string>} context - The current form data.
- * @return {Object<string, any>} The enriched form data.
- */
-function get_equipment_from_ctx(context) {
-    const categories = { c: {}, t: {}, s: {} };
 
-    for (const [key, value] of Object.entries(context)) {
-        const values_array = options[key]?.options?.[value];
-        if (!values_array) continue;
 
-        for (const v of values_array) {
-            const category = Object.keys(categories).find(cat => new RegExp(cat, 'i').test(v));
-            if (category) categories[category][v] = value;
-        }
-    }
 
-    return {
-        circulateurs: categories.c,
-        sondes: categories.t,
-        sorties: categories.s
-    };
-}
-
-/**
- * 
- * @param {Object<string, string>} context
- * @returns {string}
- */
-function get_description_from_ctx(context){
-    let res = "";
-    // add the type installation first
-    res += context.typeInstallation;
-
-    // create a counter for zones withour appoint and with an exception for PC V3V.
-    let zones_count = {};
-    for (const circ of ["circulateurC1", "circulateurC2", "circulateurC3", "circulateurC7"]){
-        let value = context[circ];
-        if (value === "Aucun" || /appoint/i.test(value)) continue;
-        if (context.circulateurC1 === "Plancher chauffant sur V3V" && value === "Plancher chauffant"){
-            value = "Plancher chauffant sur V3V";
-        }
-        zones_count[value] = (zones_count[value] ?? 0) + 1;
-    }
-    // add zone str description
-    for (const [zone, count] of Object.entries(zones_count)){
-        res += `, ${count} ${zone}`;
-    }
-
-    // add appoint 1
-    if (context.appoint1 !== "Aucun") res = res + ", Appoint 1 "+ context.appoint1;
-
-    // add appoint 2
-    if (context.appoint2 !== "Aucun"){
-        if (/Appoint/.test(context.appoint2)){ //si cette condition est vérifié alors on est dans le cas d'un appoint sur C7
-            res = res + ", " + context.appoint2.replace(/Appoint/,"Appoint 2") + " sur C7";
-        }else{  //sinon on est sur un appoint 2 en cascade d'appoint 1
-            res = res + ", Appoint 2 " + context.appoint2 + " en cascade";
-        }
-    } 
-
-    // add capteur surface
-    if (!isNaN(parseFloat(context.champCapteur_surface))){
-        res += `, `
-    } 
-    return res;
-}

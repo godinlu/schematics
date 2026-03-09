@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // reinit
     document.querySelector("#TB_reinitialisation").addEventListener("click", ()=>{
         sessionStore.clear();
-        location.reload();
+        window.location.href = "./formulaire";
     });
 
     // save the installation

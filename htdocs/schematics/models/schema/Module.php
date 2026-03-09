@@ -18,8 +18,14 @@ abstract class Module extends Schema{
       
 
       $this->_formulaire = $formulaire;
-      $this->_nb_zone = getNbZones($formulaire);
-      $this->_list_emplacement = getList_emplacement($formulaire);
+
+      // get the count of active zone
+      $this->_nb_zone = count(array_filter(
+        ["circulateurC1","circulateurC2","circulateurC3","circulateurC7"],
+        fn($id) => $formulaire[$id] !== "Aucun"
+      ));
+
+      $this->_list_emplacement = $this->get_list_emplacement($formulaire);
       $this->_position = json_decode(file_get_contents(self::$POSITION_PATH) , true);
       $this->_is_SC1Z = ($this->_formulaire['typeInstallation'] === 'SC1Z');
 
@@ -32,7 +38,7 @@ abstract class Module extends Schema{
       $MOD = preg_replace('/K/', '', preg_replace('/HydrauBox /', 'SC', $this->_formulaire['typeInstallation']));
       $PC = '/Plancher chauffant|PC/';
       $path .= $MOD;
-      $path .= " " . $this->getNameModule();
+      $path .= " " . implode('', array_map(fn($id) => isset($id) ? 'X' : '_', $this->_list_emplacement));
       $coord = $this->_is_SC1Z ? $this->_position['coord_module']['SC1Z'] : $this->_position['coord_module']['default'];
       if ($this->_is_SC1Z) $this->_position['coord_label'][5] = [524,256];    //on doit décalé le label C5 
 
@@ -93,13 +99,24 @@ abstract class Module extends Schema{
 
     }
 
-    private function getNameModule(){
-      $res = "";
-      foreach($this->_list_emplacement as $id){
-        if ($id === "") $res .= '_';
-        else $res .= 'X';
-      }
+    private function get_list_emplacement(): array{
+      
+      $push_right_fn = function(&$array){
+        for ($i = count($array) - 2; $i >= 0; $i--) {
+            if ($array[$i + 1] == null) {
+                $array[$i + 1] = $array[$i]; 
+                $array[$i] = null;
+            }
+        }
+      };
+      $res = array_map(
+        fn($id) => $this->_formulaire[$id] !== "Aucun" ? $id : null,
+        ["circulateurC1", "circulateurC2", "circulateurC3", "circulateurC7"]
+      );
+      $push_right_fn($res);
+      if ($this->_formulaire['typeInstallation'] === 'SC1Z') $push_right_fn($res);
       return $res;
+      
     }
 }
 ?>

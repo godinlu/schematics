@@ -1,5 +1,5 @@
 /**
- * @type {import('./components/formulaire_app.js').FormulaireApp}
+ * @typedef {import('./formulaire_app.js')}
  */ 
 
 /**

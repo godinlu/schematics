@@ -14,6 +14,3 @@
     <button type="button" id="btn_download_pdf">télécharger (pdf)<i class="fa-regular fa-file-pdf"></i></button>
   </aside>  
 </div>
-<script>
-  const formulaire = <?=json_encode($formulaire)?>;
-</script>

@@ -46,6 +46,7 @@
     "js": {
         "client":{
             "Formulaire": [
+                "pages/formulaire/options.config.js",
                 "pages/formulaire/rules.config.js",
                 "pages/formulaire/rule_engine.js",
                 "pages/formulaire/field_helpers.js",
@@ -57,7 +58,7 @@
                 "pages/schema_hydrau/index.js"
             ],
             "Schema_exe": [
-                "schema_exe/index.js"
+                "pages/schema_exe/index.js"
             ],
             "Fiche_prog": [
                 "client/fiche_prog.js"
@@ -81,7 +82,6 @@
                 "pages/devis/index.js"
             ],
             "public":[
-                "config/options.config.js",
                 "components/modal.js",
                 "core/header.js",
                 "core/utils.js",

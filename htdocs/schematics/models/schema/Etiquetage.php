@@ -168,8 +168,7 @@ class Etiquetage extends Module{
         }
         $this->addLabel("Affaire : " . $affaire_value, $coord_affaire);
 
-        $desc = str_replace("Schéma", "Étiquetage", $this->_formulaire['description']);
-        $this->addParagraphe($desc , $coord_description, 350, 8.5);
+        $this->addParagraphe("Étiquetage " . $this->_formulaire['description'], $coord_description, 350, 8.5);
         $this->addLabel( $date, $coord_date);
     }
 

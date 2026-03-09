@@ -19,18 +19,18 @@ switch (strtolower($image)){
         $gd_image = add_header_and_footer_on_base($gd_image, $input);
         break;
     case 'schema_hydrau_complet':
-        $gd_image = generate_hydraulic_base_diagram($dataForm->getFormulaire());
-        $gd_image = add_header_and_footer_on_base($gd_image, $dataForm->getFormulaire());
-        $gd_image = add_legend_equipments($gd_image, $dataForm->getFormulaire());
+        $gd_image = generate_hydraulic_base_diagram($input);
+        $gd_image = add_header_and_footer_on_base($gd_image, $input);
+        $gd_image = add_legend_equipments($gd_image, $input);
         break;
     case 'schema_exe':
         require_once(URL_SCHEMA_EXE);
-        $schema = new SchemaExe($dataForm->getFormulaire());
+        $schema = new SchemaExe($input);
         $gd_image = $schema->get_img();
         break;
     case 'etiquetage':
         require_once(URL_ETIQUETAGE);
-        $schema = new Etiquetage($dataForm->getFormulaire());
+        $schema = new Etiquetage($input);
         $gd_image = $schema->get_img();
         break;
     case 'fiche_prog':
