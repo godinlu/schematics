@@ -35,6 +35,8 @@ class FormulaireApp{
         // here this._context will be updated inplace
         const all_states = this._rule_engine.resolve(this._context);
 
+        console.log(get_description_from_ctx(this._context));
+
         // save the context in the session
         sessionStore.formulaire = this._context;
 

@@ -258,6 +258,10 @@ const options = {
             "Aucun": []
         }
     },
+    champCapteur_surface:{
+        default:"",
+        options: {"*":[]}
+    },
     circulateurC1: {
         default: "Plancher chauffant",
         options: {
@@ -457,13 +461,13 @@ const DEFAULT_CONTEXT = Object.fromEntries(
  * Circulateurs, sondes, and sorties are extracted from the options
  * based on the value of each form field.
  *
- * @param {Object<string, string>} form_data - The current form data.
+ * @param {Object<string, string>} context - The current form data.
  * @return {Object<string, any>} The enriched form data.
  */
-function get_equipment_from_form(form_data) {
+function get_equipment_from_ctx(context) {
     const categories = { c: {}, t: {}, s: {} };
 
-    for (const [key, value] of Object.entries(form_data)) {
+    for (const [key, value] of Object.entries(context)) {
         const values_array = options[key]?.options?.[value];
         if (!values_array) continue;
 
@@ -478,4 +482,48 @@ function get_equipment_from_form(form_data) {
         sondes: categories.t,
         sorties: categories.s
     };
+}
+
+/**
+ * 
+ * @param {Object<string, string>} context
+ * @returns {string}
+ */
+function get_description_from_ctx(context){
+    let res = "";
+    // add the type installation first
+    res += context.typeInstallation;
+
+    // create a counter for zones withour appoint and with an exception for PC V3V.
+    let zones_count = {};
+    for (const circ of ["circulateurC1", "circulateurC2", "circulateurC3", "circulateurC7"]){
+        let value = context[circ];
+        if (value === "Aucun" || /appoint/i.test(value)) continue;
+        if (context.circulateurC1 === "Plancher chauffant sur V3V" && value === "Plancher chauffant"){
+            value = "Plancher chauffant sur V3V";
+        }
+        zones_count[value] = (zones_count[value] ?? 0) + 1;
+    }
+    // add zone str description
+    for (const [zone, count] of Object.entries(zones_count)){
+        res += `, ${count} ${zone}`;
+    }
+
+    // add appoint 1
+    if (context.appoint1 !== "Aucun") res = res + ", Appoint 1 "+ context.appoint1;
+
+    // add appoint 2
+    if (context.appoint2 !== "Aucun"){
+        if (/Appoint/.test(context.appoint2)){ //si cette condition est vérifié alors on est dans le cas d'un appoint sur C7
+            res = res + ", " + context.appoint2.replace(/Appoint/,"Appoint 2") + " sur C7";
+        }else{  //sinon on est sur un appoint 2 en cascade d'appoint 1
+            res = res + ", Appoint 2 " + context.appoint2 + " en cascade";
+        }
+    } 
+
+    // add capteur surface
+    if (!isNaN(parseFloat(context.champCapteur_surface))){
+        res += `, `
+    } 
+    return res;
 }

@@ -221,7 +221,7 @@
 			<table>
 				<tr>
 					<td>Surface (m²) :</td>
-					<td><input type="text" class="verif" id="champCapteur_surface" name="champCapteur_surface" value="10"></td>
+					<td><input type="text" data-field="champCapteur_surface"></td>
 				</tr>
 			</table>
 		</div>
