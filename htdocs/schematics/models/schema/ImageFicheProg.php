@@ -37,7 +37,7 @@ function generate_fiche_prog_img(array $data, array $size = [210*5, 297*5]): GdI
         $table->addRow($row);
     }
 
-    $table->setAttribute(array('fontSize' => 18, 'padding'=> 10));
+    $table->setAttribute(array('fontSize' => 14, 'padding'=> 10));
 
     $table->render($img, 0, 0);
 

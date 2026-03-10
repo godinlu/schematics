@@ -150,16 +150,6 @@
 
 </div>
 
-<form id="formulaire" action="" method="post">
-</form>
 <script id="data-devis_tables" type="application/json">
     <?= json_encode($devis_tables, JSON_UNESCAPED_UNICODE) ?>
-</script>
-
-<script id="data-formulaire" type="application/json">
-    <?= json_encode($formulaire, JSON_UNESCAPED_UNICODE) ?>
-</script>
-
-<script id="data-devis-saved" type="application/json">
-    <?= json_encode($devis_saved, JSON_UNESCAPED_UNICODE) ?>
 </script>

@@ -25,8 +25,7 @@
             ],
             "public":[
                 "public/modal.css",
-                "public/public.css",
-                "public/popup.css"
+                "public/public.css"
             ]
         },
         "admin":{
@@ -64,7 +63,6 @@
             ],
             "Devis": [
                 "../assets/html2pdf/html2pdf.bundle.min.js",
-                "components/modal.js",
                 "pages/devis/model/data_manager.class.js",
                 "pages/devis/model/default_articles_ref.js",
                 "pages/devis/store/devis_store.js",

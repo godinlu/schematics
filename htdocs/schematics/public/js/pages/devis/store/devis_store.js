@@ -1,7 +1,5 @@
-var DEBUG = true;
-
-
 /**
+ * @typedef {import('../../../core/session.store.js')}
  * @type {import('../model/data_manager.class.js').DataManager} 
  * 
  * @typedef action
@@ -9,6 +7,8 @@ var DEBUG = true;
  * @property {Object} payload
  * @property {number} [timestamp]
  * */
+
+var DEBUG = true;
 
 /**
  * 
@@ -89,6 +89,12 @@ const devisStore = {
                 // push the action in the history and set the cursor to the end 
                 this.action_history.push({...action, timestamp: Date.now()});
                 this.history_cursor = this.action_history.length - 1;
+
+                // save into the session
+                sessionStore.devis = {
+                    action_history: this.action_history,
+                    history_cursor: this.history_cursor
+                };
 
                 // logging if DEBUG is true
                 if (DEBUG){

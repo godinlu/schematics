@@ -1,16 +1,23 @@
+/**
+ * @typedef {import('../core/session.store.js')}
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
     /////////////////////////////////////////////////////////////
-    //                  MANAGE TOOLBAR
+    //                  TB REINIT
     /////////////////////////////////////////////////////////////
-
-    // reinit
-    document.querySelector("#TB_reinitialisation").addEventListener("click", ()=>{
+    document.querySelector("#TB_reinitialisation").addEventListener("click", (event)=>{
+        event.preventDefault();
         sessionStore.clear();
         window.location.href = "./formulaire";
     });
 
-    // save the installation
-    document.querySelector("#TB_sauvegarder").addEventListener("click", ()=>{
+    /////////////////////////////////////////////////////////////
+    //                  TB SAVE
+    /////////////////////////////////////////////////////////////
+    document.querySelector("#TB_sauvegarder").addEventListener("click", (event)=>{
+        event.preventDefault();
+        
         // Convert object to formatted JSON string
         const json = JSON.stringify(sessionStore.all, null, 2);
 
@@ -29,8 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    // open installation
-    document.querySelector("#TB_charger").addEventListener("click", () => {
+    /////////////////////////////////////////////////////////////
+    //                  TB LOAD
+    /////////////////////////////////////////////////////////////
+    document.querySelector("#TB_charger").addEventListener("click", (event) => {
+        event.preventDefault();
         let modal = new Modal();
         modal.content_div.innerHTML = `
             <div style="width: max-content">
@@ -77,6 +87,50 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         modal.show();
+    });
+
+
+    /////////////////////////////////////////////////////////////
+    //                  TB DOWNLOAD REPORT
+    /////////////////////////////////////////////////////////////
+    document.querySelector("#TB_télécharger_dossier").addEventListener("click", async (event) =>{
+        event.preventDefault();
+        // get data from session
+        const formulaire = sessionStore.formulaire;
+        const fiche_prog = static_fiche_prog_data(formulaire, sessionStore.fiche_prog);
+
+        // test if all required field are input
+        const FIELD_LABELS = {
+            installateur: "Installateur",
+            "Prénom/nom": "Prénom / Nom",
+            adresse_mail: "Adresse mail",
+            commercial: "Commercial"
+        };
+
+        const missing_fields = Object.keys(FIELD_LABELS).filter(field => formulaire[field] === "");
+
+        if (missing_fields.length > 0){
+            const message = `Certains champs sont obligatoires pour télécharger le dossier :\n - ${missing_fields.map(f => FIELD_LABELS[f]).join("\n - ")}`;
+            if (confirm(message + "\n\nAller au formulaire ?")) {
+                window.location.href = `./formulaire#${missing_fields[0]}`;
+            }
+            return;
+        }
+
+        const response = await fetch(`../api/generateSchemaReport.php`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({formulaire, fiche_prog})
+        });
+
+        const blob = await response.blob();
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `dossier-${sessionStore.name}.pdf`;
+        link.click();
+        URL.revokeObjectURL(url);
     });
 });
 

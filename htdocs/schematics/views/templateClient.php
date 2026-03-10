@@ -9,9 +9,6 @@
     <link rel="icon" href="<?=$dependencyLoader->get_url()?>/public/img/cropped-solisart-mini-32x32.png" sizes="32x32">
     <!-- charge font-awesome -->
     <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fontawesome/css/all.min.css">
-    <!-- charge la police de charactère Comfortaa -->
-    <link rel="stylesheet" href="<?=$dependencyLoader->get_url()?>/public/assets/fonts/fonts.css">
-    
 
     <!-- inclusion des feuilles de style -->
     <?php
@@ -75,18 +72,9 @@
             
         </div>
     </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- inclusion du javascript -->
 <?php
 $dependencyLoader->includeJS();
 ?>
 </body>
-
-<!-- inclusion du javascript -->
-
-
-
-
-
-
-
 </html>

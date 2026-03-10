@@ -1,7 +1,5 @@
 <?php 
 require_once ('views/View.php');
-require_once ('models/ArticleManager.php');
-require_once ('models/DataForm.php');
 
 require_once (URL_REPOS . "ArticleCategoryRepository.php");
 
@@ -19,15 +17,6 @@ class ControllerDevis
     }
 
     private function devis(){
-
-      session_start();
-      $dataForm = new DataForm;
-      $formulaire = $dataForm->getFormulaire();
-      if (!isset($formulaire)){
-        header('Location: formulaire');
-        exit;
-      }
-
       $article_category_repo = new ArticleCategoryRepository;
 
       $this->_view = new View('Devis');
@@ -36,8 +25,6 @@ class ControllerDevis
             "categories" => $article_category_repo->get_categories(),
             "articles" => $article_category_repo->get_articles_sorted(),
         ),
-        "formulaire" => $formulaire,
-        "devis_saved" => $dataForm->getDevis()
       ));
     }
 }
