@@ -45,4 +45,5 @@ CREATE TABLE IF NOT EXISTS devis_ligne (
         FOREIGN KEY (id_devis)
         REFERENCES devis_genere(id)
         ON DELETE CASCADE
+        ON UPDATE CASCADE
 );

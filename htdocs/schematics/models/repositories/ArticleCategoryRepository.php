@@ -134,8 +134,7 @@ class ArticleCategoryRepository
      *
      * @throws Exception If the update fails
      */
-    public function update_articles_batch(array $articles): int
-    {
+    public function update_articles_batch(array $articles): int{
         if (empty($articles)) {
             return 0;
         }
@@ -168,6 +167,16 @@ class ArticleCategoryRepository
         } catch (PDOException $e) {
             throw new Exception("Failed to update batch of articles: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Disables all articles by setting `is_used` to false.
+     * @return int Number of articles that were actually updated
+     */
+    public function disable_all_articles(): int{
+        $stmt = $this->db->prepare("UPDATE article SET is_used = 0");
+        $stmt->execute();
+        return $stmt->rowCount();
     }
 
 }

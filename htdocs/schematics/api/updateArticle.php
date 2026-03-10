@@ -5,7 +5,7 @@ require_once (URL_REPOS . "ArticleCategoryRepository.php");
 // Définir le type de réponse JSON
 header('Content-Type: application/json; charset=utf-8');
 
-const MANDATORY_KEYS = ["ref", "prix", "label", "tarif"];
+const MANDATORY_KEYS = ["CODE ARTICLE", "PV", "LIBELLE"];
 
 try {
     // Vérifier que la requête est bien en POST
@@ -42,23 +42,26 @@ try {
             }
         }
         $valid_items[] = [
-            'ref' => $item['ref'],
-            'label' => $item['label'],
-            'prix' => floatval($item['prix']),
-            'is_used' => ($item['tarif'] === 'TARIF')
+            'ref' => $item['CODE ARTICLE'],
+            'prix' => floatval($item['PV']),
+            'label' => $item['LIBELLE'],
+            'is_used' => true
         ];
     }
 
     $article_category_repo = new ArticleCategoryRepository;
 
 
-    // Récupérer les refs existantes
+    // Récupérer les articles existants dans la bd
     $existing_articles = $article_category_repo->get_articles();
-    $existing_refs = array_column($existing_articles, 'ref');
+    $existing_refs = array_flip(array_column($existing_articles, 'ref'));
 
     // Séparer les articles nouveaux de ceux déjà existants
-    $new_items = array_filter($valid_items, fn($item) => !in_array($item['ref'], $existing_refs));
-    $existing_items = array_filter($valid_items, fn($item) => in_array($item['ref'], $existing_refs));
+    $new_items = array_filter($valid_items, fn($item) => !isset($existing_refs[$item['ref']]));
+    $existing_items = array_filter($valid_items, fn($item) => isset($existing_refs[$item['ref']]));
+
+    // mettre tous les articles à is_used = 0
+    $article_category_repo->disable_all_articles();
 
     // --- Insertion batch des nouveaux articles ---
     $insert_count = 0;
@@ -66,7 +69,7 @@ try {
         $insert_count = $article_category_repo->insert_articles_batch($new_items);
     }
 
-    // --- Mise à jour batch des articles existants (optionnel) ---
+    // --- Mise à jour batch des articles existants ---
     $update_count = 0;
     if (!empty($existing_items)) {
         $update_count = $article_category_repo->update_articles_batch($existing_items);
