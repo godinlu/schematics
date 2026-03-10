@@ -11,11 +11,13 @@ CREATE TABLE IF NOT EXISTS category_article (
 
     FOREIGN KEY (category_id)
         REFERENCES category(id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
     FOREIGN KEY (article_ref)
         REFERENCES article(ref)
         ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 -- 3. Insert all rows
