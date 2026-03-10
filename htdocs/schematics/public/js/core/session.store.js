@@ -70,7 +70,7 @@ class __SessionStore {
     get all() {
         return {
             formulaire: this.formulaire,
-            fiche_prog: this.ficheProg,
+            fiche_prog: this.fiche_prog,
             devis: this.devis
         };
     }

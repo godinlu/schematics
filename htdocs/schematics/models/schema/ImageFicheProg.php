@@ -3,82 +3,69 @@ require_once (APP_BASE_PATH.'config/libraries/table/Cell.php');
 require_once (APP_BASE_PATH.'config/libraries/table/Row.php');
 require_once (APP_BASE_PATH.'config/libraries/table/Table.php');
 require_once (APP_BASE_PATH.'config/libraries/table/Label.php');
+require_once("image_utils.php");
 require_once (URL_FICHE_PROG);
 require_once (URL_SCHEMA);
 
 
-class ImageFicheProg extends Schema{
-    private static int $WIDTH = 210 * 3;
-    private static int $HEIGHT = 297 * 3;
-    private static int $PADDING = 5;
+function generate_fiche_prog_img(array $data, array $size = [210*5, 297*5]): GdImage{
+    // create the new img in white 
+    $img = imagecreatetruecolor($size[0], $size[1]);
+    imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
 
-    private FicheProg $_fiche_prog;
+    // create a table instance
+    $table = new Table($size[0]-1, Table::$MODE_EQUAL);
 
-    public function __construct(array $formulaire , ?array $fiche_prog){
-        $this->_orientation = "p";
-        parent::__construct(self::$WIDTH, self::$HEIGHT);
 
-        $this->_fiche_prog = new FicheProg($formulaire , $fiche_prog);
-        $this->render();
-    }   
-    public function getName():string{
-        return $this->_fiche_prog->getName();
-    }
+    // add the first header row
+    $table->addRow(_get_row_header($data));
 
-    public function render(){
-        $table = new Table(self::$WIDTH - 2*self::$PADDING , Table::$MODE_EQUAL);
-        
-        $table->addRow($this->getRowHeader());
-        foreach($this->_fiche_prog->getContent() as $row_content){
-            $row = new Row();
-            foreach($row_content as $cell_content){
-                $cell = new Cell(new Label($cell_content));
-                if (count($row_content) === 1){
-                    $cell->setAttribute(array(
-                        'background_color' => 0xadd8e6,
-                        'centered_x' => true
-
-                    ));
-                }
-                $row->addCell($cell);
-            }
-            $table->addRow($row);
+    // add all row for the body
+    foreach ($data["body"] as $data_row) {
+        $row = new Row();
+        if (count($data_row) === 1){
+            $cell = new Cell(new Label($data_row[0]));
+            $cell->setAttribute(array(
+                'background_color' => 0xadd8e6,
+                'centered_x' => true
+            ));
+            $row->addCell($cell);
+        }else{
+            $row->addCell(new Cell(new Label($data_row[0])));
+            $row->addCell(new Cell(new Label($data_row[1])));
         }
-        $table->setAttribute(array(
-            'fontSize' => 12,
-            'padding' => 5
-        ));
-        $table->render($this->_image , self::$PADDING , self::$PADDING);
+        $table->addRow($row);
     }
 
+    $table->setAttribute(array('fontSize' => 18, 'padding'=> 10));
 
-    private function getRowHeader():Row{
-        $header = new Row();
-        $right_side = new Table();
+    $table->render($img, 0, 0);
 
-        foreach($this->_fiche_prog->getHeader() as $row_content){
-            $row = new Row();
-            foreach($row_content as $cell_content){
-                $cell = new Cell(new Label($cell_content));
-                $row->addCell($cell);
-            }
-            $right_side->addRow($row);
-        }
+    return $img;
+}
 
-        $header->addCell(new Cell($right_side));
-        $cell = new Cell(new Label($this->_fiche_prog->getTitle()));
-        $cell->setAttribute(array(
-            'centered_x' => true,
-            'centered_y' => true
-        ));
-        $header->addCell($cell);
-        $header->setAttribute(array(
-            'border' => false
-        ));
-        return $header;
+
+function _get_row_header(array $data): Row{
+    $header = new Row();
+    $right_side = new Table();
+
+    foreach($data['header'] as $data_row){
+        $row = new Row();
+        $row->addCell(new Cell(new Label($data_row[0])));
+        $row->addCell(new Cell(new Label($data_row[1])));
+        $right_side->addRow($row);
     }
 
-
-
+    $header->addCell(new Cell($right_side));
+    $cell = new Cell(new Label($data['title']));
+    $cell->setAttribute(array(
+        'centered_x' => true,
+        'centered_y' => true
+    ));
+    $header->addCell($cell);
+    $header->setAttribute(array(
+        'border' => false
+    ));
+    return $header;
 }
 ?>

@@ -1,60 +1,90 @@
-//////////////////////////////////////////////////////////////////////////
-//----------------------- VARIABLE GLOBAL--------------------------------             
-var template = document.getElementById("FP_template");
-var table = document.getElementById("ficheProgrammation");
+/**
+ * @typedef {import('../../core/session.store')}
+ * @typedef {import('../../core/utils')}
+ */
 
-//////////////////////////////////////////////////////////////////////////
+document.addEventListener("DOMContentLoaded", () =>{
+    // load data for the sessionStore
+    const data = static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog);
 
-//////////////////////////////////////////////////////////////////////////
-//----------------------------- FONCTION ---------------------------------- 
+    // query DOM elements
+    const fp_header = document.querySelector("#fp-header");
+    const fp_title = document.querySelector("#fp-title");
+    const fp_body = document.querySelector("#fp-body");
+
+    // render title
+    fp_title.innerText = data.title;
+
+    // render header 
+    fp_header.innerHTML = data.header.map(row => {
+        return `<tr><td>${row[0]}</td><td>${get_html_field(row[0], row[1])}</td></tr>`;        
+    }).join("");
+
+    // render body
+    fp_body.innerHTML = data.body.map(row =>{
+        if (row.length === 1){
+            return `<tr><td colspan="2">${row[0]}</td></tr>`
+        }else{
+            return `<tr><td>${row[0]}</td><td>${get_html_field(row[0], row[1])}</td></tr>`;
+        }
+    }).join("");
+
+
+    // get all none static fields
+    const fields = Object.fromEntries(
+        [...document.querySelectorAll("[data-field]")]
+            .map(el => [el.dataset.field, el])
+    );
+
+    // add blur event on each fields to save into session
+    for (const [_, field] of Object.entries(fields)){
+        field.addEventListener("blur", () =>{
+
+            // save value of all fields into session
+            sessionStore.fiche_prog = Object.fromEntries(
+                Object.entries(fields).map(([_field_name, _field]) => [_field_name, _field.value])
+            );
+        });
+    }
+
+    // add the download pdf event
+    document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
+        const response = await fetch(`../api/generateSchema.php?image=fiche_prog&format=pdf`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog))
+        });
+        const blob = await response.blob();
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `fiche_prog-${sessionStore.name}.pdf`;
+        link.click();
+        URL.revokeObjectURL(url);
+    });
+
+});
+
+
 
 /**
- * télécharge le tableau en format pdf avec le bon nom
+ * 
+ * @param {string} field_name 
+ * @param {string} field_value 
+ * @returns {string}
  */
-function downloadPDF(){
-    const imageUrl = "../api/generateSchema.php?image=ImageFicheProg";
-    const form = document.getElementById('formulaire');
-  
-    fetch(imageUrl + "&format=PDF",{
-        method:'POST',
-        body:new FormData(form)
-    })
-    .then(response => recupName(response))
-    .then( ({response , filename}) => toPDF({response , filename}) )
-    .catch(error => {
-      console.error('Une erreur s\'est produite lors du téléchargement du PDF :', error);
-    });
-    
-
-    
+function get_html_field(field_name, field_value){
+    switch(field_name){
+        case "Délai":
+            return `<input type="text" data-field="delai" value="${field_value}">`;
+        case "N° de commande":
+            return `<input type="text" data-field="numCommande" value="${field_value}">`;
+        case "N° de série":
+            return `<input type="text" data-field="numSerie" value="${field_value}">`;
+        case "Commentaire":
+            return `<textarea data-field="commentaire" placeholder="Écrivez ici...">${field_value}</textarea>`;
+        default:
+            return field_value;
+    }
 }
-
-/**
- * cette fonction redirige le formulaire vers la page souhaité pour envoyé les donnée en POST
- * à la page qui les sauvegardera
- * @param {Event} event 
- */
-function handleMenuClick(event){
-    event.preventDefault();
-    
-    const form = document.getElementById('formulaire');
-    form.action = event.target.href
-    form.submit();
-
-}
-//////////////////////////////////////////////////////////////////////////
-//----------------------------- MAIN ---------------------------------- 
-function main(){
-    document.getElementById('btn_download_pdf').addEventListener('click',downloadPDF);
-
-    document.querySelectorAll(".saveForm").forEach(a =>{
-        a.addEventListener("click" , handleMenuClick);
-    });
-}
-
-
-
-document.addEventListener("DOMContentLoaded", main);
-
-
-

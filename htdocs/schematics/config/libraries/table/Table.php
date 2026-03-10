@@ -38,11 +38,11 @@ class Table{
             $width = array_sum($cellsWidth);
 
             foreach($cellsWidth as &$cell_width){
-                $cell_width = ($cell_width / $width) * $maxWidth;
+                $cell_width = (int)(($cell_width / $width) * $maxWidth);
             }
         }else if ($this->_mode === self::$MODE_EQUAL){
             foreach($cellsWidth as &$cell_width){
-                $cell_width = $maxWidth / count($cellsWidth);
+                $cell_width = (int)($maxWidth / count($cellsWidth));
             }
         }
 
@@ -69,7 +69,7 @@ class Table{
 
         if ($this->_mode === self::$MODE_EQUAL){
             for ($i=0; $i < $nb_cells; $i++) { 
-                $cells_width[] = $this->_width / $nb_cells;
+                $cells_width[] = (int)($this->_width / $nb_cells);
             }
         }else{
             for ($i=0; $i < $nb_cells; $i++) { 
@@ -110,7 +110,7 @@ class Table{
         if (isset($this->_width) && $this->_mode === self::$MODE_FLEX){
             $width = array_sum($cellsWidth);
             foreach($cellsWidth as &$cell_width){
-                $cell_width = ($cell_width / $width) * $this->_width;
+                $cell_width = (int)(($cell_width / $width) * $this->_width);
             }
         }
         $width = array_sum($cellsWidth);

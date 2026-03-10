@@ -51,7 +51,7 @@ class Cell{
         if ($this->_centered_y) $y = $y + ( $height - $this->_content->getHeight() )/2;
         else $y  = $y + $this->_padding;
         
-        $this->_content->render($image , $x , $y);
+        $this->_content->render($image , (int) $x , (int) $y);
 
     }
 

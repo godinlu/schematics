@@ -26,8 +26,7 @@
             "public":[
                 "public/modal.css",
                 "public/public.css",
-                "public/popup.css",
-                "fiche_prog/tableau.css"
+                "public/popup.css"
             ]
         },
         "admin":{
@@ -61,7 +60,7 @@
                 "pages/schema_exe/index.js"
             ],
             "Fiche_prog": [
-                "client/fiche_prog.js"
+                "pages/fiche_prog/index.js"
             ],
             "Devis": [
                 "../assets/html2pdf/html2pdf.bundle.min.js",

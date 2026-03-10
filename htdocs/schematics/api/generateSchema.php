@@ -2,6 +2,7 @@
 require_once ("../config/config.php");
 require_once (URL_FPDF);
 require_once (URL_SCHEMA_HYDRAULIQUE);
+require_once(APP_BASE_PATH.'models/schema/ImageFicheProg.php');
 
 $input_json = file_get_contents("php://input");
 $input = json_decode($input_json, true);
@@ -34,9 +35,7 @@ switch (strtolower($image)){
         $gd_image = $schema->get_img();
         break;
     case 'fiche_prog':
-        require_once(URL_FICHE_PROG);
-        $schema = new ImageFicheProg($dataForm->getFormulaire(), $dataForm->getFiche_prog());
-        $gd_image = $schema->get_img();
+        $gd_image = generate_fiche_prog_img($input);
         break;
     default:
         throw new Exception("Invalid image name : $image");
@@ -52,7 +51,7 @@ switch (strtolower($format)){
         add_img_to_pdf($gd_image, $pdf);
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: inline; filename="schema_'.$image.'.pdf"');
+        header('Content-Disposition: inline; filename="'.$image.'.pdf"');
         echo $pdf->Output('S'); // output en string pour header
         exit;
 
