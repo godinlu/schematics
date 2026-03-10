@@ -2,15 +2,17 @@
 $USER = "admin";
 $PW = "ILoveSolisart!";
 
-if (
-    !isset($_SERVER['PHP_AUTH_USER']) ||
-    $_SERVER['PHP_AUTH_USER'] !== $USER ||
-    $_SERVER['PHP_AUTH_PW'] !== $PW
-) {
-    header('WWW-Authenticate: Basic realm="Admin Import"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo "Access denied";
-    exit;
+$auth = $_SERVER['PHP_AUTH_USER'] ?? null;
+$pass = $_SERVER['PHP_AUTH_PW'] ?? null;
+
+if (!$auth && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    [$auth,$pass] = explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'],6)),2);
+}
+
+if ($auth!==$USER || $pass!==$PW) {
+    header('WWW-Authenticate: Basic realm="Admin"');
+    header('HTTP/1.1 401 Unauthorized');
+    exit("Access denied");
 }
 ?>
 <!DOCTYPE html>
