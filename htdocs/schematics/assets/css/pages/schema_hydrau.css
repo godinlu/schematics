@@ -1,0 +1,18 @@
+.flex{
+  display: flex;
+}
+.hidden{
+  display: none;
+}
+
+#canvas_container{
+  width: 1170px;
+  background-color: white;
+}
+
+
+
+
+
+
+

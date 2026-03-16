@@ -9,6 +9,7 @@ dev
 
 # ignore the config textfile
 config.txt
+.env
 
 # ignore the TODO list
 TODO.md

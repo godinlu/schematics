@@ -1,8 +1,10 @@
 <?php
-require_once ("../config/config.php");
-require_once (URL_FPDF);
-require_once (URL_SCHEMA_HYDRAULIQUE);
-require_once(APP_BASE_PATH.'models/schema/ImageFicheProg.php');
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../includes/functions/images/SchemaHydrau.php';
+require_once __DIR__ . '/../includes/functions/images/ImageFicheProg.php';
+require_once __DIR__ . '/../includes/functions/images/SchemaExe.php';
+require_once __DIR__ . '/../includes/functions/images/Etiquetage.php';
+require_once __DIR__ . '/../includes/libs/fpdf/fpdf.php';
 
 $input_json = file_get_contents("php://input");
 $input = json_decode($input_json, true);
@@ -25,12 +27,10 @@ switch (strtolower($image)){
         $gd_image = add_legend_equipments($gd_image, $input);
         break;
     case 'schema_exe':
-        require_once(URL_SCHEMA_EXE);
         $schema = new SchemaExe($input);
         $gd_image = $schema->get_img();
         break;
     case 'etiquetage':
-        require_once(URL_ETIQUETAGE);
         $schema = new Etiquetage($input);
         $gd_image = $schema->get_img();
         break;

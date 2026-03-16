@@ -1,0 +1,139 @@
+main > *{
+  margin-bottom: 1em;
+}
+
+div.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+}
+
+div.flex>* {
+    flex-grow: 1;
+}
+
+div.flex>*:first-child {
+    margin-right: 0.5em;
+}
+
+div.flex>*:nth-child(2) {
+    margin-left: 0.5em;
+}
+
+div.rectangle {
+    background-color: white;
+    /* border-radius: 0.5em; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+div.rectangle>* {
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+    flex-grow: 1;
+}
+
+#formulaire table {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+label[for]:hover {
+    color: #f6c437;
+    cursor: pointer;
+}
+
+.bigSelect {
+    width: 30em;
+}
+
+select{
+  border-radius: 5px;
+  margin:2px 0px 0px 0px;
+
+}
+select:enabled{cursor: pointer;}
+
+/* input[type=text],input[type=email]{
+  border-radius: 5px;
+  margin:2px 0px 0px 0px;
+  cursor: text;
+} */
+select:disabled{
+  opacity: 0.5!important;
+  cursor: help !important;
+
+}
+option:disabled{
+  color: #CFDBD5 !important;
+  font-style: italic;
+}
+
+.disabled{
+  opacity: 0.5!important;
+  cursor: help !important;
+  color: gray !important;
+}
+
+fieldset{
+  border-radius: 0.5em;
+  margin: 1em 0.5em 1em 0.5em;
+}
+
+#PartieBallon {
+    display: flex;
+    justify-content: space-between;
+}
+
+#partieDescription {
+    background-color: white;
+    padding: 1em;
+}
+
+/* ===============================================================================
+                            ACCORDION
+=============================================================================== */
+
+/* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    padding: 1em;
+    border: none;
+    outline: none;
+    text-align: left;
+    transition: 0.4s;
+
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active,
+.accordion:hover {
+    background-color: #EAF205;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+    padding: 0 1em 0 1em;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    margin: 0;
+}
+
+.accordion:after {
+    content: "▼";
+    font-size: 17px;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "▲";
+}

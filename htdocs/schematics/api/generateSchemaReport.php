@@ -1,10 +1,10 @@
 <?php
-require_once('../config/config.php');
-require_once(URL_FPDF);
-require_once(URL_SCHEMA_HYDRAULIQUE);
-require_once (URL_SCHEMA_EXE);
-require_once (URL_ETIQUETAGE);
-require_once (URL_IMAGE_FICHE_PROG);    
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../includes/functions/images/SchemaHydrau.php';
+require_once __DIR__ . '/../includes/functions/images/ImageFicheProg.php';
+require_once __DIR__ . '/../includes/functions/images/SchemaExe.php';
+require_once __DIR__ . '/../includes/functions/images/Etiquetage.php';
+require_once __DIR__ . '/../includes/libs/fpdf/fpdf.php';
 
 // get the input json
 $input_json = file_get_contents("php://input");

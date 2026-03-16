@@ -1,6 +1,6 @@
 <?php
-require_once ("../config/config.php");
-require_once (URL_REPOS . "ArticleCategoryRepository.php");
+require_once __DIR__ . '/../config/config.php';
+require_once (ROOT_PATH . 'includes/functions/db/ArticleCategoryRepository.php');
 
 // Définir le type de réponse JSON
 header('Content-Type: application/json; charset=utf-8');

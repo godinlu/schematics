@@ -4,7 +4,7 @@ RewriteEngine On
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+# Rediriger /formulaire vers /pages/formulaire.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-RewriteRule ^(.*?)$ index.php?url=$1 [QSA,L]
+RewriteRule ^(formulaire|schema_hydrau|schema_exe|fiche_prog|devis|admin)/?$ pages/$1.php [L]

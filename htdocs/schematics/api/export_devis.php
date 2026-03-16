@@ -1,15 +1,10 @@
 <?php
-require_once ("../config/config.php");
-require_once (APP_BASE_PATH . 'models/SchematicsDatabase.php');
+require_once __DIR__ . '/../config/config.php';
+require_once (ROOT_PATH . 'includes/functions/db/SchematicsDatabase.php');
 
-// ------------------------
-// CONFIGURATION DE SÉCURITÉ
-// ------------------------
-// Clé API simple pour limiter l'accès
-$API_KEY = 'b7f3c9d2a8e44c1f'; // à générer et conserver confidentiellement
 
 // Vérifier que la clé est fournie en header
-if (!isset($_GET['api_key']) || $_GET['api_key'] !== $API_KEY) {
+if (!isset($_GET['api_key']) || $_GET['api_key'] !== $_ENV['API_KEY']) {
     http_response_code(401);
     echo json_encode(["error" => "Accès non autorisé"]);
     exit;
