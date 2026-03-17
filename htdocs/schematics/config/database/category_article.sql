@@ -83,9 +83,10 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
 
 -- ECS
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
-    ('module ECS', 'SCECS'),
-    ('module ECS', 'SCECSK'),
-    ('kit ECS', 'SCECSKIT');
+    ('module ECS', 'CESC1'),
+    ('module ECS', 'CESC2'),
+    ('kit ECS', 'CESC1KIT'),
+    ('kit ECS', 'CESC2KIT');
 
 -- #####################################################################
 --                          SC OPTIONS
