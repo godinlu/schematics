@@ -619,8 +619,8 @@ INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
 
 -- Réchauffeurs de boucle
 INSERT IGNORE INTO category_article (category_id, article_ref) VALUES
-    ('rechauffeur de boucle', 'MOD0315'),
-    ('rechauffeur de boucle', 'MOD0306'),
+    ('rechauffeur de boucle', 'KITSSC195'),
+    ('rechauffeur de boucle', 'KITSSC240'),
     ('rechauffeur de boucle', 'MOD0801'),
     ('rechauffeur de boucle', 'MOD0340'),
     ('rechauffeur de boucle', 'MOD0341'),

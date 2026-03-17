@@ -116,7 +116,7 @@ $devis_tables = [
                 <div class="hint">
                     <button id="download-devis-pdf" disabled>Télécharger <i class="fa-regular fa-file-pdf"></i></button>
                     <span class="hint-tooltip">
-                        Veuillez renseigner l’affaire et le nom <br>de l’entreprise pour télécharger le devis.
+                        Veuillez renseigner tous les champs <br>de l’entête pour télécharger le devis.
                     </span>
                 </div>
 

@@ -106,11 +106,11 @@ class DevisHeader{
 
     /**
      * dispatch an "download-disabled" event to disabled or not the download pdf button
-     * to be enabled it required "header-affaire" and "header-installateur_entreprise" not empty.
+     * to be enabled all header fields must be non-empty.
      * @private
      */
     _update_download_pdf_button(){
-        const disabled = this.fields.get("header-affaire") === "" || this.fields.get("header-installateur_entreprise") === "";
+        const disabled = [...this.fields.values()].some(v => v === "");
         devisStore.dispatch("download-disabled", {disabled});
     }
 
