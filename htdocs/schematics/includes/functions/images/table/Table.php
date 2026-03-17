@@ -1,6 +1,5 @@
 <?php
 
-use Table as GlobalTable;
 
 class Table{
     private ?int $_width;
@@ -35,15 +34,9 @@ class Table{
     public function setMaxWidth(int $maxWidth){
         $cellsWidth = $this->calculatedCellsWidth();
         if ($this->_mode === self::$MODE_FLEX){
-            $width = array_sum($cellsWidth);
-
-            foreach($cellsWidth as &$cell_width){
-                $cell_width = (int)(($cell_width / $width) * $maxWidth);
-            }
+            // MODE_FLEX: chaque colonne garde sa largeur minimale naturelle
         }else if ($this->_mode === self::$MODE_EQUAL){
-            foreach($cellsWidth as &$cell_width){
-                $cell_width = (int)($maxWidth / count($cellsWidth));
-            }
+            $cellsWidth = array_fill(0, count($cellsWidth), (int)($maxWidth / count($cellsWidth)));
         }
 
         foreach($this->_rows as $row){
@@ -77,6 +70,7 @@ class Table{
             }
 
             foreach($this->_rows as $row){
+                if ($row->getNbCells() < $nb_cells) continue;
                 foreach($row->getCellsWidth() as $index => $width){
                     if ($width > $cells_width[$index]){
                         $cells_width[$index] = $width;
@@ -105,14 +99,6 @@ class Table{
 
         $cellsWidth = $this->calculatedCellsWidth();
 
-        //ici si le tableau à une width prédéfinie et que le mode est en flex alors 
-        //on recalcule les longueur de chaque cellule pour les augmenter proportionellement
-        if (isset($this->_width) && $this->_mode === self::$MODE_FLEX){
-            $width = array_sum($cellsWidth);
-            foreach($cellsWidth as &$cell_width){
-                $cell_width = (int)(($cell_width / $width) * $this->_width);
-            }
-        }
         $width = array_sum($cellsWidth);
         
 

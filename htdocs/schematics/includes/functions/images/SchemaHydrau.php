@@ -1,5 +1,9 @@
 <?php
 require_once("image_utils.php");
+require_once(__DIR__ . "/table/Label.php");
+require_once(__DIR__ . "/table/Cell.php");
+require_once(__DIR__ . "/table/Row.php");
+require_once(__DIR__ . "/table/Table.php");
 
 function add_legend_equipments(GdImage $gd_image, array $formulaire): GdImage
 {
@@ -13,11 +17,27 @@ function add_legend_equipments(GdImage $gd_image, array $formulaire): GdImage
     // copy the $gd_img to new img
     imagecopy($new_img, $gd_image, 0, 0, 0, 0, imagesx($gd_image), imagesy($gd_image));
 
-    // construct the table of equipments
-    $table = construct_table_of_equipments($formulaire);
+    // construct and draw the table of equipments using OOP classes
+    $equipment_rows = construct_table_of_equipments($formulaire);
 
-    // draw the table on the right of the new img
-    draw_table($new_img, $table, [880, 30], "Légende des équipements");
+    $table = new Table();
+
+    // title row (single cell, centered, full width)
+    $title_cell = new Cell(new Label("Légende des équipements"));
+    $title_cell->setAttribute(['centered_x' => true, 'centered_y' => true]);
+    $title_row = new Row();
+    $title_row->addCell($title_cell);
+    $table->addRow($title_row);
+
+    // data rows
+    foreach ($equipment_rows as [$key, $label]) {
+        $row = new Row();
+        $row->addCell(new Cell(new Label($key)));
+        $row->addCell(new Cell(new Label($label)));
+        $table->addRow($row);
+    }
+
+    $table->render($new_img, 880, 30);
     return $new_img;
 }
 
