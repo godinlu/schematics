@@ -61,7 +61,7 @@ try {
     $existing_items = array_filter($valid_items, fn($item) => isset($existing_refs[$item['ref']]));
 
     // mettre tous les articles à is_used = 0
-    $article_category_repo->disable_all_articles();
+    $previously_active = $article_category_repo->disable_all_articles();
 
     // --- Insertion batch des nouveaux articles ---
     $insert_count = 0;
@@ -75,11 +75,14 @@ try {
         $update_count = $article_category_repo->update_articles_batch($existing_items);
     }
 
-    // Exemple de traitement (à remplacer par ta logique métier)
+    $disabled_count = max(0, $previously_active - $update_count);
+
     $response = [
-        'message' => 'Data processed successfully',
+        'message' => 'Import réalisé avec succès',
+        'total_processed' => count($valid_items),
         'insert_count' => $insert_count,
-        'update_count' => $update_count
+        'update_count' => $update_count,
+        'disabled_count' => $disabled_count,
     ];
 
     // Répondre avec succès
