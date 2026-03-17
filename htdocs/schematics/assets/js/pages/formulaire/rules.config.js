@@ -304,6 +304,41 @@ const __RULES = {
         reason: "Nécessite une zone 3 de chauffage."
     },
     ////////////////////////////////////////////////////////////////////////////
+    //                          RÉHAUSSEMENT DES RETOURS
+    ////////////////////////////////////////////////////////////////////////////
+    "rehaussement-c1": {
+        when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
+            ctx.circulateurC2 !== "Réhaussement des retour" &&
+            ctx.circulateurC3 !== "Réhaussement des retour" &&
+            ctx.circulateurC7 !== "Réhaussement des retour",
+        allow: { circulateurC1: ["Réhaussement des retour"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+    },
+    "rehaussement-c2": {
+        when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
+            ctx.circulateurC1 !== "Réhaussement des retour" &&
+            ctx.circulateurC3 !== "Réhaussement des retour" &&
+            ctx.circulateurC7 !== "Réhaussement des retour",
+        allow: { circulateurC2: ["Réhaussement des retour"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+    },
+    "rehaussement-c3": {
+        when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
+            ctx.circulateurC1 !== "Réhaussement des retour" &&
+            ctx.circulateurC2 !== "Réhaussement des retour" &&
+            ctx.circulateurC7 !== "Réhaussement des retour",
+        allow: { circulateurC3: ["Réhaussement des retour"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+    },
+    "rehaussement-c7": {
+        when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
+            ctx.circulateurC1 !== "Réhaussement des retour" &&
+            ctx.circulateurC2 !== "Réhaussement des retour" &&
+            ctx.circulateurC3 !== "Réhaussement des retour",
+        allow: { circulateurC7: ["Réhaussement des retour"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+    },
+    ////////////////////////////////////////////////////////////////////////////
     //                          APPOINT C7
     ////////////////////////////////////////////////////////////////////////////
     "app2-on-c7": {
