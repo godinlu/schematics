@@ -117,11 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const response = await fetch(`api/generateSchemaReport.php`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({formulaire, fiche_prog})
-        });
+        const response = await post_data(`generateSchemaReport.php`, {formulaire, fiche_prog});
 
         const blob = await response.blob();
 

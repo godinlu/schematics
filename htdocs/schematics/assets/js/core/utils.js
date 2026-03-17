@@ -61,25 +61,22 @@ function static_fiche_prog_data(formulaire, fiche_prog) {
 
 
 /**
- * Send POST request
- * @param {string} endpoint
+ * Send POST request to the API
+ * @param {string} endpoint - endpoint name (e.g. "generateSchema.php?image=foo&format=png")
  * @param {Object} payload
- * @param {string} base_url
- * @returns {Promise<Object>}
+ * @returns {Promise<Response>}
  */
-async function post_data(endpoint, payload, base_url = "../api/") {
-    const response = await fetch(`${base_url}${endpoint}`, {
+async function post_data(endpoint, payload) {
+    const response = await fetch(`${BASE_URL}api/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     });
 
     if (!response.ok) {
-        // On peut quand même récupérer le texte brut pour debug
         const text = await response.text();
         throw new Error(`HTTP ${response.status}: ${text}`);
     }
 
-    // On renvoie la response brute
     return response;
 }

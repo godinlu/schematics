@@ -6,6 +6,8 @@
     <!-- load solisart icon -->
     <link rel="icon" href="<?= IMG ?>cropped-solisart-mini-32x32.png" sizes="32x32">
 
+    <script>const BASE_URL = "<?= BASE_URL ?>";</script>
+
     <!-- font-awesome -->
     <link rel="stylesheet" href="<?= ASSETS ?>fonts/fontawesome/css/all.min.css">
 

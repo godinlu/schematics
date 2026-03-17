@@ -24,11 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // avoid reloading images
         if (images[current_version].src) return;
 
-        const response = await fetch(`api/generateSchema.php?image=schema_hydrau_${current_version}&format=png`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formulaire)
-        });
+        const response = await post_data(`generateSchema.php?image=schema_hydrau_${current_version}&format=png`, formulaire);
 
         const blob = await response.blob();
         const img_url = URL.createObjectURL(blob);
@@ -92,11 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
         try {
-            const response = await fetch(`api/generateSchema.php?image=schema_hydrau_${current_version}&format=pdf`, {
-                method: "POST",
-                headers:{ "Content-Type": "application/json" },
-                body: JSON.stringify(sessionStore.formulaire),
-            });
+            const response = await post_data(`generateSchema.php?image=schema_hydrau_${current_version}&format=pdf`, sessionStore.formulaire);
             const blob = await response.blob();
 
             const url = URL.createObjectURL(blob);

@@ -49,11 +49,7 @@ document.addEventListener("DOMContentLoaded", () =>{
 
     // add the download pdf event
     document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
-        const response = await fetch(`api/generateSchema.php?image=fiche_prog&format=pdf`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog))
-        });
+        const response = await post_data(`generateSchema.php?image=fiche_prog&format=pdf`, static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog));
         const blob = await response.blob();
 
         const url = URL.createObjectURL(blob);

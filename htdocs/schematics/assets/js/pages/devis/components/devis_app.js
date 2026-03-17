@@ -152,11 +152,7 @@ class DevisApp{
         const devis_data = this.to_json_data();
         console.log(devis_data);
 
-        const response = await fetch('api/save_devis.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(devis_data)
-        });
+        const response = await post_data('save_devis.php', devis_data);
 
         const json = await response.json();
 

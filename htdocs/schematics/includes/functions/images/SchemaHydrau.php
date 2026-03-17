@@ -94,6 +94,10 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
     ////////////////////////////////////////////////////////////////////////
     $ic->add_image('template schema');
 
+    if ($ctx['champCapteur'] === 'Aucun' && $ctx['ballonTampon'] === 'Aucun'){
+        $ic->add_image('raccord/hide capteur racc');
+    }
+
     ////////////////////////////////////////////////////////////////////////
     //                          champCapteur
     ////////////////////////////////////////////////////////////////////////
@@ -200,6 +204,12 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void{
     //                          Circulateurs
     ////////////////////////////////////////////////////////////////////////
     $circulateurs = ['circulateurC1', 'circulateurC2', 'circulateurC3', 'circulateurC7'];
+
+    // cache les raccords chaud et froid des zones de chauffage si tous désactivées.
+    foreach ($circulateurs as $circ) {
+        if ($ctx[$circ] === 'Aucun') $ic->add_image('raccord/hide ' . $circ);
+        else break;
+    }
 
     for ($i=0; $i < count($circulateurs); $i++) { 
         $circ = $circulateurs[$i];

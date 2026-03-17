@@ -1,10 +1,14 @@
 RewriteEngine On
 
+# ---------------------------------------
 # Forward Authorization header to PHP
+# ---------------------------------------
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-# Rediriger /formulaire vers /pages/formulaire.php
+# Si fichier ou dossier existe → ne pas toucher
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(formulaire|schema_hydrau|schema_exe|fiche_prog|devis|admin)/?$ pages/$1.php [L]
+
+# Tout passe par index.php
+RewriteRule ^ index.php [L]
