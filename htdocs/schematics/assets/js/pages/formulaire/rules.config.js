@@ -470,6 +470,20 @@ const __EVENT_RULES = {
             ctx.ballonTampon !== "Aucun",
         force: { EchangeurDansBT: "on" },
         reason: "Par défaut on met un échangeur dans le ballon tampon."
+    },
+    "default-CESC":{
+        when: (ctx, updated_field) => 
+            updated_field === "typeInstallation" &&
+            /cesc/i.test(ctx.typeInstallation),
+        force: {ballonECS: "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire"},
+        reason: "Ballon par defaut pour une installation type CESC"
+    },
+    "default-CESC-2-BT":{
+        when: (ctx, updated_field) => 
+            updated_field === "typeInstallation" &&
+            ctx.typeInstallation === "CESC2",
+        force: {ballonTampon: "ballon tampon en eau chaude sanitaire"},
+        reason: "Ballon tampon par defaut pour une installation type CESC 2"
     }
 };
 

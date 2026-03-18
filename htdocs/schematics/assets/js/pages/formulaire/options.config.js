@@ -32,7 +32,9 @@ const options = {
             "SC1K": ["T7", "T8", "T9"],
             "SC2K": ["T7", "T8", "T9"],
             "HydrauBox 1": ["T7", "T8", "T9"],
-            "HydrauBox 2": ["T7", "T8", "T9"]
+            "HydrauBox 2": ["T7", "T8", "T9"],
+            "CESC1": ["T7", "T8", "T9"],
+            "CESC2": ["T7", "T8", "T9"]
         }
 
     },
