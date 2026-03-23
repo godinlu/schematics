@@ -100,6 +100,7 @@ class SchemaExe extends Module{
         $this->setImageAppoint($this->_position['appoint']);
         $this->setImageBallonTampon($this->_position['ballonTampon']);
         $this->setImageDivers($this->_position['divers']);
+        $this->setImageRDR();
         $this->setImageOptions($this->_position['option']);
         $this->setLabelOptions($this->_position['option']);
         $this->setLegend($this->_position['legend']);
@@ -163,6 +164,9 @@ class SchemaExe extends Module{
             $id = $this->_list_emplacement[$i]; // $id correspond à l'id du circulateur
             if (!$id) continue; // Ici, on ne fait rien si aucun circulateur n'est défini
 
+            // le réhaussement des retours sera géré ailleurs.
+            if ($this->_formulaire[$id] === 'Réhaussement des retour') continue; 
+
             $value = $this->getNameImageCirculateurs($this->_formulaire[$id]);
             $path = "circulateurs/objet/"; // Chemin pour ajouter un objet (ex: radiateur)
             $path_racc = "circulateurs/raccordement/zone" . $i . "/racc"; // Chemin pour ajouter le bon raccordement
@@ -211,6 +215,34 @@ class SchemaExe extends Module{
                 }
             } else {
                 $this->addImage($path . $value, $list_coord_img[$i]);
+            }
+        }
+    }
+
+    /**
+     * 
+     */
+    private function setImageRDR(){
+        $mapping = [
+            "circulateurC1" => "T11",
+            "circulateurC2" => "T12",
+            "circulateurC3" => "T13",
+            "circulateurC7" => "T14"
+        ];
+        foreach ($mapping as $circ => $sonde) {
+            if ($this->_formulaire[$circ] === 'Réhaussement des retour'){
+                $suffix = (preg_match('/gauche/', $this->_formulaire['divers']))? "gauche" : "droite";
+                $img_path = 'option/optionBT/Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC ' . $suffix;
+                $this->addImage($img_path, [190, 99]);
+                $this->addImage("option/optionBT/hide T15", [190, 99]);
+
+                # add the circ label (C1, C2, ...)
+                $coord_label = ($suffix === "droite") ? [296, 164] : [230, 164];
+                $this->addLabel(preg_replace('/circulateur/','', $circ), $coord_label);
+
+                # add the sonde label (T11, T12, ...)
+                $coord_label = ($suffix === "droite") ? [320, 164] : [250, 164];
+                $this->addLabel($sonde, $coord_label);
             }
         }
     }
