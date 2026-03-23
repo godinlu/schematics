@@ -34,7 +34,8 @@ abstract class Module extends Schema{
 
     private function setImageModule() {
       $path = "module/";
-      $MOD = preg_replace('/K/', '', preg_replace('/HydrauBox /', 'SC', $this->_formulaire['typeInstallation']));
+
+      $MOD = preg_replace('/K/', '', preg_replace('/HydrauBox |CESC/', 'SC', $this->_formulaire['typeInstallation']));
       $PC = '/Plancher chauffant|PC/';
       $path .= $MOD;
       $path .= " " . implode('', array_map(fn($id) => isset($id) ? 'X' : '_', $this->_list_emplacement));

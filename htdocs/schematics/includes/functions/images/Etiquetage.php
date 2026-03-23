@@ -137,7 +137,12 @@ class Etiquetage extends Module{
      * @param array data_legend_etiquetage 
      */
     private function addLabelLegend(array $data_legend_etiquetage) {
-        $title = "Etiquetage |S|olis |C|onfort |SC|" . str_replace("SC", "", $this->_formulaire['typeInstallation']);
+        if (preg_match('/^SC/', $this->_formulaire['typeInstallation'])){
+            $title = "Etiquetage |S|olis |C|onfort |SC|" . str_replace("SC", "", $this->_formulaire['typeInstallation']);
+        }else{
+            $title = "Etiquetage " . $this->_formulaire['typeInstallation'];
+        }
+        
         // Lorsque l'on a un SC1, on descend toute la légende de 60
         // Donc ici, on est obligé d'annuler la descente pour que le titre reste au même endroit
         if ($this->_is_SC1Z) {

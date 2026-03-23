@@ -52,6 +52,16 @@ const SC_MAPPING = [
         refs: {"module Hydraubox 2": ["HYBX2MOD"], "kit Hydraubox": ["HYBXKIT"]},
         reason: "L'installation est une HydrauBox 2."
     },
+    {
+        when: { typeInstallation: /^CESC1$/ },
+        refs: {"module ECS": ["CESC1"], "kit ECS": ["CESC1KIT"]},
+        reason: "L'installation est un CESC 1."
+    },
+    {
+        when: { typeInstallation: /^CESC2$/ },
+        refs: {"module ECS": ["CESC2"], "kit ECS": ["CESC2KIT"]},
+        reason: "L'installation est un CESC 2."
+    },
     // -------------------- OPTIONS DE ZONES --------------------
     {
         when: {

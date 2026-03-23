@@ -466,7 +466,12 @@ class SchemaExe extends Module{
         }
 
         // Partie titre
-        $title = "Schéma d'exe |S|olis |C|onfort |SC|" . str_replace("SC", "", $this->_formulaire['typeInstallation']);
+        if (preg_match('/^SC/', $this->_formulaire['typeInstallation'])){
+            $title = "Schéma d'exe |S|olis |C|onfort |SC|" . str_replace("SC", "", $this->_formulaire['typeInstallation']);
+        }else{
+            $title = "Schéma d'exe " . $this->_formulaire['typeInstallation'];
+        }
+        
         $this->addTitle($title, $list_coord['title']);
 
         // Partie description de l'affaire

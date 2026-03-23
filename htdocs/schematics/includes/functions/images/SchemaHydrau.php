@@ -51,7 +51,7 @@ function add_header_and_footer_on_base(GdImage $gd_image, array $formulaire): Gd
     imagecopy($new_image, $gd_image, 0, 40, 0, 0, imagesx($gd_image), imagesy($gd_image));
 
     // ajout du titre du schéma
-    if (preg_match('/SC/', $formulaire['typeInstallation'])) {
+    if (preg_match('/^SC/', $formulaire['typeInstallation'])) {
         $title = "Schéma hydraulique |S|olis |C|onfort |SC|" . str_replace("SC", "", $formulaire['typeInstallation']);
     } else {
         $title = "Schéma hydraulique " . $formulaire['typeInstallation'];
