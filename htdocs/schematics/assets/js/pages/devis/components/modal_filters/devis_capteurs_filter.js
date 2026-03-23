@@ -54,7 +54,6 @@ class DevisCapteurFilter{
                         <select data-filter="type">
                             <option value="S7 2,5">S7 2,5</option>
                             <option value="S7 2,5B">S7 2,5B</option>
-                            <option value="S7">S7</option>
                             <option value="SH 2">SH 2</option>
                             <option value="SH 2,5">SH 2,5</option>
                             <option value="SID2,5">SID2,5</option>
