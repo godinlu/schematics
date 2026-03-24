@@ -450,6 +450,103 @@ const __RULES = {
             optionS11: ["V3V retour bouclage sanitaire solaire"]
         },
         reason: "Nécessite une bouclage sanitaire sur le ballon ECS."
+    },
+    ////////////////////////////////////////////////////////////////////////////
+    //                 OPTIONS S10 / S11 liées à champCapteur & raccordement
+    ////////////////////////////////////////////////////////////////////////////
+    // Par défaut les nouvelles options (issues du champ capteur / raccordement hydraulique)
+    // sont interdites. Quand champCapteur ou raccordementHydraulique utilise S10,
+    // toutes les options régulières de S10 sont désactivées à la place.
+    "opt-s10-default-forbidden": {
+        when: (ctx) =>
+            !["2 champs capteurs découplés sur casse pression", "2 champs capteurs découplés sur échangeur"].includes(ctx.champCapteur) &&
+            ctx.raccordementHydraulique !== "Appoint sur tampon avec échangeur T16 S10",
+        allow: {
+            optionS10: [
+                EXCLUDE_FLAG,
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur",
+                "Appoint sur tampon avec échangeur T16 S10",
+            ]
+        },
+        reason: "Options activable uniquement via le champ : capteur ou via le champ raccordement hydraulique."
+    },
+    "opt-s10-capteur-decouple-cp": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur casse pression",
+        allow: { optionS10: ["2 champs capteurs découplés sur casse pression"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s10-capteur-decouple-ech": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur échangeur",
+        allow: { optionS10: ["2 champs capteurs découplés sur échangeur"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s10-racc-tampon": {
+        when: (ctx) => ctx.raccordementHydraulique === "Appoint sur tampon avec échangeur T16 S10",
+        allow: { optionS10: ["Appoint sur tampon avec échangeur T16 S10"] },
+        reason: "Options activable uniquement via le champ raccordement hydraulique."
+    },
+    // Par défaut les nouvelles options S11 (issues du champ capteur) sont interdites.
+    // Quand champCapteur utilise S11, toutes les options régulières de S11 sont désactivées.
+    "opt-s11-default-forbidden": {
+        when: (ctx) =>
+            ![
+                "1 champ capteurs découplé sur casse pression sur T16",
+                "1 champ capteurs découplé sur échangeur sur T16",
+                "1 champ capteurs sur double circulateur sur échangeur sur T16",
+                "1 champ capteurs découplé sur casse pression sur T15",
+                "1 champ capteurs découplé sur échangeur sur T15",
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur"
+            ].includes(ctx.champCapteur),
+        allow: {
+            optionS11: [
+                EXCLUDE_FLAG,
+                "1 champ capteurs découplé sur casse pression sur T16",
+                "1 champ capteurs découplé sur échangeur sur T16",
+                "1 champ capteurs sur double circulateur sur échangeur sur T16",
+                "1 champ capteurs découplé sur casse pression sur T15",
+                "1 champ capteurs découplé sur échangeur sur T15",
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur",
+            ]
+        },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-cp-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur casse pression sur T16",
+        allow: { optionS11: ["1 champ capteurs découplé sur casse pression sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-ech-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur échangeur sur T16",
+        allow: { optionS11: ["1 champ capteurs découplé sur échangeur sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-double-ech-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs sur double circulateur sur échangeur sur T16",
+        allow: { optionS11: ["1 champ capteurs sur double circulateur sur échangeur sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-cp-t15": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur casse pression sur T15",
+        allow: { optionS11: ["1 champ capteurs découplé sur casse pression sur T15"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-ech-t15": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur échangeur sur T15",
+        allow: { optionS11: ["1 champ capteurs découplé sur échangeur sur T15"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-decouple-cp": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur casse pression",
+        allow: { optionS11: ["2 champs capteurs découplés sur casse pression"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-decouple-ech": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur échangeur",
+        allow: { optionS11: ["2 champs capteurs découplés sur échangeur"] },
+        reason: "Options activable uniquement via le champ : capteur."
     }
 
 }
@@ -539,7 +636,7 @@ class RulesConfig {
                 if (options[0] !== str_flag) continue;
 
                 const allowed = new Set(
-                    Object.keys(all_options[field].options)
+                    all_options[field].options
                 );
 
                 for (const opt of options.slice(1)) {

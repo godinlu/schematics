@@ -555,12 +555,9 @@ class SchemaExe extends Module{
         $this->addParagraphe("Schéma d'exe " .  $this->_formulaire['description'], $coord_description, 350, 8.5);
         $this->addLabel($date, $coord_date);
 
-        $opt_S10 = $formulaire["sorties"]["S10"] ?? "";
-        $opt_S11 = $formulaire["sorties"]["S11"] ?? "";
-
         // Partie nom des options
-        $this->addLabel("Option S10: " . $opt_S10, $list_coord['label_optionS10']);
-        $this->addLabel("Option S11: " . $opt_S11, $list_coord['label_optionS11']);
+        $this->addLabel("Option S10: " . $this->_formulaire['optionS10'], $list_coord['label_optionS10']);
+        $this->addLabel("Option S11: " . $this->_formulaire['optionS11'], $list_coord['label_optionS11']);
     }
 
 
