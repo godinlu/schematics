@@ -164,8 +164,8 @@ class SchemaExe extends Module{
             $id = $this->_list_emplacement[$i]; // $id correspond à l'id du circulateur
             if (!$id) continue; // Ici, on ne fait rien si aucun circulateur n'est défini
 
-            // le réhaussement des retours sera géré ailleurs.
-            if ($this->_formulaire[$id] === 'Réhaussement des retour') continue; 
+            // le Rehaussement des retours sur V3Vs sera géré ailleurs.
+            if ($this->_formulaire[$id] === 'Rehaussement des retours sur V3V') continue; 
 
             $value = $this->getNameImageCirculateurs($this->_formulaire[$id]);
             $path = "circulateurs/objet/"; // Chemin pour ajouter un objet (ex: radiateur)
@@ -230,7 +230,7 @@ class SchemaExe extends Module{
             "circulateurC7" => "T14"
         ];
         foreach ($mapping as $circ => $sonde) {
-            if ($this->_formulaire[$circ] === 'Réhaussement des retour'){
+            if ($this->_formulaire[$circ] === 'Rehaussement des retours sur V3V'){
                 $suffix = (preg_match('/gauche/', $this->_formulaire['divers']))? "gauche" : "droite";
                 $img_path = 'option/optionBT/Aquastat différentiel ON si T5xT15 ou Rehaussement des retours sur BTC ' . $suffix;
                 $this->addImage($img_path, [190, 99]);

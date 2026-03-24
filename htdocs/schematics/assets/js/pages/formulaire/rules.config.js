@@ -308,35 +308,35 @@ const __RULES = {
     ////////////////////////////////////////////////////////////////////////////
     "rehaussement-c1": {
         when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
-            ctx.circulateurC2 !== "Réhaussement des retour" &&
-            ctx.circulateurC3 !== "Réhaussement des retour" &&
-            ctx.circulateurC7 !== "Réhaussement des retour",
-        allow: { circulateurC1: ["Réhaussement des retour"] },
-        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+            ctx.circulateurC2 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC3 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC7 !== "Rehaussement des retours sur V3V",
+        allow: { circulateurC1: ["Rehaussement des retours sur V3V"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     "rehaussement-c2": {
         when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
-            ctx.circulateurC1 !== "Réhaussement des retour" &&
-            ctx.circulateurC3 !== "Réhaussement des retour" &&
-            ctx.circulateurC7 !== "Réhaussement des retour",
-        allow: { circulateurC2: ["Réhaussement des retour"] },
-        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+            ctx.circulateurC1 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC3 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC7 !== "Rehaussement des retours sur V3V",
+        allow: { circulateurC2: ["Rehaussement des retours sur V3V"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     "rehaussement-c3": {
         when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
-            ctx.circulateurC1 !== "Réhaussement des retour" &&
-            ctx.circulateurC2 !== "Réhaussement des retour" &&
-            ctx.circulateurC7 !== "Réhaussement des retour",
-        allow: { circulateurC3: ["Réhaussement des retour"] },
-        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+            ctx.circulateurC1 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC2 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC7 !== "Rehaussement des retours sur V3V",
+        allow: { circulateurC3: ["Rehaussement des retours sur V3V"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     "rehaussement-c7": {
         when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun" &&
-            ctx.circulateurC1 !== "Réhaussement des retour" &&
-            ctx.circulateurC2 !== "Réhaussement des retour" &&
-            ctx.circulateurC3 !== "Réhaussement des retour",
-        allow: { circulateurC7: ["Réhaussement des retour"] },
-        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en réhaussement des retours"
+            ctx.circulateurC1 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC2 !== "Rehaussement des retours sur V3V" &&
+            ctx.circulateurC3 !== "Rehaussement des retours sur V3V",
+        allow: { circulateurC7: ["Rehaussement des retours sur V3V"] },
+        reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     ////////////////////////////////////////////////////////////////////////////
     //                          APPOINT C7
@@ -379,8 +379,8 @@ const __RULES = {
     "opt-aquastat": {
         when: (ctx) => ctx.EchangeurDansBT === "on" && ctx.divers !== "Aucun",
         allow: {
-            optionS10: ["Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
-            optionS11: ["Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+            optionS10: ["Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+            optionS11: ["Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
         },
         reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers"
     },
@@ -471,12 +471,12 @@ const __EVENT_RULES = {
         force: { EchangeurDansBT: "on" },
         reason: "Par défaut on met un échangeur dans le ballon tampon."
     },
-    "default-CESC":{
-        when: (ctx, updated_field) => 
+    "default-CESC": {
+        when: (ctx, updated_field) =>
             updated_field === "typeInstallation" &&
             /cesc/i.test(ctx.typeInstallation),
         force: {
-            ballonECS: "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire", 
+            ballonECS: "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire",
             circulateurC1: "Aucun",
             circulateurC2: "Aucun",
             circulateurC3: "Aucun",
@@ -484,11 +484,11 @@ const __EVENT_RULES = {
         },
         reason: "Ballon par defaut pour une installation type CESC"
     },
-    "default-CESC-2-BT":{
-        when: (ctx, updated_field) => 
+    "default-CESC-2-BT": {
+        when: (ctx, updated_field) =>
             updated_field === "typeInstallation" &&
             ctx.typeInstallation === "CESC2",
-        force: {ballonTampon: "ballon tampon en eau chaude sanitaire"},
+        force: { ballonTampon: "ballon tampon en eau chaude sanitaire" },
         reason: "Ballon tampon par defaut pour une installation type CESC 2"
     }
 };

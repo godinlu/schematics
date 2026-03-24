@@ -106,7 +106,15 @@ function generate_hydraulic_base_diagram(array $formulaire): GdImage
 
     generate_hydraulic_components($formulaire, $img_composer);
 
-    return $img_composer->render();
+    $img = $img_composer->render();
+    
+    $rules = [...get_rdr_circ_rules(), ...get_rdr_v3v_rules()];
+    foreach ($rules as $rule) {
+        foreach ($rule->evaluate($formulaire) as $element){
+            $element->render($img);
+        }
+    }
+    return $img;
 }
 
 
@@ -193,6 +201,8 @@ function add_appoint_images(array $ctx, ImageComposer $ic): void
         "T16"                        => preg_match('/^(?!.*simple)(?!.*tampon).*T16/i', $rdh),
         "réchauffeur de boucle Droite" => (preg_match("/réchauffeur de boucle/i", $rdh) && $ctx['Gauche_droite'] == "Droite"),
         "réchauffeur de boucle Gauche" => (preg_match("/réchauffeur de boucle/i", $rdh) && $ctx['Gauche_droite'] == "Gauche"),
+        "Aucun appoint deshu [droite]" => ($ctx['appoint1'] === 'Aucun' && !preg_match('/gauche/', $ctx['divers'])),
+        "Aucun appoint deshu [gauche]" => ($ctx['appoint1'] === 'Aucun' && preg_match('/gauche/', $ctx['divers'])),
     ];
 
     foreach ($mapping as $image_name => $is_matched) {
@@ -219,34 +229,6 @@ function add_ballon_ecs_images(array $ctx, ImageComposer $ic): void
 }
 
 
-/**
- * Ajoute l'image "Réhaussement des retour" pour un circulateur donné.
- *
- * L'image varie selon le nombre de ballons tampons et la position (gauche/droite)
- * de la pompe/deshu dans divers — même logique que l'Aquastat S10/S11.
- */
-function add_rehaussement_retour_image(array $ctx, ImageComposer $ic, string $circ): void
-{
-    $nb_BT = preg_replace('/\D/', '', $ctx['ballonTampon']) ?: "1";
-    $gd    = preg_match('/gauche/', $ctx['divers']) ? 'gauche' : 'droite';
-
-    $ic->add_image('options/Réhaussement des retour [' . $nb_BT . 'BT-' . $gd . ']');
-
-    // Label du circulateur (C1/C2/C3/C7) à la même position que S10/S11 pour l'Aquastat
-    $circ_label   = preg_replace('/circulateur/', '', $circ);
-    $label_coords = ['gauche' => [322, 135], 'droite' => [450, 135]];
-    $ic->add_label($circ_label, ...$label_coords[$gd]);
-
-    // ajout d'un image qui sert à cacher le label T15 du réhaussement des retours
-    // + ajout du label de la sonde correspondant
-    $ic->add_image('options/Réhaussement des retour hide T15');
-    $sonde_label = ["C1" => "T11", "C2" => "T12", "C3" => "T13", "C7" => "T14"];
-    $label_coords = ['gauche' => [357, 172], 'droite' => [487, 172]];
-    $ic->add_label($sonde_label[$circ_label], ...$label_coords[$gd]);
-
-    
-}
-
 
 /**
  * Résout le label de pilotage radiateur et le nombre de zones "Idem" à sauter.
@@ -271,7 +253,7 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
 
     // cache les raccords chaud et froid des zones de chauffage si toutes désactivées.
     foreach ($circulateurs as $circ) {
-        if ($ctx[$circ] === 'Aucun' || $ctx[$circ] === 'Réhaussement des retour') $ic->add_image('raccord/hide ' . $circ);
+        if ($ctx[$circ] === 'Aucun' || $ctx[$circ] === 'Rehaussement des retours sur V3V') $ic->add_image('raccord/hide ' . $circ);
         else break;
     }
 
@@ -284,7 +266,7 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
     for ($i = 0; $i < count($circulateurs); $i++) {
         $circ = $circulateurs[$i];
 
-        if ($ctx[$circ] === 'Aucun') continue;
+        if ($ctx[$circ] === 'Aucun' || $ctx[$circ] === 'Rehaussement des retours sur V3V') continue;
 
         // PILOTAGE DE RADIATEUR
         // si la zone courante est un radiateur sur ECH/CP et que les zones suivantes
@@ -296,12 +278,6 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
             if ($label !== null) {
                 $ic->add_label($label, ...$pilotage_rad_coords[$circ], size: 8);
             }
-        }
-
-        // Réhaussement des retours sur une zone (C1/C2/C3/C7)
-        if ($ctx[$circ] === 'Réhaussement des retour') {
-            add_rehaussement_retour_image($ctx, $ic, $circ);
-            continue;
         }
 
         // cas particulier d'un appoint sur C7
@@ -348,10 +324,9 @@ function resolve_option_key(string $val, string $output, array $ctx): string
         return $val . ' [' . $nb_BT . 'BT]';
     }
 
-    if ($val === 'Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC') {
+    if ($val === 'Aquastat différentiel avec circulateur si T5>T15 sur BTC') {
         $nb_BT = preg_replace('/\D/', '', $ctx['ballonTampon']) ?: "1";
-        $gd    = preg_match('/gauche/', $ctx['divers']) ? 'gauche' : 'droite';
-        return 'Réhaussement des retour [' . $nb_BT . 'BT-' . $gd . ']';
+        return 'Rehaussement des retours sur circulateur [' . $nb_BT . 'BT]';
     }
 
     if ($val === 'Décharge sur zone 1') {
@@ -382,10 +357,6 @@ function add_options_images(array $ctx, ImageComposer $ic): void
         'charge BTC si excédent APP1 sur T16 & T6 < T5 [2BT]'                                         => [317, 157],
         'charge BTC si excédent APP1 sur T16 & T6 > T5 [1BT]'                                         => [317, 157],
         'charge BTC si excédent APP1 sur T16 & T6 > T5 [2BT]'                                         => [317, 157],
-        'Réhaussement des retour [1BT-gauche]'                                                        => [322, 135],
-        'Réhaussement des retour [2BT-gauche]'                                                         => [322, 135],
-        'Réhaussement des retour [1BT-droite]' => [450, 135],
-        'Réhaussement des retour [2BT-droite]' => [450, 135],
         'Décharge sur zone 1'                                                                          => [820, 413],
         'Décharge sur zone 1 [PC]'                                                                     => [762, 413],
         'V3V décharge zone 1'                                                                          => [868, 335],
@@ -415,6 +386,90 @@ function add_options_images(array $ctx, ImageComposer $ic): void
             $ic->add_label($output, ...$opt_mapping[$val]);
         }
     }
+}
+
+function get_rdr_circ_rules(): array{
+    $rules = [];
+
+    $mapping = [
+        ["optionS10", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["optionS11", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur circulateur"],
+        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur circulateur"],
+        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur circulateur"],
+        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur circulateur"]
+    ];
+
+    foreach ($mapping as $val) {
+        $rules[] = new Rule(
+            when: fn($ctx) => (
+                $ctx[$val[0]] === $val[3] &&
+                ! preg_match('/2/', $ctx['ballonTampon'])
+            ),
+            elements: [
+                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [1BT]'),
+                new TextOverlay($val[1], [343, 314]),
+                new TextOverlay($val[2], [345, 188])
+            ]
+        );
+
+        $rules[] = new Rule(
+            when: fn($ctx) => (
+                $ctx[$val[0]] === $val[3] &&
+                preg_match('/2/', $ctx['ballonTampon'])
+            ),
+            elements: [
+                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [2BT]'),
+                new TextOverlay($val[1], [343, 314]),
+                new TextOverlay($val[2], [345, 188])
+            ]
+        );
+    }
+
+    return $rules;
+}
+
+
+function get_rdr_v3v_rules(): array
+{
+    $rules = [];
+
+    $entries = [
+        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur V3V"],
+        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur V3V"],
+        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur V3V"],
+        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur V3V"],
+        ["optionS10", "S10", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+        ["optionS11", "S11", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+    ];
+
+    // [bt_label, is_2bt, gd_label, is_gauche, label_coords, sonde_coords]
+    $variants = [
+        ["1BT", false, "gauche", true,  [322, 135], [357, 172]],
+        ["1BT", false, "droite", false, [450, 135], [487, 172]],
+        ["2BT", true,  "gauche", true,  [322, 135], [357, 172]],
+        ["2BT", true,  "droite", false, [450, 135], [487, 172]],
+    ];
+
+    foreach ($entries as [$ctx_key, $circ_label, $sonde_label, $value]) {
+        foreach ($variants as [$bt_label, $is_2bt, $gd_label, $is_gauche, $label_coords, $sonde_coords]) {
+            $img_name = "Rehaussement des retours sur V3V [{$bt_label}-{$gd_label}]";
+            $rules[] = new Rule(
+                when: fn($ctx) => (
+                    $ctx[$ctx_key] === $value &&
+                    (bool) preg_match('/2/', $ctx['ballonTampon']) === $is_2bt &&
+                    (bool) preg_match('/gauche/', $ctx['divers']) === $is_gauche
+                ),
+                elements: [
+                    new Image(IMG_DIR . 'schema_hydro/options/' . $img_name),
+                    new TextOverlay($circ_label, $label_coords),
+                    new TextOverlay($sonde_label, $sonde_coords),
+                ]
+            );
+        }
+    }
+
+    return $rules;
 }
 
 
