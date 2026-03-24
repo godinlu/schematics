@@ -475,7 +475,13 @@ const __EVENT_RULES = {
         when: (ctx, updated_field) => 
             updated_field === "typeInstallation" &&
             /cesc/i.test(ctx.typeInstallation),
-        force: {ballonECS: "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire"},
+        force: {
+            ballonECS: "ballon Appoint en sortie de 2 ballons solaires avec bouclage sanitaire", 
+            circulateurC1: "Aucun",
+            circulateurC2: "Aucun",
+            circulateurC3: "Aucun",
+            circulateurC7: "Aucun"
+        },
         reason: "Ballon par defaut pour une installation type CESC"
     },
     "default-CESC-2-BT":{

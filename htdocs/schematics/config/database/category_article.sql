@@ -320,7 +320,7 @@ WHERE ref REGEXP '^S7 2,5B-(ST|CT|CS|CM|V)' AND is_used = 1;
 INSERT IGNORE INTO category_article (category_id, article_ref)
 SELECT 'capteurs', ref
 FROM article
-WHERE ref REGEXP '^S7-(ST|CT|CS|CM|V)' AND is_used = 1;
+WHERE ref REGEXP '^S7 2-(ST|CT|CS|CM|V)' AND is_used = 1;
 
 -- capteurs S7 2 paysage
 INSERT IGNORE INTO category_article (category_id, article_ref)
