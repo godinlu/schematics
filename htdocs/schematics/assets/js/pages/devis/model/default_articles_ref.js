@@ -203,6 +203,11 @@ const SC_MAPPING = [
 /** @type {MappingRule[]} */
 const APPOINT_MAPPING = [
     {
+        when: {appoint1: /electrique/i},
+        refs: {"rechauffeur de boucle": ["KITSSC195"]},
+        reason: "Il y a un appoint 1 electrique"
+    },
+    {
         when: {raccordementHydraulique: /casse pression/i},
         refs: {"decouplage CP": ["KITSSC059"]},
         reason: "Il y a une casse pression en appoint 1."
