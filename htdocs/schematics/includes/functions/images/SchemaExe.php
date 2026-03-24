@@ -101,6 +101,7 @@ class SchemaExe extends Module{
         $this->setImageBallonTampon($this->_position['ballonTampon']);
         $this->setImageDivers($this->_position['divers']);
         $this->setImageRDR();
+        $this->setImageRDRcirc();
         $this->setImageOptions($this->_position['option']);
         $this->setLabelOptions($this->_position['option']);
         $this->setLegend($this->_position['legend']);
@@ -166,6 +167,7 @@ class SchemaExe extends Module{
 
             // le Rehaussement des retours sur V3Vs sera géré ailleurs.
             if ($this->_formulaire[$id] === 'Rehaussement des retours sur V3V') continue; 
+            if ($this->_formulaire[$id] === 'Rehaussement des retours sur circulateur') continue; 
 
             $value = $this->getNameImageCirculateurs($this->_formulaire[$id]);
             $path = "circulateurs/objet/"; // Chemin pour ajouter un objet (ex: radiateur)
@@ -243,6 +245,35 @@ class SchemaExe extends Module{
                 # add the sonde label (T11, T12, ...)
                 $coord_label = ($suffix === "droite") ? [320, 164] : [250, 164];
                 $this->addLabel($sonde, $coord_label);
+            }
+        }
+    }
+
+    private function setImageRDRcirc(){
+        $entries = [
+            ["optionS10", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+            ["optionS11", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+            ["circulateurC1", "C1", "T11", "Rehaussement des retours sur circulateur"],
+            ["circulateurC2", "C2", "T12", "Rehaussement des retours sur circulateur"],
+            ["circulateurC3", "C3", "T13", "Rehaussement des retours sur circulateur"],
+            ["circulateurC7", "C7", "T14", "Rehaussement des retours sur circulateur"]
+        ];  
+
+        $variants = [
+            ["Rehaussement des retours sur circulateur [1BT]", false],
+            ["Rehaussement des retours sur circulateur [2BT]", true]
+        ];
+
+        foreach ($entries as [$key, $circ_label, $sonde_label, $value]) {
+            foreach ($variants as [$img_name, $is_2bt]){
+                if (
+                    $this->_formulaire[$key] === $value &&
+                    (bool) preg_match('/2/', $this->_formulaire['ballonTampon']) === $is_2bt
+                ){
+                    $this->addImage('option/optionBT/' . $img_name , [190, 99]);
+                    $this->addLabel($circ_label, [250, 245]);
+                    $this->addLabel($sonde_label, [250, 170]);
+                }
             }
         }
     }

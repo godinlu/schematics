@@ -253,7 +253,10 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
 
     // cache les raccords chaud et froid des zones de chauffage si toutes désactivées.
     foreach ($circulateurs as $circ) {
-        if ($ctx[$circ] === 'Aucun' || $ctx[$circ] === 'Rehaussement des retours sur V3V') $ic->add_image('raccord/hide ' . $circ);
+        if (
+            $ctx[$circ] === 'Aucun' || 
+            $ctx[$circ] === 'Rehaussement des retours sur V3V' ||
+            $ctx[$circ] === 'Rehaussement des retours sur circulateur') $ic->add_image('raccord/hide ' . $circ);
         else break;
     }
 
@@ -266,7 +269,11 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
     for ($i = 0; $i < count($circulateurs); $i++) {
         $circ = $circulateurs[$i];
 
-        if ($ctx[$circ] === 'Aucun' || $ctx[$circ] === 'Rehaussement des retours sur V3V') continue;
+        if (
+            $ctx[$circ] === 'Aucun' || 
+            $ctx[$circ] === 'Rehaussement des retours sur V3V' ||
+            $ctx[$circ] === 'Rehaussement des retours sur circulateur'
+        ) continue;
 
         // PILOTAGE DE RADIATEUR
         // si la zone courante est un radiateur sur ECH/CP et que les zones suivantes

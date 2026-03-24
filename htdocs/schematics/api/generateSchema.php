@@ -11,7 +11,6 @@ $input = json_decode($input_json, true);
 
 $image = $_GET['image'] ?? "schema_hydrau_brut";
 $format = $_GET['format'] ?? "png";
-$debug = $_GET['debug'] ?? false;
 
 switch (strtolower($image)){
     case "schema_hydrau_brut":
