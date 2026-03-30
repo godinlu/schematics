@@ -104,15 +104,7 @@ function generate_hydraulic_base_diagram(array $formulaire): GdImage
 
     generate_hydraulic_components($formulaire, $img_composer);
 
-    $img = $img_composer->render();
-
-    $rules = [...get_rdr_circ_rules(), ...get_rdr_v3v_rules()];
-    foreach ($rules as $rule) {
-        foreach ($rule->evaluate($formulaire) as $element) {
-            $element->render($img);
-        }
-    }
-    return $img;
+    return $img_composer->render();
 }
 
 
@@ -126,6 +118,8 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void
     add_divers_images($ctx, $ic);
     add_circulateurs_images($ctx, $ic);
     add_options_images($ctx, $ic);
+    add_rdr_circ_images($ctx, $ic);
+    add_rdr_v3v_images($ctx, $ic);
 }
 
 
@@ -394,60 +388,37 @@ function add_options_images(array $ctx, ImageComposer $ic): void
     }
 }
 
-function get_rdr_circ_rules(): array
+function add_rdr_circ_images(array $ctx, ImageComposer $ic): void
 {
-    $rules = [];
-
     $mapping = [
-        ["optionS10", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
-        ["optionS11", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
-        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur circulateur"],
-        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur circulateur"],
-        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur circulateur"],
-        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur circulateur"]
+        ["optionS10",      "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["optionS11",      "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["circulateurC1",  "C1",  "T11", "Rehaussement des retours sur circulateur"],
+        ["circulateurC2",  "C2",  "T12", "Rehaussement des retours sur circulateur"],
+        ["circulateurC3",  "C3",  "T13", "Rehaussement des retours sur circulateur"],
+        ["circulateurC7",  "C7",  "T14", "Rehaussement des retours sur circulateur"],
     ];
 
-    foreach ($mapping as $val) {
-        $rules[] = new Rule(
-            when: fn($ctx) => (
-                $ctx[$val[0]] === $val[3] &&
-                ! preg_match('/2/', $ctx['ballonTampon'])
-            ),
-            elements: [
-                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [1BT]'),
-                new TextOverlay($val[1], [343, 314]),
-                new TextOverlay($val[2], [345, 188])
-            ]
-        );
+    foreach ($mapping as [$ctx_key, $circ_label, $sonde_label, $value]) {
+        if ($ctx[$ctx_key] !== $value) continue;
 
-        $rules[] = new Rule(
-            when: fn($ctx) => (
-                $ctx[$val[0]] === $val[3] &&
-                preg_match('/2/', $ctx['ballonTampon'])
-            ),
-            elements: [
-                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [2BT]'),
-                new TextOverlay($val[1], [343, 314]),
-                new TextOverlay($val[2], [345, 188])
-            ]
-        );
+        $bt_suffix = preg_match('/2/', $ctx['ballonTampon']) ? '2BT' : '1BT';
+        $ic->add_image('options/Rehaussement des retours sur circulateur [' . $bt_suffix . ']');
+        $ic->add_label($circ_label, 343, 314);
+        $ic->add_label($sonde_label, 345, 188);
     }
-
-    return $rules;
 }
 
 
-function get_rdr_v3v_rules(): array
+function add_rdr_v3v_images(array $ctx, ImageComposer $ic): void
 {
-    $rules = [];
-
     $entries = [
-        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur V3V"],
-        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur V3V"],
-        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur V3V"],
-        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur V3V"],
-        ["optionS10", "S10", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
-        ["optionS11", "S11", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+        ["circulateurC1", "C1",  "T11", "Rehaussement des retours sur V3V"],
+        ["circulateurC2", "C2",  "T12", "Rehaussement des retours sur V3V"],
+        ["circulateurC3", "C3",  "T13", "Rehaussement des retours sur V3V"],
+        ["circulateurC7", "C7",  "T14", "Rehaussement des retours sur V3V"],
+        ["optionS10",     "S10", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+        ["optionS11",     "S11", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
     ];
 
     // [bt_label, is_2bt, gd_label, is_gauche, label_coords, sonde_coords]
@@ -458,25 +429,20 @@ function get_rdr_v3v_rules(): array
         ["2BT", true,  "droite", false, [450, 135], [487, 172]],
     ];
 
+    $is_2bt   = (bool) preg_match('/2/', $ctx['ballonTampon']);
+    $is_gauche = (bool) preg_match('/gauche/', $ctx['divers']);
+
     foreach ($entries as [$ctx_key, $circ_label, $sonde_label, $value]) {
-        foreach ($variants as [$bt_label, $is_2bt, $gd_label, $is_gauche, $label_coords, $sonde_coords]) {
-            $img_name = "Rehaussement des retours sur V3V [{$bt_label}-{$gd_label}]";
-            $rules[] = new Rule(
-                when: fn($ctx) => (
-                    $ctx[$ctx_key] === $value &&
-                    (bool) preg_match('/2/', $ctx['ballonTampon']) === $is_2bt &&
-                    (bool) preg_match('/gauche/', $ctx['divers']) === $is_gauche
-                ),
-                elements: [
-                    new Image(IMG_DIR . 'schema_hydro/options/' . $img_name),
-                    new TextOverlay($circ_label, $label_coords),
-                    new TextOverlay($sonde_label, $sonde_coords),
-                ]
-            );
+        if ($ctx[$ctx_key] !== $value) continue;
+
+        foreach ($variants as [$bt_label, $variant_is_2bt, $gd_label, $variant_is_gauche, $label_coords, $sonde_coords]) {
+            if ($is_2bt !== $variant_is_2bt || $is_gauche !== $variant_is_gauche) continue;
+
+            $ic->add_image('options/Rehaussement des retours sur V3V [' . $bt_label . '-' . $gd_label . ']');
+            $ic->add_label($circ_label, ...$label_coords);
+            $ic->add_label($sonde_label, ...$sonde_coords);
         }
     }
-
-    return $rules;
 }
 
 function get_ressources_from_ctx(array $ctx): array
