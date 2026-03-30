@@ -339,6 +339,41 @@ const __RULES = {
         reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     ////////////////////////////////////////////////////////////////////////////
+    //                          IDEM S11
+    ////////////////////////////////////////////////////////////////////////////
+    "idem-s11-c1": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC1: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c2": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC2: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c3": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC3: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c7": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11",
+        allow: { circulateurC7: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    ////////////////////////////////////////////////////////////////////////////
     //                          APPOINT C7
     ////////////////////////////////////////////////////////////////////////////
     "app2-on-c7": {
