@@ -2,11 +2,18 @@
 
 const VERDANA = __DIR__ . "/../../../assets/fonts/Verdana.ttf";
 
-interface Renderable {
+interface Renderable
+{
     public function render(GdImage $gd): void;
 }
 
-class ImageComposer{
+interface ImageModifier{
+    public function apply(GdImage $image): GdImage;
+}
+
+
+class ImageComposer
+{
     /**
      * @var array List of PNG image paths to compose
      */
@@ -26,7 +33,8 @@ class ImageComposer{
 
     private string $base_path;
 
-    public function __construct(string $base_path) {
+    public function __construct(string $base_path)
+    {
         $this->base_path = $base_path;
     }
 
@@ -36,12 +44,13 @@ class ImageComposer{
      * @param string $path Path to a PNG image
      * @return void
      */
-    public function add_image(string $img_name): void{
-        if (pathinfo($img_name, PATHINFO_EXTENSION) === ''){
+    public function add_image(string $img_name): void
+    {
+        if (pathinfo($img_name, PATHINFO_EXTENSION) === '') {
             $img_name .= '.png';
         }
         $img_path = $this->base_path . $img_name;
-       
+
         $this->image_paths[] = $img_path;
     }
 
@@ -76,7 +85,8 @@ class ImageComposer{
      *
      * @return GDImage The final composed GD image
      */
-    public function render(): GDImage{
+    public function render(): GDImage
+    {
         // 1. Compose all image layers
         $image = compose_images($this->image_paths);
 
@@ -95,7 +105,8 @@ class ImageComposer{
     }
 }
 
-class Rule{
+class Rule
+{
     /** @var callable(mixed): bool */
     private $when;
 
@@ -108,7 +119,8 @@ class Rule{
      * @param callable(mixed): bool $when      Predicate receiving a context, returns true when the rule applies.
      * @param array<Renderable>     $elements   Elements to render when the rule applies.
      */
-    public function __construct(callable $when, array $elements, string $comment = "") {
+    public function __construct(callable $when, array $elements, string $comment = "")
+    {
         $this->when = $when;
         $this->elements = $elements;
         $this->comment = $comment;
@@ -119,16 +131,19 @@ class Rule{
      *
      * @return array<Renderable>
      */
-    public function evaluate(mixed $context): array {
+    public function evaluate(mixed $context): array
+    {
         return ($this->when)($context) ? $this->elements : [];
     }
 }
 
-class Image implements Renderable {
+class Image implements Renderable
+{
     private string $img_path;
     private array $coord;
 
-    public function __construct(string $img_path, array $coord = [0, 0], string $ext = ".png") {
+    public function __construct(string $img_path, array $coord = [0, 0], string $ext = ".png")
+    {
         if (!pathinfo($img_path, PATHINFO_EXTENSION)) {
             $img_path .= $ext;
         }
@@ -139,18 +154,24 @@ class Image implements Renderable {
         $this->coord = $coord;
     }
 
-    public function render(GdImage $gd): void {
+    public function render(GdImage $gd): void
+    {
         $layer = imagecreatefrompng($this->img_path);
         imagecopy(
-            $gd, $layer,
-            $this->coord[0], $this->coord[1],
-            0, 0,
-            imagesx($layer), imagesy($layer)
+            $gd,
+            $layer,
+            $this->coord[0],
+            $this->coord[1],
+            0,
+            0,
+            imagesx($layer),
+            imagesy($layer)
         );
     }
 }
 
-class TextOverlay implements Renderable {
+class TextOverlay implements Renderable
+{
     private string $text;
 
     /** @var int[] [x, y] */
@@ -165,14 +186,16 @@ class TextOverlay implements Renderable {
      * @param int[] $coord [x, y]
      * @param int[] $color [r, g, b]
      */
-    public function __construct(string $text, array $coord, int $size = 9, array $color = [0, 0, 0]) {
+    public function __construct(string $text, array $coord, int $size = 9, array $color = [0, 0, 0])
+    {
         $this->text = $text;
         $this->coord = $coord;
         $this->size = $size;
         $this->color = $color;
     }
 
-    public function render(GdImage $gd): void {
+    public function render(GdImage $gd): void
+    {
         add_label_inplace($gd, $this->text, $this->coord, $this->size, $this->color);
     }
 }
@@ -183,7 +206,8 @@ class TextOverlay implements Renderable {
  * @param array $paths Liste de chemins vers les images PNG (toutes de même taille)
  * @return GDImage L'image finale superposée
  */
-function compose_images(array $paths): GDImage{
+function compose_images(array $paths): GDImage
+{
     if (empty($paths)) {
         throw new InvalidArgumentException("La liste des images est vide.");
     }
@@ -205,8 +229,10 @@ function compose_images(array $paths): GDImage{
         imagecopy(
             $base,
             $layer,
-            0, 0,             // position sur la base
-            0, 0,             // position sur le calque
+            0,
+            0,             // position sur la base
+            0,
+            0,             // position sur le calque
             imagesx($layer),
             imagesy($layer)
         );
@@ -214,6 +240,30 @@ function compose_images(array $paths): GDImage{
 
     return $base;
 }
+
+
+/**
+ * Ajoute une image directement sur une image
+ * 
+ * @param GDImage $image    L'image GD sur laquelle écrire
+ * @param string $img_path  Chemin de l'image à ajouter
+ * @param int[] $coord      Coordonée pour placer la nouvelle image
+ */
+function add_image(GdImage $image, string $img_path, array $coord = [0, 0]): void
+{
+    $layer = imagecreatefrompng($img_path);
+    imagecopy(
+        $image,
+        $layer,
+        $coord[0],
+        $coord[1],
+        0,
+        0,
+        imagesx($layer),
+        imagesy($layer)
+    );
+}
+
 
 /**
  * Ajoute un texte directement sur une image GD
@@ -225,7 +275,8 @@ function compose_images(array $paths): GDImage{
  * @param array   $color      Couleur [R,G,B], par défaut noir
  * @return void
  */
-function add_label_inplace(GDImage $image, string $text, array $coord, int $size = 9, array $color = [0,0,0]): void{
+function add_label_inplace(GDImage $image, string $text, array $coord, int $size = 9, array $color = [0, 0, 0]): void
+{
     // Vérifier que $coord a bien 2 éléments
     if (count($coord) !== 2) {
         throw new InvalidArgumentException("Coord doit être un tableau [x, y]");
@@ -293,7 +344,8 @@ function add_title_inplace(
  * @param int    $maxWidthPx  Maximum width in pixels
  * @return array              Array of wrapped lines
  */
-function wrap_text_to_width(string $text, float $fontSize, string $fontFile, int $maxWidthPx): array{
+function wrap_text_to_width(string $text, float $fontSize, string $fontFile, int $maxWidthPx): array
+{
     $words = explode(' ', $text);
     $lines = [];
     $currentLine = '';
@@ -473,4 +525,3 @@ function add_img_to_pdf(GdImage $img, FPDF &$pdf, float $margin = 10.0)
         unlink($tmpfile);
     }
 }
-?>

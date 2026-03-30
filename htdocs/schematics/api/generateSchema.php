@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../includes/functions/images/SchemaHydrau.php';
+require_once __DIR__ . '/../includes/functions/images/HydraulicSchema.php';
 require_once __DIR__ . '/../includes/functions/images/ImageFicheProg.php';
 require_once __DIR__ . '/../includes/functions/images/SchemaExe.php';
 require_once __DIR__ . '/../includes/functions/images/Etiquetage.php';
@@ -14,16 +14,13 @@ $format = $_GET['format'] ?? "png";
 
 switch (strtolower($image)){
     case "schema_hydrau_brut":
-        $gd_image = generate_hydraulic_base_diagram($input);
+        $gd_image =  (new HydraulicSchema($input))->brut();
         break;
     case 'schema_hydrau_annote':
-        $gd_image = generate_hydraulic_base_diagram($input);
-        $gd_image = add_header_and_footer_on_base($gd_image, $input);
+        $gd_image = (new HydraulicSchema($input))->annote();
         break;
     case 'schema_hydrau_complet':
-        $gd_image = generate_hydraulic_base_diagram($input);
-        $gd_image = add_header_and_footer_on_base($gd_image, $input);
-        $gd_image = add_legend_equipments($gd_image, $input);
+        $gd_image = (new HydraulicSchema($input))->full();
         break;
     case 'schema_exe':
         $schema = new SchemaExe($input);

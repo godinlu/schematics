@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../includes/functions/images/SchemaHydrau.php';
+require_once __DIR__ . '/../includes/functions/images/HydraulicSchema.php';
 require_once __DIR__ . '/../includes/functions/images/ImageFicheProg.php';
 require_once __DIR__ . '/../includes/functions/images/SchemaExe.php';
 require_once __DIR__ . '/../includes/functions/images/Etiquetage.php';
@@ -15,9 +15,7 @@ $formulaire = $input['formulaire'];
 $fiche_prog = $input['fiche_prog'];
 
 // 1. create the full schema hydrau
-$img_hydrau = generate_hydraulic_base_diagram($formulaire);
-$img_hydrau = add_header_and_footer_on_base($img_hydrau, $formulaire);
-$img_hydrau = add_legend_equipments($img_hydrau, $formulaire);
+$img_hydrau = (new HydraulicSchema($formulaire))->full();
 
 // 2. create the schemaExe
 $schema_exe = new SchemaExe($formulaire);  
