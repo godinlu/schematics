@@ -148,22 +148,22 @@ const SC_MAPPING = [
     // -------------------- OPTIONS MULTI ZONES --------------------
     {
         when: {circulateurC1: /multi zones/i},
-        refs: {"col multi zone": ["KITSSC148"]},
+        refs: {"col multi zone": ["KITSSC148", "KITSSC079", "KITSSC079"]},
         reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
     },
     {
         when: {circulateurC2: /multi zones/i},
-        refs: {"col multi zone": ["KITSSC148"]},
+        refs: {"col multi zone": ["KITSSC148", "KITSSC079", "KITSSC079"]},
         reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
     },
     {
         when: {circulateurC3: /multi zones/i},
-        refs: {"col multi zone": ["KITSSC148"]},
+        refs: {"col multi zone": ["KITSSC148", "KITSSC079", "KITSSC079"]},
         reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
     },
     {
         when: {circulateurC7: /multi zones/i},
-        refs: {"col multi zone": ["KITSSC148"]},
+        refs: {"col multi zone": ["KITSSC148", "KITSSC079", "KITSSC079"]},
         reason: "Les circulateurs C1, C2, C3 et/ou C7 sont raccordés en multizone."
     },
 
