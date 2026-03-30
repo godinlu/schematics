@@ -63,10 +63,8 @@ function add_header_and_footer_on_base(GdImage $gd_image, array $formulaire): Gd
     imagecopy($new_image, $footer, 8, 517, 0, 0, imagesx($footer), imagesy($footer));
 
     // ajout des labels pour les sorties S10 S11
-    $opt_S10 = $formulaire["sorties"]["S10"] ?? "";
-    $opt_S11 = $formulaire["sorties"]["S11"] ?? "";
-    add_label_inplace($new_image, "option S10 : " . $opt_S10, [433, 572]);
-    add_label_inplace($new_image, "option S11 : " . $opt_S11, [433, 584]);
+    add_label_inplace($new_image, "option S10 : " . $formulaire['optionS10'], [433, 572]);
+    add_label_inplace($new_image, "option S11 : " . $formulaire['optionS11'], [433, 584]);
 
     // ajout du paragraphe de description
     add_paragraph_inplace($new_image, "Schéma hydraulique " . $formulaire['description'], [433, 587], 350, 8);
@@ -106,15 +104,7 @@ function generate_hydraulic_base_diagram(array $formulaire): GdImage
 
     generate_hydraulic_components($formulaire, $img_composer);
 
-    $img = $img_composer->render();
-    
-    $rules = [...get_rdr_circ_rules(), ...get_rdr_v3v_rules()];
-    foreach ($rules as $rule) {
-        foreach ($rule->evaluate($formulaire) as $element){
-            $element->render($img);
-        }
-    }
-    return $img;
+    return $img_composer->render();
 }
 
 
@@ -128,6 +118,8 @@ function generate_hydraulic_components(array $ctx, ImageComposer $ic): void
     add_divers_images($ctx, $ic);
     add_circulateurs_images($ctx, $ic);
     add_options_images($ctx, $ic);
+    add_rdr_circ_images($ctx, $ic);
+    add_rdr_v3v_images($ctx, $ic);
 }
 
 
@@ -254,9 +246,10 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
     // cache les raccords chaud et froid des zones de chauffage si toutes désactivées.
     foreach ($circulateurs as $circ) {
         if (
-            $ctx[$circ] === 'Aucun' || 
+            $ctx[$circ] === 'Aucun' ||
             $ctx[$circ] === 'Rehaussement des retours sur V3V' ||
-            $ctx[$circ] === 'Rehaussement des retours sur circulateur') $ic->add_image('raccord/hide ' . $circ);
+            $ctx[$circ] === 'Rehaussement des retours sur circulateur'
+        ) $ic->add_image('raccord/hide ' . $circ);
         else break;
     }
 
@@ -270,7 +263,7 @@ function add_circulateurs_images(array $ctx, ImageComposer $ic): void
         $circ = $circulateurs[$i];
 
         if (
-            $ctx[$circ] === 'Aucun' || 
+            $ctx[$circ] === 'Aucun' ||
             $ctx[$circ] === 'Rehaussement des retours sur V3V' ||
             $ctx[$circ] === 'Rehaussement des retours sur circulateur'
         ) continue;
@@ -395,59 +388,37 @@ function add_options_images(array $ctx, ImageComposer $ic): void
     }
 }
 
-function get_rdr_circ_rules(): array{
-    $rules = [];
-
+function add_rdr_circ_images(array $ctx, ImageComposer $ic): void
+{
     $mapping = [
-        ["optionS10", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
-        ["optionS11", "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
-        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur circulateur"],
-        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur circulateur"],
-        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur circulateur"],
-        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur circulateur"]
+        ["optionS10",      "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["optionS11",      "S10", "T15", "Aquastat différentiel avec circulateur si T5>T15 sur BTC"],
+        ["circulateurC1",  "C1",  "T11", "Rehaussement des retours sur circulateur"],
+        ["circulateurC2",  "C2",  "T12", "Rehaussement des retours sur circulateur"],
+        ["circulateurC3",  "C3",  "T13", "Rehaussement des retours sur circulateur"],
+        ["circulateurC7",  "C7",  "T14", "Rehaussement des retours sur circulateur"],
     ];
 
-    foreach ($mapping as $val) {
-        $rules[] = new Rule(
-            when: fn($ctx) => (
-                $ctx[$val[0]] === $val[3] &&
-                ! preg_match('/2/', $ctx['ballonTampon'])
-            ),
-            elements: [
-                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [1BT]'),
-                new TextOverlay($val[1], [343, 314]),
-                new TextOverlay($val[2], [345, 188])
-            ]
-        );
+    foreach ($mapping as [$ctx_key, $circ_label, $sonde_label, $value]) {
+        if ($ctx[$ctx_key] !== $value) continue;
 
-        $rules[] = new Rule(
-            when: fn($ctx) => (
-                $ctx[$val[0]] === $val[3] &&
-                preg_match('/2/', $ctx['ballonTampon'])
-            ),
-            elements: [
-                new Image(IMG_DIR . 'schema_hydro/options/Rehaussement des retours sur circulateur [2BT]'),
-                new TextOverlay($val[1], [343, 314]),
-                new TextOverlay($val[2], [345, 188])
-            ]
-        );
+        $bt_suffix = preg_match('/2/', $ctx['ballonTampon']) ? '2BT' : '1BT';
+        $ic->add_image('options/Rehaussement des retours sur circulateur [' . $bt_suffix . ']');
+        $ic->add_label($circ_label, 343, 314);
+        $ic->add_label($sonde_label, 345, 188);
     }
-
-    return $rules;
 }
 
 
-function get_rdr_v3v_rules(): array
+function add_rdr_v3v_images(array $ctx, ImageComposer $ic): void
 {
-    $rules = [];
-
     $entries = [
-        ["circulateurC1", "C1", "T11", "Rehaussement des retours sur V3V"],
-        ["circulateurC2", "C2", "T12", "Rehaussement des retours sur V3V"],
-        ["circulateurC3", "C3", "T13", "Rehaussement des retours sur V3V"],
-        ["circulateurC7", "C7", "T14", "Rehaussement des retours sur V3V"],
-        ["optionS10", "S10", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
-        ["optionS11", "S11", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+        ["circulateurC1", "C1",  "T11", "Rehaussement des retours sur V3V"],
+        ["circulateurC2", "C2",  "T12", "Rehaussement des retours sur V3V"],
+        ["circulateurC3", "C3",  "T13", "Rehaussement des retours sur V3V"],
+        ["circulateurC7", "C7",  "T14", "Rehaussement des retours sur V3V"],
+        ["optionS10",     "S10", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
+        ["optionS11",     "S11", "T15", "Aquastat différentiel ON si T5>T15 ou Rehaussement des retours sur BTC"],
     ];
 
     // [bt_label, is_2bt, gd_label, is_gauche, label_coords, sonde_coords]
@@ -458,73 +429,115 @@ function get_rdr_v3v_rules(): array
         ["2BT", true,  "droite", false, [450, 135], [487, 172]],
     ];
 
+    $is_2bt   = (bool) preg_match('/2/', $ctx['ballonTampon']);
+    $is_gauche = (bool) preg_match('/gauche/', $ctx['divers']);
+
     foreach ($entries as [$ctx_key, $circ_label, $sonde_label, $value]) {
-        foreach ($variants as [$bt_label, $is_2bt, $gd_label, $is_gauche, $label_coords, $sonde_coords]) {
-            $img_name = "Rehaussement des retours sur V3V [{$bt_label}-{$gd_label}]";
-            $rules[] = new Rule(
-                when: fn($ctx) => (
-                    $ctx[$ctx_key] === $value &&
-                    (bool) preg_match('/2/', $ctx['ballonTampon']) === $is_2bt &&
-                    (bool) preg_match('/gauche/', $ctx['divers']) === $is_gauche
-                ),
-                elements: [
-                    new Image(IMG_DIR . 'schema_hydro/options/' . $img_name),
-                    new TextOverlay($circ_label, $label_coords),
-                    new TextOverlay($sonde_label, $sonde_coords),
-                ]
-            );
+        if ($ctx[$ctx_key] !== $value) continue;
+
+        foreach ($variants as [$bt_label, $variant_is_2bt, $gd_label, $variant_is_gauche, $label_coords, $sonde_coords]) {
+            if ($is_2bt !== $variant_is_2bt || $is_gauche !== $variant_is_gauche) continue;
+
+            $ic->add_image('options/Rehaussement des retours sur V3V [' . $bt_label . '-' . $gd_label . ']');
+            $ic->add_label($circ_label, ...$label_coords);
+            $ic->add_label($sonde_label, ...$sonde_coords);
         }
     }
+}
 
-    return $rules;
+function get_ressources_from_ctx(array $ctx): array
+{
+    $mapping = [
+        // Toujours présents
+        "T7"  => true,
+        "T8"  => true,
+        "T9"  => true,
+
+        // Ballon ECS
+        "T3"  => $ctx['ballonECS'] !== 'Aucun',
+        "T4"  => $ctx['ballonECS'] !== 'Aucun',
+        "C4"  => $ctx['ballonECS'] !== 'Aucun',
+        "C5"  => $ctx['ballonECS'] !== 'Aucun',
+
+        // Ballon tampon
+        "T5"  => $ctx['ballonTampon'] !== 'Aucun',
+        "C6"  => $ctx['ballonTampon'] !== 'Aucun',
+
+        // Champ capteur
+        "T1"  => $ctx['champCapteur'] !== 'Aucun',
+        "T2"  => $ctx['champCapteur'] !== 'Aucun',
+        "T10" => (bool) preg_match('/2 champs|découplé|double circulateur/', $ctx['champCapteur']),
+
+        // Circulateurs
+        "C1"  => $ctx['circulateurC1'] !== 'Aucun',
+        "T11" => $ctx['circulateurC1'] !== 'Aucun',
+        "C2"  => $ctx['circulateurC2'] !== 'Aucun',
+        "T12" => $ctx['circulateurC2'] !== 'Aucun',
+        "C3"  => $ctx['circulateurC3'] !== 'Aucun',
+        "T13" => $ctx['circulateurC3'] !== 'Aucun',
+        "C7"  => $ctx['circulateurC7'] !== 'Aucun',
+        "T14" => $ctx['circulateurC7'] !== 'Aucun' && !(bool) preg_match('/Appoint/', $ctx['circulateurC7']),
+
+        // T6 : appoint sur C7 ou Piscine déportée T6
+        "T6"  => (bool) preg_match('/Appoint/', $ctx['circulateurC7'])
+               || $ctx['optionS10'] === 'Piscine déportée T6',
+
+        // T15 : champCapteur T15 ou options S10 référençant T15
+        "T15" => (bool) preg_match('/T15/', $ctx['champCapteur'])
+               || (bool) preg_match('/T15/', $ctx['optionS10']),
+
+        // T16 : champCapteur T16, raccordement T16, appoint bois T16, CESI S11 T16
+        "T16" => (bool) preg_match('/T16/', $ctx['champCapteur'])
+               || (bool) preg_match('/T16/', $ctx['raccordementHydraulique'])
+               || (bool) preg_match('/T16/', $ctx['appoint1'])
+               || $ctx['optionS11'] === 'CESI déportée sur T16',
+
+        // Sorties S10 / S11
+        "S10" => $ctx['optionS10'] !== 'Aucun',
+        "S11" => $ctx['optionS11'] !== 'Aucun'
+    ];
+
+    return array_keys(array_filter($mapping));
 }
 
 
 function construct_table_of_equipments(array $ctx): array
 {
     $equipment_mapping = [
-        "circulateurs" => [
-            "C1" => "Circulateur chauffage zone 1",
-            "C2" => "Circulateur chauffage zone 2",
-            "C3" => "Circulateur chauffage zone 3",
-            "C4" => "Circulateur ballon appoint",
-            "C5" => "Circulateur ballon solaire",
-            "C6" => "Circulateur ballon tampon",
-            "C7" => "Circulateur appoint 2 / chauffage zone 4"
-        ],
-        "sondes" => [
-            "T1"  => "T° capteur chaud",
-            "T2"  => "T° capteur froid",
-            "T3"  => "T° bas de ballon / T° ballon solaire",
-            "T4"  => "T° haut de ballon / T° ballon appoint",
-            "T5"  => "T° ballon tampon",
-            "T6"  => "T° appoint 2",
-            "T7"  => "T° collecteur froid",
-            "T8"  => "T° collecteur chaud",
-            "T9"  => "T° extérieure",
-            "T10" => "T° sonde d'option",
-            "T11" => "T° ambiance zone 1",
-            "T12" => "T° ambiance zone 2",
-            "T13" => "T° ambiance zone 3",
-            "T14" => "T° ambiance zone 4",
-            "T15" => "T° sonde d'option",
-            "T16" => "T° sonde d'option"
-        ],
-        "sorties" => [
-            "S10" => "Sortie disponible pour option 47/48",
-            "S11" => "Sortie disponible pour option 49/50"
-        ]
+        "C1" => "Circulateur chauffage zone 1",
+        "C2" => "Circulateur chauffage zone 2",
+        "C3" => "Circulateur chauffage zone 3",
+        "C4" => "Circulateur ballon appoint",
+        "C5" => "Circulateur ballon solaire",
+        "C6" => "Circulateur ballon tampon",
+        "C7" => "Circulateur appoint 2 / chauffage zone 4",
+        "T1"  => "T° capteur chaud",
+        "T2"  => "T° capteur froid",
+        "T3"  => "T° bas de ballon / T° ballon solaire",
+        "T4"  => "T° haut de ballon / T° ballon appoint",
+        "T5"  => "T° ballon tampon",
+        "T6"  => "T° appoint 2",
+        "T7"  => "T° collecteur froid",
+        "T8"  => "T° collecteur chaud",
+        "T9"  => "T° extérieure",
+        "T10" => "T° sonde d'option",
+        "T11" => "T° ambiance zone 1",
+        "T12" => "T° ambiance zone 2",
+        "T13" => "T° ambiance zone 3",
+        "T14" => "T° ambiance zone 4",
+        "T15" => "T° sonde d'option",
+        "T16" => "T° sonde d'option",
+        "S10" => "Sortie disponible pour option 47/48",
+        "S11" => "Sortie disponible pour option 49/50",
+
     ];
 
     $res = [];
+    $resssources = get_ressources_from_ctx($ctx);
 
-    foreach ($equipment_mapping as $ctx_key => $sub_mapping) {
-        if (isset($ctx[$ctx_key]) && is_array($ctx[$ctx_key])) {
-            foreach ($sub_mapping as $key => $label) {
-                if (array_key_exists($key, $ctx[$ctx_key])) {
-                    $res[] = [$key, $label];
-                }
-            }
+    foreach ($equipment_mapping as $ressource => $ressource_label) {
+        if (in_array($ressource, $resssources)) {
+            $res[] = [$ressource, $ressource_label];
         }
     }
     return $res;

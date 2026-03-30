@@ -40,7 +40,7 @@ class FormulaireApp {
         this._description.innerText = `Description : ${description}`;
 
         // save the context in the session
-        sessionStore.formulaire = {...this._context, description, ...this._get_equipments()};
+        sessionStore.formulaire = {...this._context, description};
 
         for (const [field_key, states] of Object.entries(all_states)) {
             set_field_states(this._fields.get(field_key), states);
@@ -115,32 +115,4 @@ class FormulaireApp {
         }
         return res;
     }
-
-
-    /**
-     * Circulateurs, sondes, and sorties are extracted from the options
-     * based on the current context (this._context) values.
-     *
-     * @return {Object<string, any>} The enriched form data.
-     */
-    _get_equipments() {
-        const categories = { c: {}, t: {}, s: {} };
-
-        for (const [key, value] of Object.entries(this._context)) {
-            const values_array = options[key]?.options?.[value];
-            if (!values_array) continue;
-
-            for (const v of values_array) {
-                const category = Object.keys(categories).find(cat => new RegExp(cat, 'i').test(v));
-                if (category) categories[category][v] = value;
-            }
-        }
-
-        return {
-            circulateurs: categories.c,
-            sondes: categories.t,
-            sorties: categories.s
-        };
-    }
-
 }

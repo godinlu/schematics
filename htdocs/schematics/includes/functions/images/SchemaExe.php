@@ -102,6 +102,7 @@ class SchemaExe extends Module{
         $this->setImageDivers($this->_position['divers']);
         $this->setImageRDR();
         $this->setImageRDRcirc();
+        $this->setImageIdemS11OnCirc();
         $this->setImageOptions($this->_position['option']);
         $this->setLabelOptions($this->_position['option']);
         $this->setLegend($this->_position['legend']);
@@ -168,6 +169,7 @@ class SchemaExe extends Module{
             // le Rehaussement des retours sur V3Vs sera géré ailleurs.
             if ($this->_formulaire[$id] === 'Rehaussement des retours sur V3V') continue; 
             if ($this->_formulaire[$id] === 'Rehaussement des retours sur circulateur') continue; 
+            if ($this->_formulaire[$id] === 'Idem S11') continue; 
 
             $value = $this->getNameImageCirculateurs($this->_formulaire[$id]);
             $path = "circulateurs/objet/"; // Chemin pour ajouter un objet (ex: radiateur)
@@ -276,6 +278,17 @@ class SchemaExe extends Module{
                 }
             }
         }
+    }
+
+
+    private function setImageIdemS11OnCirc(){
+        foreach (["circulateurC1", "circulateurC2", "circulateurC3", "circulateurC7"] as $circ) {
+            if ($this->_formulaire[$circ] !== "Idem S11") continue;
+            $this->addImage("champCapteur/Idem S11", [477, 11]);
+            $this->addLabel(preg_replace("/circulateur/", "", $circ), [735, 120]);
+        }
+
+        // throw new Error("test");
     }
 
     /**
@@ -555,12 +568,9 @@ class SchemaExe extends Module{
         $this->addParagraphe("Schéma d'exe " .  $this->_formulaire['description'], $coord_description, 350, 8.5);
         $this->addLabel($date, $coord_date);
 
-        $opt_S10 = $formulaire["sorties"]["S10"] ?? "";
-        $opt_S11 = $formulaire["sorties"]["S11"] ?? "";
-
         // Partie nom des options
-        $this->addLabel("Option S10: " . $opt_S10, $list_coord['label_optionS10']);
-        $this->addLabel("Option S11: " . $opt_S11, $list_coord['label_optionS11']);
+        $this->addLabel("Option S10: " . $this->_formulaire['optionS10'], $list_coord['label_optionS10']);
+        $this->addLabel("Option S11: " . $this->_formulaire['optionS11'], $list_coord['label_optionS11']);
     }
 
 

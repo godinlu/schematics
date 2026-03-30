@@ -339,6 +339,41 @@ const __RULES = {
         reason: "Nécessite :\n - Un ballon tampon avec échangeur\n - Une pompe ou une deshu dans divers\n - Aucun autre circulateur en Rehaussement des retours sur V3Vs"
     },
     ////////////////////////////////////////////////////////////////////////////
+    //                          IDEM S11
+    ////////////////////////////////////////////////////////////////////////////
+    "idem-s11-c1": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC1: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c2": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC2: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c3": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC7 !== "Idem S11",
+        allow: { circulateurC3: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    "idem-s11-c7": {
+        when: (ctx) => /1 champ capteurs.*casse pression/i.test(ctx.champCapteur) &&
+            ctx.circulateurC1 !== "Idem S11" &&
+            ctx.circulateurC2 !== "Idem S11" &&
+            ctx.circulateurC3 !== "Idem S11",
+        allow: { circulateurC7: ["Idem S11"] },
+        reason: "Nécessite :\n - 1 champ capteurs sur casse pression\n - Aucun autre circulateur en Idem S11"
+    },
+    ////////////////////////////////////////////////////////////////////////////
     //                          APPOINT C7
     ////////////////////////////////////////////////////////////////////////////
     "app2-on-c7": {
@@ -450,6 +485,103 @@ const __RULES = {
             optionS11: ["V3V retour bouclage sanitaire solaire"]
         },
         reason: "Nécessite une bouclage sanitaire sur le ballon ECS."
+    },
+    ////////////////////////////////////////////////////////////////////////////
+    //                 OPTIONS S10 / S11 liées à champCapteur & raccordement
+    ////////////////////////////////////////////////////////////////////////////
+    // Par défaut les nouvelles options (issues du champ capteur / raccordement hydraulique)
+    // sont interdites. Quand champCapteur ou raccordementHydraulique utilise S10,
+    // toutes les options régulières de S10 sont désactivées à la place.
+    "opt-s10-default-forbidden": {
+        when: (ctx) =>
+            !["2 champs capteurs découplés sur casse pression", "2 champs capteurs découplés sur échangeur"].includes(ctx.champCapteur) &&
+            ctx.raccordementHydraulique !== "Appoint sur tampon avec échangeur T16 S10",
+        allow: {
+            optionS10: [
+                EXCLUDE_FLAG,
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur",
+                "Appoint sur tampon avec échangeur T16 S10",
+            ]
+        },
+        reason: "Options activable uniquement via le champ : capteur ou via le champ raccordement hydraulique."
+    },
+    "opt-s10-capteur-decouple-cp": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur casse pression",
+        allow: { optionS10: ["2 champs capteurs découplés sur casse pression"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s10-capteur-decouple-ech": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur échangeur",
+        allow: { optionS10: ["2 champs capteurs découplés sur échangeur"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s10-racc-tampon": {
+        when: (ctx) => ctx.raccordementHydraulique === "Appoint sur tampon avec échangeur T16 S10",
+        allow: { optionS10: ["Appoint sur tampon avec échangeur T16 S10"] },
+        reason: "Options activable uniquement via le champ raccordement hydraulique."
+    },
+    // Par défaut les nouvelles options S11 (issues du champ capteur) sont interdites.
+    // Quand champCapteur utilise S11, toutes les options régulières de S11 sont désactivées.
+    "opt-s11-default-forbidden": {
+        when: (ctx) =>
+            ![
+                "1 champ capteurs découplé sur casse pression sur T16",
+                "1 champ capteurs découplé sur échangeur sur T16",
+                "1 champ capteurs sur double circulateur sur échangeur sur T16",
+                "1 champ capteurs découplé sur casse pression sur T15",
+                "1 champ capteurs découplé sur échangeur sur T15",
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur"
+            ].includes(ctx.champCapteur),
+        allow: {
+            optionS11: [
+                EXCLUDE_FLAG,
+                "1 champ capteurs découplé sur casse pression sur T16",
+                "1 champ capteurs découplé sur échangeur sur T16",
+                "1 champ capteurs sur double circulateur sur échangeur sur T16",
+                "1 champ capteurs découplé sur casse pression sur T15",
+                "1 champ capteurs découplé sur échangeur sur T15",
+                "2 champs capteurs découplés sur casse pression",
+                "2 champs capteurs découplés sur échangeur",
+            ]
+        },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-cp-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur casse pression sur T16",
+        allow: { optionS11: ["1 champ capteurs découplé sur casse pression sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-ech-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur échangeur sur T16",
+        allow: { optionS11: ["1 champ capteurs découplé sur échangeur sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-double-ech-t16": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs sur double circulateur sur échangeur sur T16",
+        allow: { optionS11: ["1 champ capteurs sur double circulateur sur échangeur sur T16"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-cp-t15": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur casse pression sur T15",
+        allow: { optionS11: ["1 champ capteurs découplé sur casse pression sur T15"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-ech-t15": {
+        when: (ctx) => ctx.champCapteur === "1 champ capteurs découplé sur échangeur sur T15",
+        allow: { optionS11: ["1 champ capteurs découplé sur échangeur sur T15"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-decouple-cp": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur casse pression",
+        allow: { optionS11: ["2 champs capteurs découplés sur casse pression"] },
+        reason: "Options activable uniquement via le champ : capteur."
+    },
+    "opt-s11-capteur-decouple-ech": {
+        when: (ctx) => ctx.champCapteur === "2 champs capteurs découplés sur échangeur",
+        allow: { optionS11: ["2 champs capteurs découplés sur échangeur"] },
+        reason: "Options activable uniquement via le champ : capteur."
     }
 
 }
@@ -539,7 +671,7 @@ class RulesConfig {
                 if (options[0] !== str_flag) continue;
 
                 const allowed = new Set(
-                    Object.keys(all_options[field].options)
+                    all_options[field].options
                 );
 
                 for (const opt of options.slice(1)) {
@@ -555,64 +687,4 @@ class RulesConfig {
 }
 
 const rule_config = new RulesConfig();
-
-function verify_rules() {
-    const ids = new Set();
-    const mandatory_keys = ["id", "when", "allow", "reason"];
-
-    RULES.forEach((rule, i) => {
-        // Check mandatory keys
-        for (const key of mandatory_keys) {
-            if (rule[key] === undefined) {
-                console.warn(`[verify_rules] Rule #${i} (id="${rule.id || "undefined"}") is missing the key "${key}"`);
-            }
-        }
-
-        // Check id uniqueness
-        if (rule.id) {
-            if (ids.has(rule.id)) {
-                console.warn(`[verify_rules] Duplicate id detected: "${rule.id}"`);
-            }
-            ids.add(rule.id);
-        }
-
-        // Check `when` type
-        if (rule.when && typeof rule.when !== "function") {
-            console.warn(`[verify_rules] Rule "${rule.id}" -> "when" should be a function`);
-        }
-
-        // Check `allow` structure
-        if (rule.allow) {
-            if (typeof rule.allow !== "object") {
-                console.warn(`[verify_rules] Rule "${rule.id}" -> "allow" should be an object`);
-            } else {
-                for (const [field, opts] of Object.entries(rule.allow)) {
-                    if (!Array.isArray(opts)) {
-                        console.warn(`[verify_rules] Rule "${rule.id}" -> "allow.${field}" should be an array`);
-                    } else {
-                        opts.forEach((opt, idx) => {
-                            if (typeof opt !== "string") {
-                                console.warn(`[verify_rules] Rule "${rule.id}" -> "allow.${field}[${idx}]" should be a string`);
-                            }
-
-                            // check if the field and the option exist
-                            if (options?.[field]?.options?.[opt] === undefined) {
-                                console.warn(
-                                    `[verify_rules] Rule "${rule.id}" -> option "${opt}" for field "${field}" does not exist in the options configuration`
-                                );
-                            }
-                        });
-                    }
-                }
-            }
-        }
-
-        // Check reason
-        if (rule.reason && typeof rule.reason !== "string") {
-            console.warn(`[verify_rules] Rule "${rule.id}" -> "reason" should be a string`);
-        }
-    });
-
-    console.log(`[verify_rules] Checked ${RULES.length} rules, found ${ids.size} unique ids`);
-}
 

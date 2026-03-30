@@ -18,8 +18,6 @@ class RuleEngine{
      */
     constructor(rules_config, all_options){
         this._all_options = all_options;
-
-        this._resource_map = RuleEngine.generate_ressources_mapping(all_options);
         
         rules_config.compile_rules(all_options);
         this._rules = rules_config.rules;
@@ -53,14 +51,13 @@ class RuleEngine{
             stabilized = true;
 
             all_states = this.construct_all_states();
-            this.apply_resources_constraints(context, all_states);
             this.apply_rules_constraints(context, all_states);
 
 
             // step 3 : check if a selected value is now forbidden in _all_states and need to changed
             for (const [field_key, states] of Object.entries(all_states)){
                 // skip if the field is a text field cause no options
-                const options = Object.keys(this._all_options[field_key].options);
+                const options = this._all_options[field_key].options;
                 if (options.length === 1 && options[0] === "*") continue;
 
                 const current_value = context[field_key];
@@ -110,44 +107,11 @@ class RuleEngine{
         const all_states = {};
         for (const [field, field_data] of Object.entries(this._all_options)){
             all_states[field] = {};
-            for (const opt of Object.keys(field_data.options)){
+            for (const opt of field_data.options){
                 all_states[field][opt] = {disabled:false, reason:""};
             }
         }
         return all_states;
-    }
-
-    /**
-     * Apply resource constraints to the state object based on the current context.
-     * Disables options already used by other fields and sets a reason.
-     * @param {Object<string, string>} context 
-     * @param {Object<string, Object<string, state>>} all_states 
-     */
-    apply_resources_constraints(context, all_states){
-        for (const [ctx_field, ctx_value] of Object.entries(context)){
-            const used_ressources = this._all_options?.[ctx_field]?.options?.[ctx_value] ?? [];
-            for (const resource of used_ressources){
-                for (const [target_field, options] of Object.entries(this._resource_map[resource])){
-                    // don't affect the same field
-                    if (target_field === ctx_field) continue;
-
-                    for (const opt of options){
-                        all_states[target_field][opt].disabled = true;
-
-                        let reason = "";
-                        if (resource.startsWith("S")){
-                            reason = `La sortie ${resource} est déjà prise par le champ : ${ctx_field}`;
-                        }else if (resource.startsWith("C")){
-                            reason = `Le circulateur ${resource} est déjà pris par le champ : ${ctx_field}`;
-                        }else if (resource.startsWith("T")){
-                            reason = `La sonde ${resource} est déjà prise par le champ : ${ctx_field}`;
-                        }
-                        all_states[target_field][opt].reason = reason;
-                    }
-                    
-                }
-            }
-        }
     }
 
     /**
@@ -185,7 +149,7 @@ class RuleEngine{
     static generate_ressources_mapping(all_options){
         const resource_map = {};
         for (const [field, field_data] of Object.entries(all_options)) {
-            for (const [opt, ressources] of Object.entries(field_data.options)) {
+            for (const [opt, ressources] of Object.entries(field_data.resources ?? {})) {
                 for (const r of ressources) {
                     resource_map[r] ??= {};
                     resource_map[r][field] ??= new Set();
