@@ -193,7 +193,7 @@ function add_appoint_images(array $ctx, ImageComposer $ic): void
         "T16"                        => preg_match('/^(?!.*simple)(?!.*tampon).*T16/i', $rdh),
         "réchauffeur de boucle Droite" => (preg_match("/réchauffeur de boucle/i", $rdh) && $ctx['Gauche_droite'] == "Droite"),
         "réchauffeur de boucle Gauche" => (preg_match("/réchauffeur de boucle/i", $rdh) && $ctx['Gauche_droite'] == "Gauche"),
-        "Aucun appoint deshu [droite]" => ($ctx['appoint1'] === 'Aucun' && !preg_match('/gauche/', $ctx['divers'])),
+        "Aucun appoint deshu [droite]" => ($ctx['appoint1'] === 'Aucun' && !preg_match('/gauche/', $ctx['divers']) && $ctx['divers'] !== 'Aucun'),
         "Aucun appoint deshu [gauche]" => ($ctx['appoint1'] === 'Aucun' && preg_match('/gauche/', $ctx['divers'])),
     ];
 
