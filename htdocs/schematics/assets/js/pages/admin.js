@@ -32,8 +32,8 @@ async function upload_file(file) {
     status.innerHTML = `<span class="loading-text"><span class="spinner"></span> Envoi en cours… (${data.length} lignes)</span>`;
 
     try {
-        const response = await fetch("api/updateArticle.php", {
-            method: "POST",
+        const response = await fetch(`${BASE_URL}api/articles`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         });
