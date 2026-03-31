@@ -15,7 +15,7 @@ $formulaire = $input['formulaire'];
 $fiche_prog = $input['fiche_prog'];
 
 // 1. create the full schema hydrau
-$img_hydrau = (new HydraulicSchema($formulaire))->full();
+$img_hydrau = (new HydraulicSchema($formulaire, IMG_DIR . "schema_hydro/"))->full()->render();
 
 // 2. create the schemaExe
 $schema_exe = new SchemaExe($formulaire);  

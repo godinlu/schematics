@@ -2,10 +2,68 @@
 
 const VERDANA = __DIR__ . "/../../../assets/fonts/Verdana.ttf";
 
-interface Renderable
-{
-    public function render(GdImage $gd): void;
+interface Layer {}
+
+readonly class ImageLayer implements Layer{
+    public function __construct(
+        public string $path,
+        public array $coord = [0, 0],
+    ){}
 }
+
+readonly class LabelLayer implements Layer{
+    public function __construct(
+        public string $text,
+        public array $coord,
+        public float $size = 9,
+        public array $color = [0, 0 , 0]
+    ){}
+}
+
+interface LayerResolver{
+    /** @return Layer[] */
+    public function resolve(array $ctx): array;
+}
+
+
+class LayerRenderer{
+    public function __construct(private string $base_path){}
+    
+
+    public function render_all(GdImage $canvas, array $layers): void{
+        foreach ($layers as $layer) {
+            if ($layer instanceof ImageLayer){
+                $this->apply_image($canvas, $layer);
+            }
+            if ($layer instanceof LabelLayer){
+                $this->apply_label($canvas, $layer);
+            }
+        }
+    }
+
+    private function apply_image(GdImage $canvas, ImageLayer $layer): void{
+        $img = imagecreatefrompng($this->base_path . $layer->path);
+        list($dst_x, $dst_y) = $layer->coord;
+        imagecopy($canvas, $img, (int) $dst_x, (int) $dst_y, 0, 0, imagesx($img), imagesy($img));
+    }
+
+    private function apply_label(GdImage $canvas, LabelLayer $layer): void{
+        imagettftext(
+            $canvas, 
+            $layer->size,
+            0, 
+            (int) $layer->coord[0],
+            (int) $layer->coord[1], 
+            imagecolorallocate($canvas, $layer->color[0], $layer->color[1], $layer->color[2]), 
+            VERDANA, 
+            $layer->text);
+    }
+
+    
+}
+
+
+
 
 interface ImageModifier{
     public function apply(GdImage $image): GdImage;
@@ -102,101 +160,6 @@ class ImageComposer
         }
 
         return $image;
-    }
-}
-
-class Rule
-{
-    /** @var callable(mixed): bool */
-    private $when;
-
-    /** @var array<Renderable> */
-    private array $elements;
-
-    private string $comment;
-
-    /**
-     * @param callable(mixed): bool $when      Predicate receiving a context, returns true when the rule applies.
-     * @param array<Renderable>     $elements   Elements to render when the rule applies.
-     */
-    public function __construct(callable $when, array $elements, string $comment = "")
-    {
-        $this->when = $when;
-        $this->elements = $elements;
-        $this->comment = $comment;
-    }
-
-    /**
-     * Returns the elements if the rule applies to the given context, otherwise an empty array.
-     *
-     * @return array<Renderable>
-     */
-    public function evaluate(mixed $context): array
-    {
-        return ($this->when)($context) ? $this->elements : [];
-    }
-}
-
-class Image implements Renderable
-{
-    private string $img_path;
-    private array $coord;
-
-    public function __construct(string $img_path, array $coord = [0, 0], string $ext = ".png")
-    {
-        if (!pathinfo($img_path, PATHINFO_EXTENSION)) {
-            $img_path .= $ext;
-        }
-        if (!file_exists($img_path)) {
-            throw new \RuntimeException("Image not found: $img_path");
-        }
-        $this->img_path = $img_path;
-        $this->coord = $coord;
-    }
-
-    public function render(GdImage $gd): void
-    {
-        $layer = imagecreatefrompng($this->img_path);
-        imagecopy(
-            $gd,
-            $layer,
-            $this->coord[0],
-            $this->coord[1],
-            0,
-            0,
-            imagesx($layer),
-            imagesy($layer)
-        );
-    }
-}
-
-class TextOverlay implements Renderable
-{
-    private string $text;
-
-    /** @var int[] [x, y] */
-    private array $coord;
-
-    private int $size;
-
-    /** @var int[] [r, g, b] */
-    private array $color;
-
-    /**
-     * @param int[] $coord [x, y]
-     * @param int[] $color [r, g, b]
-     */
-    public function __construct(string $text, array $coord, int $size = 9, array $color = [0, 0, 0])
-    {
-        $this->text = $text;
-        $this->coord = $coord;
-        $this->size = $size;
-        $this->color = $color;
-    }
-
-    public function render(GdImage $gd): void
-    {
-        add_label_inplace($gd, $this->text, $this->coord, $this->size, $this->color);
     }
 }
 

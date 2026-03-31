@@ -14,13 +14,13 @@ $format = $_GET['format'] ?? "png";
 
 switch (strtolower($image)){
     case "schema_hydrau_brut":
-        $gd_image =  (new HydraulicSchema($input))->brut();
+        $gd_image = (new HydraulicSchema($input, IMG_DIR . "schema_hydro/"))->brut()->render();
         break;
     case 'schema_hydrau_annote':
-        $gd_image = (new HydraulicSchema($input))->annote();
+        $gd_image = (new HydraulicSchema($input, IMG_DIR . "schema_hydro/"))->annote()->render();
         break;
     case 'schema_hydrau_complet':
-        $gd_image = (new HydraulicSchema($input))->full();
+        $gd_image = (new HydraulicSchema($input, IMG_DIR . "schema_hydro/"))->full()->render();
         break;
     case 'schema_exe':
         $schema = new SchemaExe($input);
