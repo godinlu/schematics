@@ -18,9 +18,11 @@ $page_js = [
         <div class="flex">
             <!--canvas ou est déssiné la schématèque il fait la taille de de base schema -->
             <div id="img_container">
-                <img id="schema_exe" alt="Schéma d'EXE">
-                <img id="etiquetage" alt="Etiquetage" style="display: none;">
-
+                <div id="schema_loader">
+                    <div class="loader-spinner"></div>
+                </div>
+                <img id="schema_exe" style="display: none;" alt="Schéma d'EXE">
+                <img id="etiquetage" style="display: none;" alt="Etiquetage">
             </div>
             <aside>
                 <button type="button" id="btn_toggle_etiquetage">étiquetage module<i class="fa-regular fa-square"></i></button>

@@ -49,15 +49,18 @@ document.addEventListener("DOMContentLoaded", () =>{
 
     // add the download pdf event
     document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
-        const response = await post_data(`generateSchema.php?image=fiche_prog&format=pdf`, static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog));
-        const blob = await response.blob();
+        try {
+            const blob = await fetch_schema_blob(`schemas/fiche-prog?format=pdf`, static_fiche_prog_data(sessionStore.formulaire, sessionStore.fiche_prog), "application/pdf");
 
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `fiche_prog-${sessionStore.name}.pdf`;
-        link.click();
-        URL.revokeObjectURL(url);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `fiche_prog-${sessionStore.name}.pdf`;
+            link.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            show_error_toast(`Impossible de générer la fiche prog : ${err.message}`);
+        }
     });
 
 });

@@ -117,16 +117,18 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const response = await post_data(`generateSchemaReport.php`, {formulaire, fiche_prog});
+        try {
+            const blob = await fetch_schema_blob(`schemas/report`, {formulaire, fiche_prog}, "application/pdf");
 
-        const blob = await response.blob();
-
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `dossier-${sessionStore.name}.pdf`;
-        link.click();
-        URL.revokeObjectURL(url);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `dossier-${sessionStore.name}.pdf`;
+            link.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            show_error_toast(`Impossible de générer le dossier : ${err.message}`);
+        }
     });
 });
 

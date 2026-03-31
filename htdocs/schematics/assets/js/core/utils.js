@@ -62,7 +62,7 @@ function static_fiche_prog_data(formulaire, fiche_prog) {
 
 /**
  * Send POST request to the API
- * @param {string} endpoint - endpoint name (e.g. "generateSchema.php?image=foo&format=png")
+ * @param {string} endpoint - endpoint path (e.g. "schemas/hydrau/brut?format=png")
  * @param {Object} payload
  * @returns {Promise<Response>}
  */
@@ -74,9 +74,59 @@ async function post_data(endpoint, payload) {
     });
 
     if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`HTTP ${response.status}: ${text}`);
+        let message = `Erreur serveur (HTTP ${response.status})`;
+        try {
+            const json = await response.json();
+            if (json.error) message = json.error;
+        } catch { /* réponse non-JSON, on garde le message par défaut */ }
+        throw new Error(message);
     }
 
     return response;
+}
+
+/**
+ * Envoie une requête POST à l'API et retourne le résultat sous forme de Blob.
+ * Vérifie que le Content-Type correspond au type attendu avant de consommer le body,
+ * ce qui permet de détecter les erreurs PHP émises avec un HTTP 200 (HTML d'erreur).
+ *
+ * @param {string} endpoint - endpoint path (e.g. "schemas/hydrau/brut?format=png")
+ * @param {Object} payload
+ * @param {string} expected_type - Content-Type attendu (e.g. "image/png", "application/pdf")
+ * @returns {Promise<Blob>}
+ */
+async function fetch_schema_blob(endpoint, payload, expected_type) {
+    const response = await post_data(endpoint, payload);
+
+    const content_type = response.headers.get("Content-Type") ?? "";
+    if (!content_type.includes(expected_type)) {
+        let message = `Réponse inattendue du serveur (type reçu : ${content_type || "inconnu"})`;
+        const raw = await response.text();
+        try {
+            const json = JSON.parse(raw);
+            if (json.error) message = json.error;
+        } catch {
+            console.error(`[fetch_schema_blob] Réponse PHP brute pour "${endpoint}" :`, raw);
+        }
+        throw new Error(message);
+    }
+
+    return response.blob();
+}
+
+/**
+ * Affiche un toast d'erreur visible pendant 5 secondes.
+ * @param {string} message
+ */
+function show_error_toast(message) {
+    const toast = document.createElement("div");
+    toast.style.cssText = [
+        "position:fixed", "bottom:24px", "left:50%", "transform:translateX(-50%)",
+        "background:#c0392b", "color:#fff", "padding:12px 24px",
+        "border-radius:6px", "font-size:14px", "z-index:9999",
+        "max-width:80%", "text-align:center", "box-shadow:0 2px 10px rgba(0,0,0,.35)"
+    ].join(";");
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
 }

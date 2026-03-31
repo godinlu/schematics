@@ -6,7 +6,14 @@ document.addEventListener("DOMContentLoaded", async () =>{
         etiquetage: document.querySelector("#etiquetage")
     };
 
+    const loader = document.querySelector("#schema_loader");
+
     let current_image = "schema_exe";
+
+    const SCHEMA_ROUTES = {
+        schema_exe: "schemas/exe",
+        etiquetage: "schemas/etiquetage"
+    };
 
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
@@ -15,16 +22,21 @@ document.addEventListener("DOMContentLoaded", async () =>{
         // avoid reloading images
         if (images[current_image].src) return;
 
-        const response = await post_data(`generateSchema.php?image=${current_image}&format=png`, formulaire);
-
-        const blob = await response.blob();
-        const img_url = URL.createObjectURL(blob);
-
-        images[current_image].src = img_url;
+        loader.style.display = "flex";
+        try {
+            const blob = await fetch_schema_blob(`${SCHEMA_ROUTES[current_image]}?format=png`, formulaire, "image/png");
+            images[current_image].src = URL.createObjectURL(blob);
+        } catch (err) {
+            show_error_toast(`Impossible de générer le schéma : ${err.message}`);
+        } finally {
+            loader.style.display = "none";
+        }
     }
 
 
-    load_current_image();
+    load_current_image().then(() => {
+        if (images[current_image].src) images[current_image].style.display = "";
+    });
 
 
     ///////////////////////////////////////////////////////
@@ -35,15 +47,15 @@ document.addEventListener("DOMContentLoaded", async () =>{
         // toggle the current_image
         current_image = (current_image === "schema_exe") ? "etiquetage" : "schema_exe";
 
-        // load the other image if not already loaded.
-        load_current_image();
-
         // hide all images
         for (const img of Object.values(images)){
             img.style.display = "none";
         }
-        // show the current image
-        images[current_image].style.display = "";
+
+        // load the other image if not already loaded, then show it
+        load_current_image().then(() => {
+            if (images[current_image].src) images[current_image].style.display = "";
+        });
 
         // toggle the class of the button 
         const icon = btn.querySelector("i");
@@ -74,8 +86,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async ()=>{
         try {
-            const response = await post_data(`generateSchema.php?image=${current_image}&format=pdf`, sessionStore.formulaire);
-            const blob = await response.blob();
+            const blob = await fetch_schema_blob(`${SCHEMA_ROUTES[current_image]}?format=pdf`, sessionStore.formulaire, "application/pdf");
 
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
@@ -84,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async () =>{
             link.click();
             URL.revokeObjectURL(url);
         } catch (err) {
-            console.error("Erreur téléchargement PDF :", err);
+            show_error_toast(`Impossible de télécharger le PDF : ${err.message}`);
         }
     });
 

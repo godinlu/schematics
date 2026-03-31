@@ -7,6 +7,27 @@
   justify-content: center;
   align-items: center;
   margin: 1em;
+  min-height: 200px;
+}
+
+#schema_loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+}
+
+.loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e0e0e0;
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 .hidden{
   display: none;

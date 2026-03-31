@@ -17,7 +17,10 @@ $page_js = [
         <div class="flex">
             <!--canvas ou est déssiné la schématèque il fait la taille de base schema -->
             <div id="canvas_container">
-                <img id="schema_hydrau_brut" alt="Schéma hydraulique">
+                <div id="schema_loader">
+                    <div class="loader-spinner"></div>
+                </div>
+                <img id="schema_hydrau_brut" style="display: none;" alt="Schéma hydraulique">
                 <img id="schema_hydrau_annote" style="display: none;" alt="Schéma hydraulique annoté">
                 <img id="schema_hydrau_complet" style="display: none;" alt="Schéma hydraulique complet">
             </div>

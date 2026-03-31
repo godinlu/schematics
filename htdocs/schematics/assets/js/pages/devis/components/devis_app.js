@@ -150,15 +150,9 @@ class DevisApp{
      */
     async _save_devis_into_bd(){
         const devis_data = this.to_json_data();
-        console.log(devis_data);
 
-        const response = await post_data('save_devis.php', devis_data);
-
+        const response = await post_data('devis', devis_data);
         const json = await response.json();
-
-        if (!response.ok || !json.success) {
-            throw new Error(json.error ?? "Erreur serveur");
-        }
 
         return json.reference;
     }

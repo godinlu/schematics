@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         complet: document.getElementById("schema_hydrau_complet")
     };
 
+    const loader = document.getElementById("schema_loader");
+
     const buttons = {
         brut: document.getElementById("btn_brut"),
         annote: document.getElementById("btn_annote"),
@@ -18,18 +20,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     //            INITIAL IMAGE SOURCES
     ///////////////////////////////////////////////////////
-    load_current_image();
-
     async function load_current_image(){
         // avoid reloading images
         if (images[current_version].src) return;
 
-        const response = await post_data(`generateSchema.php?image=schema_hydrau_${current_version}&format=png`, formulaire);
-
-        const blob = await response.blob();
-        const img_url = URL.createObjectURL(blob);
-
-        images[current_version].src = img_url;
+        loader.style.display = "flex";
+        try {
+            const blob = await fetch_schema_blob(`schemas/hydrau/${current_version}?format=png`, formulaire, "image/png");
+            images[current_version].src = URL.createObjectURL(blob);
+        } catch (err) {
+            show_error_toast(`Impossible de générer le schéma : ${err.message}`);
+        } finally {
+            loader.style.display = "none";
+        }
     }
 
 
@@ -88,8 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ///////////////////////////////////////////////////////
     document.querySelector("#btn_download_pdf").addEventListener("click", async () => {
         try {
-            const response = await post_data(`generateSchema.php?image=schema_hydrau_${current_version}&format=pdf`, sessionStore.formulaire);
-            const blob = await response.blob();
+            const blob = await fetch_schema_blob(`schemas/hydrau/${current_version}?format=pdf`, sessionStore.formulaire, "application/pdf");
 
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
@@ -98,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             link.click();
             URL.revokeObjectURL(url);
         } catch (err) {
-            console.error("Erreur téléchargement PDF :", err);
+            show_error_toast(`Impossible de télécharger le PDF : ${err.message}`);
         }
     });
 

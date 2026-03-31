@@ -17,6 +17,7 @@ class HydraulicDiagramResolver implements LayerResolver{
 
     public function resolve(array $ctx): array
     {
+
         return array_merge(...array_map(
             fn($class) => (new $class)->resolve($ctx),
             $this->resolvers
