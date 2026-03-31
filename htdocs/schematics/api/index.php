@@ -31,7 +31,15 @@ $routes = [
 $key = "$method $path";
 
 if (isset($routes[$key])) {
-    $routes[$key]();
+    try{
+        $routes[$key]();
+    }catch (Exception $e){
+        respond(500, [
+            'error' => "Internal Server Error",
+            'message' => $e->getMessage()
+        ]);
+    }
+    
 } else {
     respond(404, ['error' => "Route introuvable : $method /$path"]);
 }
